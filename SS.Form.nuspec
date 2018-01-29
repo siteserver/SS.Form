@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SS.Form</id>
+    <version>$version$</version>
+    <title>SiteServer CMS 表单插件</title>
+    <authors>SiteServer CMS</authors>
+    <owners>siteserver</owners>
+    <licenseUrl>https://github.com/siteserver/SS.Form/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/siteserver/SS.Form</projectUrl>
+    <iconUrl>https://github.com/siteserver/SS.Form/raw/master/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SiteServer CMS 表单插件是简单高效的电子表单工具,为你提供表单的创建,发布,管理,收集及客户管理服务,让您轻松快捷的制作表单</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>SiteServer CMS Form Plugin</tags>
+  </metadata>
+</package>
