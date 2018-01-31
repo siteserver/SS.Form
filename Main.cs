@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using SiteServer.Plugin;
@@ -50,13 +49,10 @@ namespace SS.Form
                         Menus = menus
                     };
                 })
-                .AddContentLinks(new List<HyperLink>
+                .AddContentLink(new HyperLink
                 {
-                    new HyperLink
-                    {
-                        Text = "表单管理",
-                        NavigateUrl = $"{nameof(PageLogs)}.aspx"
-                    }
+                    Text = "表单管理",
+                    NavigateUrl = $"{nameof(PageLogs)}.aspx"
                 })
                 .AddDatabaseTable(FormDao.TableName, FormDao.Columns)
                 .AddDatabaseTable(LogDao.TableName, LogDao.Columns)
