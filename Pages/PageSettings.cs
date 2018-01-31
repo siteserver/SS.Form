@@ -28,7 +28,7 @@ namespace SS.Form.Pages
         public static string GetRedirectUrl(int siteId, int formId, string returnUrl)
         {
             return
-                Main.FilesApi.GetPluginUrl(
+                Main.Instance.PluginApi.GetPluginUrl(
                     $"{nameof(PageSettings)}.aspx?siteId={siteId}&formId={formId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}");
         }
 
@@ -51,7 +51,7 @@ namespace SS.Form.Pages
             var keys = settings.AdministratorSmsNotifyKeys.Split(',');
             LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.Id), nameof(LogInfo.Id)));
             LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.AddDate), nameof(LogInfo.AddDate)));
-            var fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
             foreach (var fieldInfo in fieldInfoList)
             {
                 LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(fieldInfo.Title, fieldInfo.Title));
@@ -91,7 +91,7 @@ namespace SS.Form.Pages
             };
             FormInfo.Settings = settings.ToString();
 
-            Main.FormDao.Update(FormInfo);
+            Main.Instance.FormDao.Update(FormInfo);
 
             LtlMessage.Text = Utils.GetMessageHtml("设置保存成功！", true);
         }

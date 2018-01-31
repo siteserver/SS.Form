@@ -15,14 +15,14 @@ namespace SS.Form.Pages
         public static string GetOpenScript(int siteId, int formId)
         {
             return LayerUtils.GetOpenScript("选择需要显示的项",
-                Main.FilesApi.GetPluginUrl(
+                Main.Instance.PluginApi.GetPluginUrl(
                     $"{nameof(ModalSelectColumns)}.aspx?siteId={siteId}&formId={formId}"), 520,
                 550);
         }
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            _fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
 
             if (IsPostBack) return;
 
@@ -49,7 +49,7 @@ namespace SS.Form.Pages
                     {
                         settings.IsVisibleInList = item.Selected;
                         fieldInfo.Settings = settings.ToString();
-                        Main.FieldDao.Update(fieldInfo);
+                        Main.Instance.FieldDao.Update(fieldInfo);
                     }
 
                     break;

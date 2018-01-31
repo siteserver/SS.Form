@@ -20,8 +20,8 @@ namespace SS.Form.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, true);
-            _logInfoList = Main.LogDao.GetAllFormLogInfoList(FormInfo.Id);
+            _fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, true);
+            _logInfoList = Main.Instance.LogDao.GetAllFormLogInfoList(FormInfo.Id);
 
             if (IsPostBack) return;
 
@@ -270,9 +270,9 @@ namespace SS.Form.Pages
 
             var relatedPath = "数据统计.csv";
 
-            CsvUtils.Export(Main.FilesApi.GetPluginPath(relatedPath), head, rows);
+            CsvUtils.Export(Main.Instance.PluginApi.GetPluginPath(relatedPath), head, rows);
 
-            Response.Redirect(Main.FilesApi.GetPluginUrl(relatedPath));
+            Response.Redirect(Main.Instance.PluginApi.GetPluginUrl(relatedPath));
         }
 
         //        private void RptItems_ItemDataBound(object sender, RepeaterItemEventArgs e)

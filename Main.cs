@@ -11,29 +11,21 @@ using Menu = SiteServer.Plugin.Menu;
 
 namespace SS.Form
 {
-    public class Main : IPlugin
+    public class Main : PluginBase
     {
-        public static IDataApi DataApi { get; private set; }
-        public static IParseApi ParseApi { get; private set; }
-        public static IFilesApi FilesApi { get; private set; }
-        public static IAdminApi AdminApi { get; private set; }
+        public static Main Instance { get; private set; }
 
-        public static FormDao FormDao { get; private set; }
-        public static LogDao LogDao { get; private set; }
-        public static FieldDao FieldDao { get; private set; }
-        public static FieldItemDao FieldItemDao { get; private set; }
+        public FormDao FormDao { get; private set; }
+        public LogDao LogDao { get; private set; }
+        public FieldDao FieldDao { get; private set; }
+        public FieldItemDao FieldItemDao { get; private set; }
 
-        public void Startup(IContext context, IService service)
+        public override void Startup(IService service)
         {
-            DataApi = context.DataApi;
-            ParseApi = context.ParseApi;
-            FilesApi = context.FilesApi;
-            AdminApi = context.AdminApi;
-
-            FormDao = new FormDao(context.Environment.ConnectionString, DataApi);
-            LogDao = new LogDao(context.Environment.ConnectionString, DataApi);
-            FieldDao = new FieldDao(context.Environment.ConnectionString, DataApi);
-            FieldItemDao = new FieldItemDao(context.Environment.ConnectionString, DataApi);
+            FormDao = new FormDao(ConnectionString, DataApi);
+            LogDao = new LogDao(ConnectionString, DataApi);
+            FieldDao = new FieldDao(ConnectionString, DataApi);
+            FieldItemDao = new FieldItemDao(ConnectionString, DataApi);
 
             service
                 .AddSiteMenu(siteId =>
@@ -78,11 +70,13 @@ namespace SS.Form
 
             service.ApiPost += ServiceOnApiPost;
             service.ApiGet += Service_ApiGet;
+
+            Instance = this;
         }
 
         private object ServiceOnApiPost(object sender, ApiEventArgs args)
         {
-            if (Utils.EqualsIgnoreCase(args.Name, nameof(StlForm.ApiSubmit)))
+            if (Utils.EqualsIgnoreCase(args.Action, nameof(StlForm.ApiSubmit)))
             {
                 return StlForm.ApiSubmit(args.Request, args.Id);
             }
@@ -92,7 +86,7 @@ namespace SS.Form
 
         private object Service_ApiGet(object sender, ApiEventArgs args)
         {
-            if (Utils.EqualsIgnoreCase(args.Name, nameof(StlForm.ApiGetCode)))
+            if (Utils.EqualsIgnoreCase(args.Action, nameof(StlForm.ApiGetCode)))
             {
                 return StlForm.ApiGetCode(args.Request, args.Id);
             }
@@ -100,17 +94,17 @@ namespace SS.Form
             throw new Exception("请求的资源不在服务器上");
         }
 
-        private static void Service_ContentTranslateCompleted(object sender, ContentTranslateEventArgs e)
+        private void Service_ContentTranslateCompleted(object sender, ContentTranslateEventArgs e)
         {
             var formInfo = FormDao.GetFormInfoOrCreateIfNotExists(e.SiteId, e.ChannelId, e.ContentId);
 
-            formInfo.PublishmentSystemId = e.TargetSiteId;
+            formInfo.SiteId = e.TargetSiteId;
             formInfo.ChannelId = e.TargetChannelId;
             formInfo.ContentId = e.TargetContentId;
             FormDao.Insert(formInfo);
         }
 
-        private static void Service_ContentDeleteCompleted(object sender, ContentEventArgs e)
+        private void Service_ContentDeleteCompleted(object sender, ContentEventArgs e)
         {
             var formId = FormDao.GetFormIdByContentId(e.SiteId, e.ChannelId, e.ContentId);
             FormDao.Delete(formId);

@@ -52,7 +52,7 @@ namespace SS.Form.Pages
             if (!string.IsNullOrEmpty(Request.QueryString["delete"]))
             {
                 var fieldId = Convert.ToInt32(Request.QueryString["fieldId"]);
-                Main.FieldDao.Delete(fieldId);
+                Main.Instance.FieldDao.Delete(fieldId);
                 LtlMessage.Text = Utils.GetMessageHtml("字段删除成功！", true);
             }
             if (!string.IsNullOrEmpty(Request.QueryString["taxis"]))
@@ -63,16 +63,16 @@ namespace SS.Form.Pages
                 switch (direction.ToUpper())
                 {
                     case "UP":
-                        Main.FieldDao.TaxisUp(fieldId);
+                        Main.Instance.FieldDao.TaxisUp(fieldId);
                         break;
                     case "DOWN":
-                        Main.FieldDao.TaxisDown(fieldId);
+                        Main.Instance.FieldDao.TaxisDown(fieldId);
                         break;
                 }
                 LtlMessage.Text = Utils.GetMessageHtml("排序成功！", true);
             }
 
-            var fieldList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            var fieldList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
 
             DgContents.DataSource = fieldList;
             DgContents.ItemDataBound += DgContents_ItemDataBound;
@@ -87,7 +87,7 @@ namespace SS.Form.Pages
             {
                 PhModalAdd.Visible = true;
                 var fieldId = Convert.ToInt32(Request.QueryString["fieldId"]);
-                var fieldInfo = fieldId > 0 ? Main.FieldDao.GetFieldInfo(fieldId, true) : new FieldInfo();
+                var fieldInfo = fieldId > 0 ? Main.Instance.FieldDao.GetFieldInfo(fieldId, true) : new FieldInfo();
 
                 LtlModalAddTitle.Text = fieldId > 0 ? "编辑字段" : "新增字段";
                 LtlScript.Text = @"<script>
@@ -136,7 +136,7 @@ setTimeout(function() {
             {
                 PhModalValidate.Visible = true;
                 var fieldId = Convert.ToInt32(Request.QueryString["fieldId"]);
-                var fieldInfo = Main.FieldDao.GetFieldInfo(fieldId, false);
+                var fieldInfo = Main.Instance.FieldDao.GetFieldInfo(fieldId, false);
 
                 LtlScript.Text = @"<script>
 setTimeout(function() {
@@ -163,13 +163,13 @@ setTimeout(function() {
                 Utils.SelectListItems(DdlValidateType, settings.ValidateType.Value);
             }
 
-            //var redirectUrl = GetRedirectUrl(PublishmentSystemId, _tableStyle, _tableName, _relatedIdentity, _itemId);
+            //var redirectUrl = GetRedirectUrl(SiteId, _tableStyle, _tableName, _relatedIdentity, _itemId);
 
-            //btnAddStyle.Attributes.Add("onclick", ModalTableStyleAdd.GetOpenWindowString(PublishmentSystemId, 0, _relatedIdentities, _tableName, string.Empty, _tableStyle, redirectUrl));
-            //btnAddStyles.Attributes.Add("onclick", ModalTableStylesAdd.GetOpenWindowString(PublishmentSystemId, _relatedIdentities, _tableName, _tableStyle, redirectUrl));
+            //btnAddStyle.Attributes.Add("onclick", ModalTableStyleAdd.GetOpenWindowString(SiteId, 0, _relatedIdentities, _tableName, string.Empty, _tableStyle, redirectUrl));
+            //btnAddStyles.Attributes.Add("onclick", ModalTableStylesAdd.GetOpenWindowString(SiteId, _relatedIdentities, _tableName, _tableStyle, redirectUrl));
 
-            //btnImport.Attributes.Add("onclick", ModalTableStyleImport.GetOpenWindowString(_tableName, _tableStyle, PublishmentSystemId, _relatedIdentity));
-            //btnExport.Attributes.Add("onclick", ModalExportMessage.GetOpenWindowStringToSingleTableStyle(_tableStyle, _tableName, PublishmentSystemId, _relatedIdentity));
+            //btnImport.Attributes.Add("onclick", ModalTableStyleImport.GetOpenWindowString(_tableName, _tableStyle, SiteId, _relatedIdentity));
+            //btnExport.Attributes.Add("onclick", ModalExportMessage.GetOpenWindowStringToSingleTableStyle(_tableStyle, _tableName, SiteId, _relatedIdentity));
         }
 
         private List<FieldItemInfo> GetDataSource(int count, List<FieldItemInfo> fieldInfoItems)
@@ -265,7 +265,7 @@ setTimeout(function() {
                 List<FieldItemInfo> items = null;
                 if (fieldId > 0)
                 {
-                    items = Main.FieldItemDao.GetItemInfoList(fieldId);
+                    items = Main.Instance.FieldItemDao.GetItemInfoList(fieldId);
                 }
                 RptItems.DataSource = GetDataSource(count, items);
                 RptItems.DataBind();
@@ -296,7 +296,7 @@ setTimeout(function() {
 
             var fieldId = Convert.ToInt32(Request.QueryString["fieldId"]);
             var fieldInfo = fieldId > 0
-                ? Main.FieldDao.GetFieldInfo(fieldId, true)
+                ? Main.Instance.FieldDao.GetFieldInfo(fieldId, true)
                 : new FieldInfo
                 {
                     FormId = FormInfo.Id
@@ -315,7 +315,7 @@ setTimeout(function() {
         {
             if (fieldInfo.Id == 0)
             {
-                if (Main.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
+                if (Main.Instance.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
                 {
                     LtlModalAddMessage.Text = Utils.GetMessageHtml($@"操作失败，字段名""{TbTitle.Text}""已存在", false);
                     return false;
@@ -324,7 +324,7 @@ setTimeout(function() {
             else
             {
                 if (fieldInfo.Title != TbTitle.Text &&
-                Main.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
+                Main.Instance.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
                 {
                     LtlModalAddMessage.Text = Utils.GetMessageHtml($@"操作失败，字段名""{TbTitle.Text}""已存在", false);
                     return false;
@@ -391,15 +391,15 @@ setTimeout(function() {
             {
                 if (fieldInfo.Id > 0)
                 {
-                    Main.FieldDao.Update(fieldInfo);
-                    Main.FieldItemDao.DeleteByFieldId(fieldInfo.Id);
+                    Main.Instance.FieldDao.Update(fieldInfo);
+                    Main.Instance.FieldItemDao.DeleteByFieldId(fieldInfo.Id);
                 }
                 else
                 {
-                    fieldInfo.Id = Main.FieldDao.Insert(fieldInfo);
+                    fieldInfo.Id = Main.Instance.FieldDao.Insert(fieldInfo);
                 }
-                
-                Main.FieldItemDao.InsertItems(FormInfo.Id, fieldInfo.Id, fieldItems);
+
+                Main.Instance.FieldItemDao.InsertItems(FormInfo.Id, fieldInfo.Id, fieldItems);
 
                 return true;
             }
@@ -415,7 +415,7 @@ setTimeout(function() {
             var isChanged = false;
 
             var fieldId = Convert.ToInt32(Request.QueryString["fieldId"]);
-            var fieldInfo = Main.FieldDao.GetFieldInfo(fieldId, false);
+            var fieldInfo = Main.Instance.FieldDao.GetFieldInfo(fieldId, false);
             var settings = new FieldSettings(fieldInfo.Settings)
             {
                 IsRequired = Convert.ToBoolean(DdlIsRequired.SelectedValue),
@@ -428,7 +428,7 @@ setTimeout(function() {
 
             try
             {
-                Main.FieldDao.Update(fieldInfo);
+                Main.Instance.FieldDao.Update(fieldInfo);
                 isChanged = true;
             }
             catch (Exception ex)

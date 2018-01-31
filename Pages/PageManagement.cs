@@ -32,7 +32,7 @@ namespace SS.Form.Pages
 
         public static string GetRedirectUrl(string apiUrl, int siteId)
         {
-            return Main.FilesApi.GetPluginUrl($"{nameof(PageManagement)}.aspx?apiUrl={HttpUtility.UrlEncode(apiUrl)}&siteId={siteId}");
+            return Main.Instance.PluginApi.GetPluginUrl($"{nameof(PageManagement)}.aspx?apiUrl={HttpUtility.UrlEncode(apiUrl)}&siteId={siteId}");
         }
 
         public void Page_Load(object sender, EventArgs e)
@@ -42,7 +42,7 @@ namespace SS.Form.Pages
             _formId = Convert.ToInt32(Request.QueryString["formId"]);
             _returnUrl = GetRedirectUrl(_apiUrl, _siteId);
 
-            if (!Main.AdminApi.IsSiteAuthorized(_siteId))
+            if (!Main.Instance.AdminApi.IsSiteAuthorized(_siteId))
             {
                 Response.Write("<h1>未授权访问</h1>");
                 Response.End();
@@ -55,33 +55,33 @@ namespace SS.Form.Pages
                 {
                     if (string.IsNullOrEmpty(Request.QueryString["down"]))
                     {
-                        Main.FormDao.UpdateTaxisToDown(_siteId, _formId);
+                        Main.Instance.FormDao.UpdateTaxisToDown(_siteId, _formId);
                     }
                     else
                     {
-                        Main.FormDao.UpdateTaxisToUp(_siteId, _formId);
+                        Main.Instance.FormDao.UpdateTaxisToUp(_siteId, _formId);
                     }
                 }
                 if (!string.IsNullOrEmpty(Request.QueryString["delete"]))
                 {
-                    Main.FormDao.Delete(_formId);
+                    Main.Instance.FormDao.Delete(_formId);
 
                     LtlMessage.Text = Utils.GetMessageHtml("表单删除成功！", true);
                 }
                 if (!string.IsNullOrEmpty(Request.QueryString["template"]))
                 {
-                    var formInfo = Main.FormDao.GetFormInfo(_formId);
+                    var formInfo = Main.Instance.FormDao.GetFormInfo(_formId);
                     CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview",
-                        Main.DataApi.Encrypt(StlForm.GetDefaultStlFormStlElement(formInfo)),
+                        Main.Instance.DataApi.Encrypt(StlForm.GetDefaultStlFormStlElement(formInfo)),
                         5);
-                    Response.Redirect(Main.FilesApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={Main.DataApi.Encrypt(_returnUrl)}"));
+                    Response.Redirect(Main.Instance.FilesApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={Main.Instance.DataApi.Encrypt(_returnUrl)}"));
                     return;
                 }
             }
 
             if (IsPostBack) return;
 
-            DgContents.DataSource = Main.FormDao.GetFormInfoListNotInChannel(_siteId);
+            DgContents.DataSource = Main.Instance.FormDao.GetFormInfoListNotInChannel(_siteId);
             DgContents.ItemDataBound += DgContents_ItemDataBound;
             DgContents.DataBind();
 
@@ -95,7 +95,7 @@ namespace SS.Form.Pages
                 {
                     LtlModalAddTitle.Text = "编辑表单";
 
-                    var formInfo = Main.FormDao.GetFormInfo(_formId);
+                    var formInfo = Main.Instance.FormDao.GetFormInfo(_formId);
 
                     TbTitle.Text = formInfo.Title;
                     TbDescription.Text = formInfo.Description;
@@ -114,7 +114,7 @@ namespace SS.Form.Pages
             //    string fileName;
             //    if (Utils.ExportInput(_formId, out fileName))
             //    {
-            //        LtlScript.Text = Utils.SwalSuccess("导出成功", "点击按钮下载导出文件", "下 载", $"location.href = '{Main.Context.FilesApi.GetRootUrl($"sitefiles/temporaryfiles/{fileName}")}'");
+            //        LtlScript.Text = Utils.SwalSuccess("导出成功", "点击按钮下载导出文件", "下 载", $"location.href = '{Main.Instance.Context.FilesApi.GetRootUrl($"sitefiles/temporaryfiles/{fileName}")}'");
             //    }
             //}
         }
@@ -153,7 +153,7 @@ namespace SS.Form.Pages
 
         //        try
         //        {
-        //            var localFilePath = Main.Context.FilesApi.GetTemporaryFilesPath(Path.GetFileName(filePath));
+        //            var localFilePath = Main.Instance.Context.FilesApi.GetTemporaryFilesPath(Path.GetFileName(filePath));
 
         //            HifImport.PostedFile.SaveAs(localFilePath);
 
@@ -177,12 +177,12 @@ namespace SS.Form.Pages
                 if (!string.IsNullOrEmpty(Request.QueryString["formId"]))
                 {
                     var formId = Convert.ToInt32(Request.QueryString["formId"]);
-                    formInfo = Main.FormDao.GetFormInfo(formId);
+                    formInfo = Main.Instance.FormDao.GetFormInfo(formId);
                     if (formInfo != null)
                     {
                         if (formInfo.Title != TbTitle.Text)
                         {
-                            if (Main.FormDao.IsTitleExists(_siteId, TbTitle.Text))
+                            if (Main.Instance.FormDao.IsTitleExists(_siteId, TbTitle.Text))
                             {
                                 LtlModalAddMessage.Text = Utils.GetMessageHtml("表单修改失败，表单名称已存在！", false);
 
@@ -193,12 +193,12 @@ namespace SS.Form.Pages
 
                         formInfo.Description = TbDescription.Text;
 
-                        Main.FormDao.Update(formInfo);
+                        Main.Instance.FormDao.Update(formInfo);
                     }
                 }
                 else
                 {
-                    if (Main.FormDao.IsTitleExists(_siteId, TbTitle.Text))
+                    if (Main.Instance.FormDao.IsTitleExists(_siteId, TbTitle.Text))
                     {
                         LtlModalAddMessage.Text = Utils.GetMessageHtml("表单添加失败，表单名称已存在！", false);
                         return;
@@ -208,10 +208,10 @@ namespace SS.Form.Pages
                     {
                         Title = TbTitle.Text,
                         Description = TbDescription.Text,
-                        PublishmentSystemId = _siteId
+                        SiteId = _siteId
                     };
 
-                    Main.FormDao.Insert(formInfo);
+                    Main.Instance.FormDao.Insert(formInfo);
                 }
 
                 Response.Redirect(_returnUrl);

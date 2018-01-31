@@ -19,7 +19,7 @@ namespace SS.Form.Provider
             },
             new TableColumn
             {
-                AttributeName = nameof(FormInfo.PublishmentSystemId),
+                AttributeName = nameof(FormInfo.SiteId),
                 DataType = DataType.Integer
             },
             new TableColumn
@@ -86,11 +86,11 @@ namespace SS.Form.Provider
 
             if (formInfo.ChannelId > 0 && formInfo.ContentId > 0)
             {
-                formInfo.Taxis = GetMaxTaxis(formInfo.PublishmentSystemId) + 1;
+                formInfo.Taxis = GetMaxTaxis(formInfo.SiteId) + 1;
             }
 
             string sqlString = $@"INSERT INTO {TableName}
-           ({nameof(FormInfo.PublishmentSystemId)}, 
+           ({nameof(FormInfo.SiteId)}, 
             {nameof(FormInfo.ChannelId)}, 
             {nameof(FormInfo.ContentId)}, 
             {nameof(FormInfo.Title)}, 
@@ -101,7 +101,7 @@ namespace SS.Form.Provider
             {nameof(FormInfo.TimeToEnd)}, 
             {nameof(FormInfo.Settings)})
      VALUES
-           (@{nameof(FormInfo.PublishmentSystemId)}, 
+           (@{nameof(FormInfo.SiteId)}, 
             @{nameof(FormInfo.ChannelId)}, 
             @{nameof(FormInfo.ContentId)}, 
             @{nameof(FormInfo.Title)}, 
@@ -114,7 +114,7 @@ namespace SS.Form.Provider
 
             var parameters = new List<IDataParameter>
             {
-                _helper.GetParameter(nameof(formInfo.PublishmentSystemId), formInfo.PublishmentSystemId),
+                _helper.GetParameter(nameof(formInfo.SiteId), formInfo.SiteId),
                 _helper.GetParameter(nameof(formInfo.ChannelId), formInfo.ChannelId),
                 _helper.GetParameter(nameof(formInfo.ContentId), formInfo.ContentId),
                 _helper.GetParameter(nameof(formInfo.Title), formInfo.Title),
@@ -151,7 +151,7 @@ namespace SS.Form.Provider
         public void Update(FormInfo formInfo)
         {
             string sqlString = $@"UPDATE {TableName} SET
-                {nameof(FormInfo.PublishmentSystemId)} = @{nameof(FormInfo.PublishmentSystemId)}, 
+                {nameof(FormInfo.SiteId)} = @{nameof(FormInfo.SiteId)}, 
                 {nameof(FormInfo.ChannelId)} = @{nameof(FormInfo.ChannelId)}, 
                 {nameof(FormInfo.ContentId)} = @{nameof(FormInfo.ContentId)}, 
                 {nameof(FormInfo.Title)} = @{nameof(FormInfo.Title)}, 
@@ -165,7 +165,7 @@ namespace SS.Form.Provider
 
             var parameters = new List<IDataParameter>
             {
-                _helper.GetParameter(nameof(formInfo.PublishmentSystemId), formInfo.PublishmentSystemId),
+                _helper.GetParameter(nameof(formInfo.SiteId), formInfo.SiteId),
                 _helper.GetParameter(nameof(formInfo.ChannelId), formInfo.ChannelId),
                 _helper.GetParameter(nameof(formInfo.ContentId), formInfo.ContentId),
                 _helper.GetParameter(nameof(formInfo.Title), formInfo.Title),
@@ -188,8 +188,8 @@ namespace SS.Form.Provider
             string sqlString = $"DELETE FROM {TableName} WHERE {nameof(FormInfo.Id)} = {formId}";
             _helper.ExecuteNonQuery(_connectionString, sqlString);
 
-            Main.FieldDao.DeleteByFormId(formId);
-            Main.LogDao.DeleteByFormId(formId);
+            Main.Instance.FieldDao.DeleteByFormId(formId);
+            Main.Instance.LogDao.DeleteByFormId(formId);
         }
 
         public bool IsTitleExists(int siteId, string title)
@@ -197,12 +197,12 @@ namespace SS.Form.Provider
             var exists = false;
 
             string sqlString = $@"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE 
-    {nameof(FormInfo.PublishmentSystemId)} = @{nameof(FormInfo.PublishmentSystemId)} AND 
+    {nameof(FormInfo.SiteId)} = @{nameof(FormInfo.SiteId)} AND 
     {nameof(FormInfo.Title)} = @{nameof(FormInfo.Title)}";
 
             var parms = new[]
             {
-                _helper.GetParameter(nameof(FormInfo.PublishmentSystemId), siteId),
+                _helper.GetParameter(nameof(FormInfo.SiteId), siteId),
                 _helper.GetParameter(nameof(FormInfo.Title), title)
             };
 
@@ -222,7 +222,7 @@ namespace SS.Form.Provider
         {
             if (siteId > 0 && channelId > 0 && contentId > 0)
             {
-                return _helper.ExecuteInt(_connectionString, $"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.PublishmentSystemId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
+                return _helper.ExecuteInt(_connectionString, $"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
             }
 
             return 0;
@@ -232,11 +232,11 @@ namespace SS.Form.Provider
         {
             if (siteId > 0 && !string.IsNullOrEmpty(title))
             {
-                string sqlString = $"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.PublishmentSystemId)} = @{nameof(FormInfo.PublishmentSystemId)} AND {nameof(FormInfo.Title)} = @{nameof(FormInfo.Title)}";
+                string sqlString = $"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = @{nameof(FormInfo.SiteId)} AND {nameof(FormInfo.Title)} = @{nameof(FormInfo.Title)}";
 
                 var parameters = new[]
                 {
-                    _helper.GetParameter(nameof(FormInfo.PublishmentSystemId), siteId),
+                    _helper.GetParameter(nameof(FormInfo.SiteId), siteId),
                     _helper.GetParameter(nameof(FormInfo.Title), title)
                 };
 
@@ -251,7 +251,7 @@ namespace SS.Form.Provider
             var list = new List<FormInfo>();
 
             string sqlString = $@"SELECT {nameof(FormInfo.Id)}, 
-                {nameof(FormInfo.PublishmentSystemId)}, 
+                {nameof(FormInfo.SiteId)}, 
                 {nameof(FormInfo.ChannelId)}, 
                 {nameof(FormInfo.ContentId)}, 
                 {nameof(FormInfo.Title)}, 
@@ -261,7 +261,7 @@ namespace SS.Form.Provider
                 {nameof(FormInfo.TimeToStart)}, 
                 {nameof(FormInfo.TimeToEnd)}, 
                 {nameof(FormInfo.Settings)}
-            FROM {TableName} WHERE {nameof(FormInfo.PublishmentSystemId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = 0 AND {nameof(FormInfo.ContentId)} = 0 ORDER BY Id DESC";
+            FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = 0 AND {nameof(FormInfo.ContentId)} = 0 ORDER BY Id DESC";
 
             using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
             {
@@ -280,7 +280,7 @@ namespace SS.Form.Provider
             FormInfo formInfo = null;
 
             string sqlString = $@"SELECT {nameof(FormInfo.Id)}, 
-            {nameof(FormInfo.PublishmentSystemId)}, 
+            {nameof(FormInfo.SiteId)}, 
             {nameof(FormInfo.ChannelId)}, 
             {nameof(FormInfo.ContentId)}, 
             {nameof(FormInfo.Title)}, 
@@ -290,7 +290,7 @@ namespace SS.Form.Provider
             {nameof(FormInfo.TimeToStart)}, 
             {nameof(FormInfo.TimeToEnd)}, 
             {nameof(FormInfo.Settings)}
-            FROM {TableName} WHERE {nameof(FormInfo.PublishmentSystemId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}";
+            FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}";
 
             using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
             {
@@ -305,7 +305,7 @@ namespace SS.Form.Provider
             {
                 formInfo = new FormInfo
                 {
-                    PublishmentSystemId = siteId,
+                    SiteId = siteId,
                     ChannelId = channelId,
                     ContentId = contentId,
                     TimeToStart = DateTime.Now,
@@ -322,7 +322,7 @@ namespace SS.Form.Provider
             FormInfo formInfo = null;
 
             string sqlString = $@"SELECT {nameof(FormInfo.Id)}, 
-            {nameof(FormInfo.PublishmentSystemId)}, 
+            {nameof(FormInfo.SiteId)}, 
             {nameof(FormInfo.ChannelId)}, 
             {nameof(FormInfo.ContentId)}, 
             {nameof(FormInfo.Title)}, 
@@ -348,7 +348,7 @@ namespace SS.Form.Provider
 
         public bool UpdateTaxisToUp(int siteId, int formId)
         {
-            var sqlString = _helper.ToTopSqlString(TableName, $"{nameof(FormInfo.Id)}, {nameof(FormInfo.Taxis)}", $"WHERE (({nameof(FormInfo.Taxis)} > (SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE {nameof(FormInfo.Id)} = {formId})) AND {nameof(FormInfo.PublishmentSystemId)} ={siteId})", $"ORDER BY {nameof(FormInfo.Taxis)}", 1);
+            var sqlString = _helper.ToTopSqlString(TableName, $"{nameof(FormInfo.Id)}, {nameof(FormInfo.Taxis)}", $"WHERE (({nameof(FormInfo.Taxis)} > (SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE {nameof(FormInfo.Id)} = {formId})) AND {nameof(FormInfo.SiteId)} ={siteId})", $"ORDER BY {nameof(FormInfo.Taxis)}", 1);
 
             var higherId = 0;
             var higherTaxis = 0;
@@ -376,7 +376,7 @@ namespace SS.Form.Provider
 
         public bool UpdateTaxisToDown(int siteId, int formId)
         {
-            var sqlString = _helper.ToTopSqlString(TableName, $"{nameof(FormInfo.Id)}, {nameof(FormInfo.Taxis)}", $"WHERE (({nameof(FormInfo.Taxis)} < (SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId}))) AND {nameof(FormInfo.PublishmentSystemId)} = {siteId})", $"ORDER BY {nameof(FormInfo.Taxis)} DESC", 1);
+            var sqlString = _helper.ToTopSqlString(TableName, $"{nameof(FormInfo.Id)}, {nameof(FormInfo.Taxis)}", $"WHERE (({nameof(FormInfo.Taxis)} < (SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId}))) AND {nameof(FormInfo.SiteId)} = {siteId})", $"ORDER BY {nameof(FormInfo.Taxis)} DESC", 1);
 
             var lowerId = 0;
             var lowerTaxis = 0;
@@ -405,7 +405,7 @@ namespace SS.Form.Provider
         private int GetMaxTaxis(int siteId)
         {
             string sqlString =
-                $"SELECT MAX({nameof(FormInfo.Taxis)}) FROM {TableName} WHERE {nameof(FormInfo.PublishmentSystemId)} = {siteId}";
+                $"SELECT MAX({nameof(FormInfo.Taxis)}) FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId}";
             return _helper.ExecuteInt(_connectionString, sqlString);
         }
 
@@ -430,7 +430,7 @@ namespace SS.Form.Provider
             var i = 0;
             formInfo.Id = rdr.IsDBNull(i) ? 0 : rdr.GetInt32(i);
             i++;
-            formInfo.PublishmentSystemId = rdr.IsDBNull(i) ? 0 : rdr.GetInt32(i);
+            formInfo.SiteId = rdr.IsDBNull(i) ? 0 : rdr.GetInt32(i);
             i++;
             formInfo.ChannelId = rdr.IsDBNull(i) ? 0 : rdr.GetInt32(i);
             i++;

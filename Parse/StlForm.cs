@@ -35,14 +35,14 @@ namespace SS.Form.Parse
                 }
             }
 
-            var formId = !string.IsNullOrEmpty(title) ? Main.FormDao.GetFormIdByTitle(context.SiteId, title) : Main.FormDao.GetFormIdByContentId(context.SiteId, context.ChannelId, context.ContentId);
+            var formId = !string.IsNullOrEmpty(title) ? Main.Instance.FormDao.GetFormIdByTitle(context.SiteId, title) : Main.Instance.FormDao.GetFormIdByContentId(context.SiteId, context.ChannelId, context.ContentId);
             if (formId <= 0) return string.Empty;
 
-            var formInfo = Main.FormDao.GetFormInfo(formId);
+            var formInfo = Main.Instance.FormDao.GetFormInfo(formId);
 
-            var fieldInfoList = Main.FieldDao.GetFieldInfoList(formId, true);
+            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formId, true);
 
-            var stlElements = Main.ParseApi.GetStlElements(context.InnerXml, new List<string>
+            var stlElements = Main.Instance.ParseApi.GetStlElements(context.InnerXml, new List<string>
             {
                 "stl:template",
                 "stl:yes"
@@ -63,11 +63,11 @@ namespace SS.Form.Parse
                 yes = GetDefaultYes(formInfo, fieldInfoList);
             }
 
-            template = Main.ParseApi.ParseInnerXml(template, context);
+            template = Main.Instance.ParseApi.ParseInnerXml(template, context);
 
-            var pluginUrl = Main.FilesApi.GetPluginUrl();
-            var imgUrl = Main.FilesApi.GetApiHttpUrl(nameof(ApiGetCode), formInfo.Id.ToString());
-            var apiUrlSubmit = Main.FilesApi.GetApiJsonUrl(nameof(ApiSubmit), formInfo.Id.ToString());
+            var pluginUrl = Main.Instance.PluginApi.GetPluginUrl();
+            var imgUrl = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiGetCode), formInfo.Id.ToString());
+            var apiUrlSubmit = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiSubmit), formInfo.Id.ToString());
 
             var values = new StringBuilder();
             foreach (var fieldInfo in fieldInfoList)
@@ -179,7 +179,7 @@ new Vue({{
 
             //Utils.RewriteSubmitButton(templateBuilder, $"inputSubmit(this, '{stlFormId}', '{stlContainerId}', [{Utils.ToStringWithQuote(attributeNames)}]);return false;");
 
-            return Main.ParseApi.ParseInnerXml(templateBuilder.ToString(), context);
+            return Main.Instance.ParseApi.ParseInnerXml(templateBuilder.ToString(), context);
         }
 
         public static HttpResponseMessage ApiGetCode(IRequest request, string id)
@@ -228,7 +228,7 @@ new Vue({{
         {
             var formId = Convert.ToInt32(id);
 
-            var formInfo = Main.FormDao.GetFormInfo(formId);
+            var formInfo = Main.Instance.FormDao.GetFormInfo(formId);
             if (formInfo == null) return null;
 
             var code = request.GetPostString("code");
@@ -246,7 +246,7 @@ new Vue({{
 
             var attributes = request.GetPostObject<Dictionary<string, object>>("attributes");
 
-            var fieldInfoList = Main.FieldDao.GetFieldInfoList(formInfo.Id, true);
+            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formInfo.Id, true);
             foreach (var fieldInfo in fieldInfoList)
             {
                 object value;
@@ -270,7 +270,7 @@ new Vue({{
                 }
             }
 
-            Main.LogDao.Insert(logInfo);
+            Main.Instance.LogDao.Insert(logInfo);
 
             return new
             {
@@ -369,7 +369,7 @@ new Vue({{
 
         public static string GetDefaultStlFormStlElement(FormInfo formInfo)
         {
-            var fieldInfoList = Main.FieldDao.GetFieldInfoList(formInfo.Id, true);
+            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formInfo.Id, true);
             var template = GetDefaultTemplate(formInfo, fieldInfoList);
             var yes = GetDefaultYes(formInfo, fieldInfoList);
 

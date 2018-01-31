@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Web.UI.WebControls;
 using SS.Form.Core;
@@ -17,17 +16,17 @@ namespace SS.Form.Pages
         public static string GetOpenScript(int siteId, int formId, int logId)
         {
             return LayerUtils.GetOpenScript("查看",
-                Main.FilesApi.GetPluginUrl(
+                Main.Instance.PluginApi.GetPluginUrl(
                     $"{nameof(ModalView)}.aspx?siteId={siteId}&formId={formId}&logId={logId}"));
         }
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _logInfo = Main.LogDao.GetLogInfo(Convert.ToInt32(Request.QueryString["logId"]));
+            _logInfo = Main.Instance.LogDao.GetLogInfo(Convert.ToInt32(Request.QueryString["logId"]));
 
             if (IsPostBack) return;
 
-            RptContents.DataSource = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            RptContents.DataSource = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
             RptContents.ItemDataBound += RptContents_ItemDataBound;
             RptContents.DataBind();
 

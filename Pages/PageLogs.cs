@@ -23,26 +23,26 @@ namespace SS.Form.Pages
         public static string GetRedirectUrl(int siteId, int channelId, int contentId, string returnUrl)
         {
             return
-                Main.FilesApi.GetPluginUrl(
+                Main.Instance.PluginApi.GetPluginUrl(
                     $"{nameof(PageLogs)}.aspx?siteId={siteId}&channelId={channelId}&contentId={contentId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}");
         }
 
         public static string GetRedirectUrl(int siteId, int formId, string returnUrl)
         {
             return
-                Main.FilesApi.GetPluginUrl(
+                Main.Instance.PluginApi.GetPluginUrl(
                     $"{nameof(PageLogs)}.aspx?siteId={siteId}&formId={formId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}");
         }
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, true);
+            _fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, true);
 
             if (!string.IsNullOrEmpty(Request.QueryString["delete"]) &&
                 !string.IsNullOrEmpty(Request.QueryString["logId"]))
             {
                 var logId = Convert.ToInt32(Request.QueryString["logId"]);
-                Main.LogDao.Delete(logId);
+                Main.Instance.LogDao.Delete(logId);
                 LtlMessage.Text = Utils.GetMessageHtml("删除成功！", true);
             }
 
@@ -56,19 +56,19 @@ namespace SS.Form.Pages
                 LtlFieldNames.Text += $@"<th scope=""col"">{fieldInfo.Title}</th>";
             }
 
-            var totalCount = Main.LogDao.GetCount(FormInfo.Id);
-            var logs = Main.LogDao.GetFormLogInfoList(FormInfo.Id, totalCount, 30, 0);
+            var totalCount = Main.Instance.LogDao.GetCount(FormInfo.Id);
+            var logs = Main.Instance.LogDao.GetFormLogInfoList(FormInfo.Id, totalCount, 30, 0);
 
             RptLogs.DataSource = logs;
             RptLogs.ItemDataBound += RptLogs_ItemDataBound;
             RptLogs.DataBind();
 
-            BtnSettings.Attributes.Add("onclick", ModalSelectColumns.GetOpenScript(PublishmentSystemId, FormInfo.Id));
+            BtnSettings.Attributes.Add("onclick", ModalSelectColumns.GetOpenScript(SiteId, FormInfo.Id));
         }
 
         public void BtnExport_Click(object sender, EventArgs e)
         {
-            var logs = Main.LogDao.GetAllFormLogInfoList(FormInfo.Id);
+            var logs = Main.Instance.LogDao.GetAllFormLogInfoList(FormInfo.Id);
 
             var head = new List<string> { "序号"};
             foreach (var fieldInfo in _fieldInfoList)
@@ -97,9 +97,9 @@ namespace SS.Form.Pages
 
             var relatedPath = "表单清单.csv";
 
-            CsvUtils.Export(Main.FilesApi.GetPluginPath(relatedPath), head, rows);
+            CsvUtils.Export(Main.Instance.PluginApi.GetPluginPath(relatedPath), head, rows);
 
-            HttpContext.Current.Response.Redirect(Main.FilesApi.GetPluginUrl(relatedPath));
+            HttpContext.Current.Response.Redirect(Main.Instance.PluginApi.GetPluginUrl(relatedPath));
         }
 
         private void RptLogs_ItemDataBound(object sender, RepeaterItemEventArgs e)
@@ -141,8 +141,8 @@ namespace SS.Form.Pages
 
             ltlOperation.Text =
                 $@"
-<a href=""javascript:;"" onclick=""{ModalView.GetOpenScript(PublishmentSystemId, FormInfo.Id, logInfo.Id)}"">查看</a>
-<a class=""m-l-10"" href=""javascript:;"" onclick=""{AlertUtils.Warning("删除项目", "本操作将删除此项，确定吗？", "取 消", "删 除", $"location.href='{GetRedirectUrl(PublishmentSystemId, FormInfo.Id, ReturnUrl)}&delete={true}&logId={logInfo.Id}'")};return false;"">删除</a>";
+<a href=""javascript:;"" onclick=""{ModalView.GetOpenScript(SiteId, FormInfo.Id, logInfo.Id)}"">查看</a>
+<a class=""m-l-10"" href=""javascript:;"" onclick=""{AlertUtils.Warning("删除项目", "本操作将删除此项，确定吗？", "取 消", "删 除", $"location.href='{GetRedirectUrl(SiteId, FormInfo.Id, ReturnUrl)}&delete={true}&logId={logInfo.Id}'")};return false;"">删除</a>";
         }
     }
 }

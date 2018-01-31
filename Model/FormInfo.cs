@@ -5,7 +5,7 @@ namespace SS.Form.Model
     public class FormInfo
     {
         public int Id { get; set; }
-        public int PublishmentSystemId { get; set; }
+        public int SiteId { get; set; }
         public int ChannelId { get; set; }
         public int ContentId { get; set; }
         public string Title { get; set; }
