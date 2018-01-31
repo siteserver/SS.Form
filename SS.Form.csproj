@@ -101,14 +101,81 @@
     <Compile Include="Provider\LogDao.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\plugin-utils\fonts\fontawesome-webfont.eot" />
+    <None Include="assets\plugin-utils\fonts\fontawesome-webfont.ttf" />
+    <None Include="assets\plugin-utils\fonts\fontawesome-webfont.woff" />
+    <None Include="assets\plugin-utils\fonts\fontawesome-webfont.woff2" />
+    <None Include="assets\plugin-utils\fonts\FontAwesome.otf" />
+    <None Include="assets\plugin-utils\fonts\ionicons.eot" />
+    <None Include="assets\plugin-utils\fonts\ionicons.ttf" />
+    <None Include="assets\plugin-utils\fonts\ionicons.woff" />
+    <None Include="assets\sweetalert\数据统计 %281%29.csv" />
+    <None Include="assets\sweetalert\数据统计.csv" />
+    <None Include="LICENSE" />
+    <None Include="NuGet.config" />
     <None Include="packages.config" />
     <None Include="plugin.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="README.md" />
     <None Include="SS.Form.nuspec" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="assets\001\css\style.css" />
+    <Content Include="assets\001\images\bg_img_large.jpg" />
+    <Content Include="assets\001\images\bg_img_small.jpg" />
+    <Content Include="assets\001\images\survey_img1.png" />
+    <Content Include="assets\001\images\survey_img2.jpg" />
+    <Content Include="assets\001\js\jquery-1.7.2.min.js" />
+    <Content Include="assets\001\survey.html" />
+    <Content Include="assets\datePicker\calendar.js" />
+    <Content Include="assets\datePicker\lang\en.js" />
+    <Content Include="assets\datePicker\lang\zh-cn.js" />
+    <Content Include="assets\datePicker\lang\zh-tw.js" />
+    <Content Include="assets\datePicker\skin\datePicker.gif" />
+    <Content Include="assets\datePicker\skin\default\datepicker.css" />
+    <Content Include="assets\datePicker\skin\default\img.gif" />
+    <Content Include="assets\datePicker\skin\WdatePicker.css" />
+    <Content Include="assets\datePicker\skin\whyGreen\bg.jpg" />
+    <Content Include="assets\datePicker\skin\whyGreen\datepicker.css" />
+    <Content Include="assets\datePicker\skin\whyGreen\img.gif" />
+    <Content Include="assets\datePicker\WdatePicker.js" />
+    <Content Include="assets\formbase\formbase.min.css" />
+    <Content Include="assets\js\jquery.min.js" />
+    <Content Include="assets\js\vee-validate.js" />
+    <Content Include="assets\js\vue-2.1.10.min.js" />
+    <Content Include="assets\layer\extend\layer.ext.js" />
+    <Content Include="assets\layer\layer.min.js" />
+    <Content Include="assets\layer\skin\default\icon_ext.png" />
+    <Content Include="assets\layer\skin\default\textbg.png" />
+    <Content Include="assets\layer\skin\default\xubox_ico0.png" />
+    <Content Include="assets\layer\skin\default\xubox_loading0.gif" />
+    <Content Include="assets\layer\skin\default\xubox_loading1.gif" />
+    <Content Include="assets\layer\skin\default\xubox_loading2.gif" />
+    <Content Include="assets\layer\skin\default\xubox_loading3.gif" />
+    <Content Include="assets\layer\skin\default\xubox_title0.png" />
+    <Content Include="assets\layer\skin\layer.css" />
+    <Content Include="assets\layer\skin\layer.ext.css" />
+    <Content Include="assets\plugin-utils\css\bootstrap.min.css" />
+    <Content Include="assets\plugin-utils\css\font-awesome.min.css" />
+    <Content Include="assets\plugin-utils\css\ionicons.min.css" />
+    <Content Include="assets\plugin-utils\css\plugin-utils.css" />
+    <Content Include="assets\plugin-utils\fonts\fontawesome-webfont.svg" />
+    <Content Include="assets\plugin-utils\fonts\ionicons.svg" />
+    <Content Include="assets\plugin-utils\js\bootstrap.min.js" />
+    <Content Include="assets\plugin-utils\js\jquery.min.js" />
+    <Content Include="assets\plugin-utils\js\plugin-utils.js" />
+    <Content Include="assets\sweetalert\sweetalert.min.js" />
+    <Content Include="logo.png" />
+    <Content Include="modalSelectColumns.aspx" />
+    <Content Include="modalView.aspx" />
+    <Content Include="pageFields.aspx" />
+    <Content Include="pageLogs.aspx" />
+    <Content Include="pageManagement.aspx" />
+    <Content Include="pageResults.aspx" />
+    <Content Include="pageSettings.aspx" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
