@@ -17,5 +17,6 @@
   </metadata>
   <files>
     <file src="assets\plugin-utils\fonts\**" target="Content\assets\plugin-utils\fonts"/>
+    <file src="bin\Newtonsoft.Json.dll" target="lib\net461" />
   </files>
 </package>

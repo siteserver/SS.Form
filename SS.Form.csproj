@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SS.Form</RootNamespace>
     <AssemblyName>SS.Form</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -114,12 +114,10 @@
     <None Include="LICENSE" />
     <None Include="NuGet.config" />
     <None Include="packages.config" />
-    <None Include="plugin.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="README.md" />
+    <None Include="SS.Form.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="README.md" />
-    <None Include="SS.Form.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\001\css\style.css" />
