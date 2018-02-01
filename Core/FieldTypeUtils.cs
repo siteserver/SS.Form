@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Web.UI.WebControls;
 using SS.Form.Model;
 
@@ -39,27 +39,27 @@ namespace SS.Form.Core
         {
             if (type == FieldType.CheckBox)
             {
-                return "¶àÑ¡Ïî";
+                return "å¤šé€‰é¡¹";
             }
             if (type == FieldType.Radio)
             {
-                return "µ¥Ñ¡Ïî";
+                return "å•é€‰é¡¹";
             }
             if (type == FieldType.SelectOne)
             {
-                return "ÏÂÀ­ÁĞ±í(µ¥Ñ¡)";
+                return "ä¸‹æ‹‰åˆ—è¡¨(å•é€‰)";
             }
             if (type == FieldType.SelectMultiple)
             {
-                return "ÏÂÀ­ÁĞ±í(¶àÑ¡)";
+                return "ä¸‹æ‹‰åˆ—è¡¨(å¤šé€‰)";
             }
             if (type == FieldType.Text)
             {
-                return "ÎÄ±¾¿ò(µ¥ĞĞ)";
+                return "æ–‡æœ¬æ¡†(å•è¡Œ)";
             }
             if (type == FieldType.TextArea)
             {
-                return "ÎÄ±¾¿ò(¶àĞĞ)";
+                return "æ–‡æœ¬æ¡†(å¤šè¡Œ)";
             }
             throw new Exception();
         }

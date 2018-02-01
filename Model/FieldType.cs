@@ -1,4 +1,4 @@
-namespace SS.Form.Model
+﻿namespace SS.Form.Model
 {
 	public enum FieldType
 	{

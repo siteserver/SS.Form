@@ -113,7 +113,9 @@
     <None Include="assets\sweetalert\数据统计.csv" />
     <None Include="LICENSE" />
     <None Include="NuGet.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="README.md" />
     <None Include="SS.Form.nuspec">
       <SubType>Designer</SubType>
