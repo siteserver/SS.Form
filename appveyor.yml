@@ -33,6 +33,9 @@
     project: SS.Form.sln       # path to Visual Studio solution or project
     publish_nuget: true
 
+  artifacts:
+    - path: '*.nupkg'
+
   deploy:
     provider: NuGet
     server:                  # remove to push to NuGet.org
