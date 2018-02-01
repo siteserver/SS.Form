@@ -4,7 +4,7 @@
     only:
       - master
 
-  version: 1.0.{build}
+  version: 1.1.0
 
   assembly_info:
     patch: true
@@ -78,7 +78,7 @@
     publish_nuget: true
 
   artifacts:
-    - path: '*.nupkg'
+    - path: '**/*.nupkg'
 
   deploy:
     - provider: NuGet
