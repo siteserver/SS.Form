@@ -1,0 +1,115 @@
+<link rel="stylesheet" type="text/css" href="/SiteFiles/Plugins/SS.Form/assets/001/css/style.css">
+<div id="stl_form_2">
+  <div class="ss_form_wrapper" v-show="!isSuccess">
+    <div class="ss_form_main">
+      <h1 class="ss_form_head_title">联系我们</h1>
+      <div class="ss_form_bg"></div>
+  
+          <ul class="ss_form_ul">
+              
+  <li>
+    <div class="ss_form_title">
+      姓名<i>*</i>
+      <div class="error" v-show="errors.has('attr_1')">请填写此项</div>
+    </div>
+    <div class="ss_form_body">
+      <input type="text" value="" name="attr_1" v-model="attributes.attr_1" :class="{'error': errors.has('attr_1') }" v-validate="'required'" />
+    </div>
+  </li>
+  
+  <li>
+    <div class="ss_form_title">
+      邮箱地址<i>*</i>
+      <div class="error" v-show="errors.has('attr_2')">请填写此项</div>
+    </div>
+    <div class="ss_form_body">
+      <input type="text" value="" name="attr_2" v-model="attributes.attr_2" :class="{'error': errors.has('attr_2') }" v-validate="'required'" />
+    </div>
+  </li>
+  
+  <li>
+    <div class="ss_form_title">
+      请输入消息<i>*</i>
+      <div class="error" v-show="errors.has('attr_3')">请填写此项</div>
+    </div>
+    <div class="ss_form_body">
+      <textarea name="attr_3" v-model="attributes.attr_3" :class="{'error': errors.has('attr_3') }" v-validate="'required'" ></textarea>
+    </div>
+  </li>
+  
+          </ul>
+          <div class="ss_form_failure" v-show="errorMessage" v-html="errorMessage" style="display: none"></div>
+          <div>
+              <div class="ss_form_code">
+            <input type="text" v-model="code" />
+            <img :src="imgUrl" class="ss_form_code_img" @click="reload" style="width: 105px; height: 35px" />
+            <span>请输入验证码</span>
+          </div>
+              <a @click="submit" href="javascript:;" class="ss_form_btn">提 交</a>
+          </div>
+    </div>
+  </div>
+  <div class="ss_form_wrapper" style="display: none;">
+    <div class="ss_form_main">
+      <h1 class="ss_form_head_title">联系我们</h1>
+      <div class="ss_form_bg"></div>
+      <div class="ss_form_success" style="display: none;">恭喜，表单提供成功。</div>
+    </div>
+  </div>
+</div>
+<script src="/SiteFiles/Plugins/SS.Form/assets/js/vue-2.1.10.min.js" type="text/javascript"></script>
+<script src="/SiteFiles/Plugins/SS.Form/assets/js/vee-validate.js" type="text/javascript"></script>
+<script src="/SiteFiles/Plugins/SS.Form/assets/js/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  Vue.use(VeeValidate);
+  new Vue({
+    el: '#stl_form_2',
+    data: {
+      isTimeout: false,
+      timeToStart: new Date('1754-01-01 00:00'),
+      timeToEnd: new Date('1754-01-01 00:00'),
+      attributes: {
+        attr_1: '',
+        attr_2: '',
+        attr_3: '',
+      },
+      code: '',
+      imgUrl: '/api/plugins/SS.Form/ApiGetCode/2?' + new Date().getTime(),
+      isSuccess: false,
+      errorMessage: ''
+    },
+    methods: {
+      reload: function (event) {
+        this.imgUrl = '/api/plugins/SS.Form/ApiGetCode/2?' + new Date().getTime();
+      },
+      submit: function (event) {
+        this.errorMessage = '';
+        var $this = this;
+        var data = {
+          code: this.code,
+          attributes: this.attributes
+        };
+
+        this.$validator.validateAll().then(function (result) {
+          if (result) {
+            $.ajax({
+              url: "/api/plugins/SS.Form/ApiSubmit/2",
+              type: "POST",
+              data: JSON.stringify(data),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function (data) {
+                $this.isSuccess = true;
+              },
+              error: function (err) {
+                var err = JSON.parse(err.responseText);
+                $this.isSuccess = false;
+                $this.errorMessage = err.message;
+              }
+            });
+          }
+        });
+      }
+    }
+  });
+</script>

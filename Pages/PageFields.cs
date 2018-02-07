@@ -103,7 +103,7 @@ setTimeout(function() {
                 TbTitle.Text = fieldInfo.Title;
                 TbDescription.Text = fieldInfo.Description;
                 TbPlaceHolder.Text = fieldInfo.PlaceHolder;
-                Utils.SelectListItems(DdlFieldType, fieldInfo.FieldType);
+                Utils.SelectSingleItem(DdlFieldType, fieldInfo.FieldType);
 
                 TbItemCount.Text = fieldInfo.Items.Count.ToString();
 
@@ -145,7 +145,7 @@ setTimeout(function() {
 </script>";
 
                 var settings = new FieldSettings(fieldInfo.Settings);
-                Utils.SelectListItems(DdlIsRequired, settings.IsRequired.ToString());
+                Utils.SelectSingleItem(DdlIsRequired, settings.IsRequired.ToString());
 
                 if (Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.Text)) || Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.TextArea)))
                 {
@@ -160,7 +160,7 @@ setTimeout(function() {
                 TbMaxNum.Text = settings.MaxNum.ToString();
 
                 ValidateTypeUtils.AddListItems(DdlValidateType);
-                Utils.SelectListItems(DdlValidateType, settings.ValidateType.Value);
+                Utils.SelectSingleItem(DdlValidateType, settings.ValidateType.Value);
             }
 
             //var redirectUrl = GetRedirectUrl(SiteId, _tableStyle, _tableName, _relatedIdentity, _itemId);

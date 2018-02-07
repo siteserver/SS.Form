@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using SS.Form.Model;
 
 namespace SS.Form.Core
@@ -90,28 +94,6 @@ namespace SS.Form.Core
             return string.Join(",", list);
         }
 
-        public static void SelectListItems(ListControl listControl, params string[] values)
-        {
-            if (listControl != null)
-            {
-                foreach (ListItem item in listControl.Items)
-                {
-                    item.Selected = false;
-                }
-                foreach (ListItem item in listControl.Items)
-                {
-                    foreach (var value in values)
-                    {
-                        if (string.Equals(item.Value, value))
-                        {
-                            item.Selected = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
         public static object Eval(object dataItem, string name)
         {
             object o = null;
@@ -183,7 +165,7 @@ namespace SS.Form.Core
             var builder = new StringBuilder();
             if (control != null)
             {
-                var sw = new System.IO.StringWriter(builder);
+                var sw = new StringWriter(builder);
                 var htw = new HtmlTextWriter(sw);
                 control.RenderControl(htw);
             }
@@ -481,6 +463,165 @@ namespace SS.Form.Core
                     }
                 }
             }
+        }
+
+        public static string JsonSerialize(object obj)
+        {
+            try
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                var timeFormat = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
+                settings.Converters.Add(timeFormat);
+
+                return JsonConvert.SerializeObject(obj, settings);
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        public static T JsonDeserialize<T>(string json)
+        {
+            try
+            {
+                var settings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+                var timeFormat = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
+                settings.Converters.Add(timeFormat);
+
+                return JsonConvert.DeserializeObject<T>(json, settings);
+            }
+            catch
+            {
+                return default(T);
+            }
+        }
+
+        public static string ReadText(string filePath)
+        {
+            var sr = new StreamReader(filePath, Encoding.UTF8);
+            var text = sr.ReadToEnd();
+            sr.Close();
+            return text;
+        }
+
+        public static void SelectSingleItem(ListControl listControl, string value)
+        {
+            if (listControl == null) return;
+
+            listControl.ClearSelection();
+
+            foreach (ListItem item in listControl.Items)
+            {
+                if (string.Equals(item.Value, value))
+                {
+                    item.Selected = true;
+                    break;
+                }
+            }
+        }
+
+        public static void SelectSingleItemIgnoreCase(ListControl listControl, string value)
+        {
+            if (listControl == null) return;
+
+            listControl.ClearSelection();
+            foreach (ListItem item in listControl.Items)
+            {
+                if (EqualsIgnoreCase(item.Value, value))
+                {
+                    item.Selected = true;
+                    break;
+                }
+            }
+        }
+
+        public static void SelectMultiItems(ListControl listControl, params string[] values)
+        {
+            if (listControl == null) return;
+
+            listControl.ClearSelection();
+            foreach (ListItem item in listControl.Items)
+            {
+                foreach (var value in values)
+                {
+                    if (string.Equals(item.Value, value))
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public static void SelectMultiItems(ListControl listControl, List<string> values)
+        {
+            if (listControl == null) return;
+
+            listControl.ClearSelection();
+            foreach (ListItem item in listControl.Items)
+            {
+                foreach (var value in values)
+                {
+                    if (string.Equals(item.Value, value))
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public static void SelectMultiItems(ListControl listControl, List<int> values)
+        {
+            if (listControl == null) return;
+
+            listControl.ClearSelection();
+            foreach (ListItem item in listControl.Items)
+            {
+                foreach (var intVal in values)
+                {
+                    if (string.Equals(item.Value, intVal.ToString()))
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public static void SelectMultiItemsIgnoreCase(ListControl listControl, params string[] values)
+        {
+            if (listControl == null) return;
+
+            listControl.ClearSelection();
+            foreach (ListItem item in listControl.Items)
+            {
+                foreach (var value in values)
+                {
+                    if (EqualsIgnoreCase(item.Value, value))
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public static string[] GetDirectoryNames(string directoryPath)
+        {
+            var directorys = Directory.GetDirectories(directoryPath);
+            var retval = new string[directorys.Length];
+            var i = 0;
+            foreach (var directory in directorys)
+            {
+                var directoryInfo = new DirectoryInfo(directory);
+                retval[i++] = directoryInfo.Name;
+            }
+            return retval;
         }
     }
 }

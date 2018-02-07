@@ -308,8 +308,9 @@ namespace SS.Form.Provider
                     SiteId = siteId,
                     ChannelId = channelId,
                     ContentId = contentId,
+                    IsTimeout = false,
                     TimeToStart = DateTime.Now,
-                    TimeToEnd = DateTime.Now.AddYears(1)
+                    TimeToEnd = DateTime.Now.AddMonths(3)
                 };
                 formInfo.Id = Insert(formInfo);
             }

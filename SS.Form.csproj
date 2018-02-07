@@ -34,8 +34,8 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SiteServer.Plugin, Version=1.2.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SiteServer.Plugin.1.2.29-beta\lib\net45\SiteServer.Plugin.dll</HintPath>
+    <Reference Include="SiteServer.Plugin, Version=1.2.33.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SiteServer.Plugin.1.2.33-beta\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AlertUtils.cs" />
+    <Compile Include="Core\ApiUtils.cs" />
     <Compile Include="Core\CacheUtils.cs" />
     <Compile Include="Core\CsvUtils.cs" />
     <Compile Include="Controls\DateTimeTextBox.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Pages\PageFields.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Parse\ParseUtils.cs" />
     <Compile Include="Parse\StlForm.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Model\FormInfo.cs" />
@@ -175,6 +177,13 @@
     <Content Include="pageManagement.aspx" />
     <Content Include="pageResults.aspx" />
     <Content Include="pageSettings.aspx" />
+    <Content Include="themes\techBlue\css\style.css" />
+    <Content Include="themes\techBlue\images\bg_img_large.jpg" />
+    <Content Include="themes\techBlue\images\bg_img_small.jpg" />
+    <Content Include="themes\techBlue\images\survey_img1.png" />
+    <Content Include="themes\techBlue\images\survey_img2.jpg" />
+    <Content Include="themes\techBlue\js\jquery-1.7.2.min.js" />
+    <Content Include="themes\techBlue\survey.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

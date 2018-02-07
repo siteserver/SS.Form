@@ -95,9 +95,19 @@
                           foreColor="red" display="Dynamic" />
                       </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">默认样式</label>
+                        <div class="col-md-5">
+                          <asp:DropDownList class="form-control" id="DdlDefaultTheme" runat="server"></asp:DropDownList>
+                        </div>
+                        <div class="col-md-5">
+                          
+                        </div>
+                      </div>
                     
                     <div class="form-group">
-                      <label class="col-md-2 control-label">表单选项</label>
+                      <label class="col-md-2 control-label">限制时间</label>
                       <div class="col-md-10">
                         <div class="checkbox checkbox-primary">
                           <asp:CheckBox ID="CbIsTimeout" OnCheckedChanged="CbIsTimeout_CheckedChanged" AutoPostBack="true" text="限制时间段" runat="server"></asp:CheckBox>
@@ -126,6 +136,15 @@
                       </div>
 
                     </asp:PlaceHolder>
+
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">验证码</label>
+                      <div class="col-md-10">
+                        <div class="checkbox checkbox-primary">
+                          <asp:CheckBox ID="CbIsCaptcha" text="显示验证码" runat="server"></asp:CheckBox>
+                        </div>
+                      </div>
+                    </div>
 
                     <div class="form-group">
                       <label class="col-md-2 control-label">向管理员发送短信通知</label>

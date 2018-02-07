@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using SiteServer.Plugin;
 using SS.Form.Core;
+using SS.Form.Model;
 using SS.Form.Pages;
 using SS.Form.Parse;
 using SS.Form.Provider;
@@ -72,9 +73,9 @@ namespace SS.Form
 
         private object ServiceOnApiPost(object sender, ApiEventArgs args)
         {
-            if (Utils.EqualsIgnoreCase(args.Action, nameof(StlForm.ApiSubmit)))
+            if (Utils.EqualsIgnoreCase(args.Action, nameof(ApiUtils.Submit)))
             {
-                return StlForm.ApiSubmit(args.Request, args.Id);
+                return ApiUtils.Submit(args.Request, args.Id);
             }
 
             throw new Exception("请求的资源不在服务器上");
@@ -82,9 +83,9 @@ namespace SS.Form
 
         private object Service_ApiGet(object sender, ApiEventArgs args)
         {
-            if (Utils.EqualsIgnoreCase(args.Action, nameof(StlForm.ApiGetCode)))
+            if (Utils.EqualsIgnoreCase(args.Action, nameof(ApiUtils.Captcha)))
             {
-                return StlForm.ApiGetCode(args.Request, args.Id);
+                return ApiUtils.Captcha(args.Request, args.Id);
             }
 
             throw new Exception("请求的资源不在服务器上");
@@ -97,6 +98,9 @@ namespace SS.Form
             formInfo.SiteId = e.TargetSiteId;
             formInfo.ChannelId = e.TargetChannelId;
             formInfo.ContentId = e.TargetContentId;
+            formInfo.IsTimeout = false;
+            formInfo.TimeToStart = DateTime.Now;
+            formInfo.TimeToEnd = formInfo.TimeToStart.AddMonths(3);
             FormDao.Insert(formInfo);
         }
 
@@ -105,8 +109,6 @@ namespace SS.Form
             var formId = FormDao.GetFormIdByContentId(e.SiteId, e.ChannelId, e.ContentId);
             FormDao.Delete(formId);
         }
-
-        
 
         //public override Func<IRequestContext, string, string, HttpResponseMessage> HttpGetWithNameAndId => StlForm.HttpGetWithNameAndId;
     }
