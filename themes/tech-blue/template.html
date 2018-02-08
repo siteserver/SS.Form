@@ -51,13 +51,13 @@
 						<div v-else-if="schema.fieldType === 'SelectOne'" class="ss_form_body">
 							<select v-bind:name="schema.attributeName" v-model="attributes[schema.attributeName]" :class="{'error': errors.has(schema.attributeName) }"
 							  v-validate="{ required: schema.isRequired }">
-								<option v-for="item in schema.items" v-bind:value="item.Value">{{ item.Value }}</option>
+								<option v-for="item in schema.items" v-bind:value="item.value">{{ item.value }}</option>
 							</select>
 						</div>
 						<div v-else-if="schema.fieldType === 'SelectMultiple'" class="ss_form_body">
 							<select multiple style="height: 130px" v-bind:name="schema.attributeName" v-model="attributes[schema.attributeName]" :class="{'error': errors.has(schema.attributeName) }"
 							  v-validate="{ required: schema.isRequired }">
-								<option v-for="item in schema.items" v-bind:value="item.Value">{{ item.Value }}</option>
+								<option v-for="item in schema.items" v-bind:value="item.value">{{ item.value }}</option>
 							</select>
 						</div>
 						<div v-else="schema.fieldType === 'Text'" class="ss_form_body">

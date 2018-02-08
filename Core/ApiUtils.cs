@@ -104,7 +104,7 @@ namespace SS.Form.Core
                 }
             }
 
-            Main.Instance.LogDao.Insert(logInfo);
+            logInfo.Id = Main.Instance.LogDao.Insert(logInfo);
 
             if (settings.IsAdministratorSmsNotify && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyMobile))
             {
@@ -116,7 +116,18 @@ namespace SS.Form.Core
                     var keys = settings.AdministratorSmsNotifyKeys.Split(',');
                     foreach (var key in keys)
                     {
-                        parameters.Add(key, logInfo.GetString(key));
+                        if (key == nameof(LogInfo.Id))
+                        {
+                            parameters.Add(key, logInfo.Id.ToString());
+                        }
+                        else if (key == nameof(LogInfo.AddDate))
+                        {
+                            parameters.Add(key, logInfo.AddDate.ToString("yyyy-MM-dd HH:mm"));
+                        }
+                        else
+                        {
+                            parameters.Add(key, logInfo.GetString(key));
+                        }
                     }
                     smsPlugin.Send(settings.AdministratorSmsNotifyMobile, settings.AdministratorSmsNotifyTplId, parameters, out errorMessage);
                 }
