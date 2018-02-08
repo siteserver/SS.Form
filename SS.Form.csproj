@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SS.Form</RootNamespace>
     <AssemblyName>SS.Form</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -36,6 +36,9 @@
     </Reference>
     <Reference Include="SiteServer.Plugin, Version=1.2.33.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\SiteServer.Plugin.1.2.33-beta\lib\net45\SiteServer.Plugin.dll</HintPath>
+    </Reference>
+    <Reference Include="SS.SMS, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SS.SMS.1.1.1-beta\lib\net461\SS.SMS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -103,6 +106,7 @@
     <Compile Include="Provider\LogDao.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="appveyor.yml" />
     <None Include="assets\plugin-utils\fonts\fontawesome-webfont.eot" />
     <None Include="assets\plugin-utils\fonts\fontawesome-webfont.ttf" />
     <None Include="assets\plugin-utils\fonts\fontawesome-webfont.woff" />
@@ -111,8 +115,6 @@
     <None Include="assets\plugin-utils\fonts\ionicons.eot" />
     <None Include="assets\plugin-utils\fonts\ionicons.ttf" />
     <None Include="assets\plugin-utils\fonts\ionicons.woff" />
-    <None Include="assets\sweetalert\数据统计 %281%29.csv" />
-    <None Include="assets\sweetalert\数据统计.csv" />
     <None Include="LICENSE" />
     <None Include="NuGet.config" />
     <None Include="packages.config" />
@@ -124,13 +126,6 @@
     <None Include="SS.Form.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\001\css\style.css" />
-    <Content Include="assets\001\images\bg_img_large.jpg" />
-    <Content Include="assets\001\images\bg_img_small.jpg" />
-    <Content Include="assets\001\images\survey_img1.png" />
-    <Content Include="assets\001\images\survey_img2.jpg" />
-    <Content Include="assets\001\js\jquery-1.7.2.min.js" />
-    <Content Include="assets\001\survey.html" />
     <Content Include="assets\datePicker\calendar.js" />
     <Content Include="assets\datePicker\lang\en.js" />
     <Content Include="assets\datePicker\lang\zh-cn.js" />
@@ -168,6 +163,10 @@
     <Content Include="assets\plugin-utils\js\bootstrap.min.js" />
     <Content Include="assets\plugin-utils\js\jquery.min.js" />
     <Content Include="assets\plugin-utils\js\plugin-utils.js" />
+    <Content Include="assets\readme\001.jpg" />
+    <Content Include="assets\readme\002.jpg" />
+    <Content Include="assets\readme\003.jpg" />
+    <Content Include="assets\readme\import05.png" />
     <Content Include="assets\sweetalert\sweetalert.min.js" />
     <Content Include="logo.png" />
     <Content Include="modalSelectColumns.aspx" />
@@ -177,13 +176,14 @@
     <Content Include="pageManagement.aspx" />
     <Content Include="pageResults.aspx" />
     <Content Include="pageSettings.aspx" />
-    <Content Include="themes\techBlue\css\style.css" />
-    <Content Include="themes\techBlue\images\bg_img_large.jpg" />
-    <Content Include="themes\techBlue\images\bg_img_small.jpg" />
-    <Content Include="themes\techBlue\images\survey_img1.png" />
-    <Content Include="themes\techBlue\images\survey_img2.jpg" />
-    <Content Include="themes\techBlue\js\jquery-1.7.2.min.js" />
-    <Content Include="themes\techBlue\survey.html" />
+    <Content Include="themes\bootstrap-large\style.min.css" />
+    <Content Include="themes\bootstrap-large\template.html" />
+    <Content Include="themes\tech-blue\images\bg_img_large.jpg" />
+    <Content Include="themes\tech-blue\images\bg_img_small.jpg" />
+    <Content Include="themes\tech-blue\images\survey_img1.png" />
+    <Content Include="themes\tech-blue\images\survey_img2.jpg" />
+    <Content Include="themes\tech-blue\style.css" />
+    <Content Include="themes\tech-blue\template.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -56,12 +56,7 @@ namespace SS.Form.Parse
             }
             else
             {
-                string styleUrl;
-                template = ParseUtils.GetTemplateHtml(theme, out styleUrl);
-                if (!context.HeadCodes.ContainsKey(nameof(StlForm)))
-                {
-                    context.HeadCodes.Add(nameof(StlForm), $@"<link rel=""stylesheet"" type=""text/css"" href=""{styleUrl}"" />");
-                }
+                template = ParseUtils.GetTemplateHtml(theme);
             }
 
             var pluginUrl = Main.Instance.PluginApi.GetPluginUrl();

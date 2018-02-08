@@ -15,7 +15,7 @@ namespace SS.Form.Parse
             if (string.IsNullOrEmpty(retval) ||
                 !File.Exists(Main.Instance.PluginApi.GetPluginPath($"themes/{retval}/template.html")))
             {
-                retval = "bootstrap";
+                retval = "bootstrap-large";
             }
             return retval;
         }
@@ -26,20 +26,16 @@ namespace SS.Form.Parse
             return Utils.GetDirectoryNames(directoryPath).ToList();
         }
 
-        public static string GetTemplateHtml(string theme, out string styleUrl)
+        public static string GetTemplateHtml(string theme)
         {
             var htmlPath = Main.Instance.PluginApi.GetPluginPath($"themes/{theme}/template.html");
-            styleUrl = Main.Instance.PluginApi.GetPluginUrl($"themes/{theme}/style.css");
+            var themeUrl = Main.Instance.PluginApi.GetPluginUrl($"themes/{theme}/");
 
-            var html = CacheUtils.Get<string>(htmlPath);
-            if (html == null)
-            {
-                html = Utils.ReadText(htmlPath);
-                var startIndex = html.IndexOf("<!-- template start -->", StringComparison.Ordinal) + "<!-- template start -->".Length;
-                var length = html.IndexOf("<!-- template end -->", StringComparison.Ordinal) - startIndex;
-                html = html.Substring(startIndex, length).Trim();
-                CacheUtils.InsertHours(htmlPath, html, 3);
-            }
+            var html = Utils.ReadText(htmlPath);
+            var startIndex = html.IndexOf("<!-- template start -->", StringComparison.Ordinal) + "<!-- template start -->".Length;
+            var length = html.IndexOf("<!-- template end -->", StringComparison.Ordinal) - startIndex;
+            html = html.Substring(startIndex, length).Trim();
+            html = html.Replace(@"<link rel=""stylesheet"" type=""text/css"" href=""", $@"<link rel=""stylesheet"" type=""text/css"" href=""{themeUrl}");
 
             return html;
         }
@@ -52,10 +48,9 @@ namespace SS.Form.Parse
                 ? $@" title=""{formInfo.Title}"""
                 : string.Empty;
             var theme = GetTheme(settings.DefaultTheme);
-            string styleUrl;
 
             return $@" <stl:form theme=""{theme}""{titleAttr}>
-    {GetTemplateHtml(theme, out styleUrl)}
+    {GetTemplateHtml(theme)}
 </stl:form>";
         }
     }

@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using SiteServer.Plugin;
 using SS.Form.Model;
+using SS.SMS;
 
 namespace SS.Form.Core
 {
@@ -62,6 +63,8 @@ namespace SS.Form.Core
             var formInfo = Main.Instance.FormDao.GetFormInfo(formId);
             if (formInfo == null) return null;
 
+            var settings = new FormSettings(formInfo.Settings);
+
             var code = request.GetPostString("code");
             var cookie = request.GetCookie("ss-form:" + id);
             if (string.IsNullOrEmpty(cookie) || !Utils.EqualsIgnoreCase(cookie, code))
@@ -102,6 +105,22 @@ namespace SS.Form.Core
             }
 
             Main.Instance.LogDao.Insert(logInfo);
+
+            if (settings.IsAdministratorSmsNotify && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyMobile))
+            {
+                var smsPlugin = SmsPlugin.Instance;
+                if (smsPlugin != null && smsPlugin.IsReady)
+                {
+                    string errorMessage;
+                    var parameters = new Dictionary<string, string>();
+                    var keys = settings.AdministratorSmsNotifyKeys.Split(',');
+                    foreach (var key in keys)
+                    {
+                        parameters.Add(key, logInfo.GetString(key));
+                    }
+                    smsPlugin.Send(settings.AdministratorSmsNotifyMobile, settings.AdministratorSmsNotifyTplId, parameters, out errorMessage);
+                }
+            }
 
             return new
             {
