@@ -37,8 +37,8 @@
     <Reference Include="SiteServer.Plugin, Version=1.2.33.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\SiteServer.Plugin.1.2.33-beta\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
-    <Reference Include="SS.SMS, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SS.SMS.1.1.1-beta\lib\net461\SS.SMS.dll</HintPath>
+    <Reference Include="SS.SMS, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SS.SMS.1.1.2-beta\lib\net461\SS.SMS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -175,7 +175,9 @@
     <Content Include="pageLogs.aspx" />
     <Content Include="pageManagement.aspx" />
     <Content Include="pageResults.aspx" />
-    <Content Include="pageSettings.aspx" />
+    <Content Include="pageSettings.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="themes\bootstrap-large\style.min.css" />
     <Content Include="themes\bootstrap-large\template.html" />
     <Content Include="themes\tech-blue\images\bg_img_large.jpg" />

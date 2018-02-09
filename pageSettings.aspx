@@ -110,7 +110,7 @@
                       <label class="col-md-2 control-label">限制时间</label>
                       <div class="col-md-10">
                         <div class="checkbox checkbox-primary">
-                          <asp:CheckBox ID="CbIsTimeout" OnCheckedChanged="CbIsTimeout_CheckedChanged" AutoPostBack="true" text="限制时间段" runat="server"></asp:CheckBox>
+                          <asp:CheckBox ID="CbIsTimeout" OnCheckedChanged="CbIsTimeout_CheckedChanged" AutoPostBack="true" text="表单只允许在规定的时间范围内访问" runat="server"></asp:CheckBox>
                         </div>
                       </div>
                     </div>

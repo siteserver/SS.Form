@@ -106,9 +106,7 @@ new Vue({{
     data: {{
         title: {Utils.JsonSerialize(formInfo.Title)},
         description: {Utils.JsonSerialize(formInfo.Description)},
-        isTimeout: {formInfo.IsTimeout.ToString().ToLower()},
-        timeToStart: new Date('{formInfo.TimeToStart:yyyy-MM-dd HH:mm}'),
-        timeToEnd: new Date('{formInfo.TimeToEnd:yyyy-MM-dd HH:mm}'),
+        isEnabled: {(formInfo.IsTimeout ? $"new Date() > new Date('{formInfo.TimeToStart:yyyy-MM-dd HH:mm}') && new Date() < new Date('{formInfo.TimeToEnd:yyyy-MM-dd HH:mm}')" : true.ToString().ToLower())},
         isCaptcha: {formSettings.IsCaptcha.ToString().ToLower()},
         attributes: {{{values.ToString().Trim()}}},
         code: '',

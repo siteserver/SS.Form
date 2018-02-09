@@ -12,7 +12,7 @@
 			</div>
 			<div class="ss_form_bg"></div>
 
-			<div v-show="!isSuccess" style="display: none">
+			<div v-show="isEnabled && !isSuccess" style="display: none">
 				<ul class="ss_form_ul">
 
 					<li v-for="schema in schemas">
@@ -80,7 +80,9 @@
 
 			</div>
 
-			<div v-show="isSuccess" style="display: none" class="ss_form_success">表单提交成功</div>
+			<div v-show="isEnabled && isSuccess" style="display: none" class="ss_form_success">表单提交成功</div>
+
+			<div v-show="!isEnabled" style="display: none" class="ss_form_failure">对不起，表单只允许在规定的时间范围内访问，当前时间已超出范围</div>
 
 		</div>
 	</div>
@@ -150,6 +152,7 @@
 			reload: function (event) {
 				this.imgUrl = '/api/plugins/SS.Form/Captcha/2?' + new Date().getTime();
 			},
+
 			submit: function (event) {
 				this.errorMessage = '';
 				var $this = this;

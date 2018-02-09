@@ -63,7 +63,7 @@ namespace SS.Form.Pages
 
             CbIsCaptcha.Checked = settings.IsCaptcha;
 
-            var smsPlugin = SmsPlugin.Instance;
+            var smsPlugin = Main.Instance.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
             if (smsPlugin != null && smsPlugin.IsReady)
             {
                 PhSms.Visible = true;
