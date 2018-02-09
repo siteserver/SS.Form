@@ -4,6 +4,8 @@ using System.Web.UI.WebControls;
 using SS.Form.Controls;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Parse;
+using SS.SMS;
 
 namespace SS.Form.Pages
 {
@@ -13,10 +15,16 @@ namespace SS.Form.Pages
 
         public TextBox TbTitle;
         public TextBox TbDescription;
+        public DropDownList DdlDefaultTheme;
         public CheckBox CbIsTimeout;
         public PlaceHolder PhTimeout;
         public DateTimeTextBox TbTimeToStart;
         public DateTimeTextBox TbTimeToEnd;
+        public CheckBox CbIsCaptcha;
+
+        public PlaceHolder PhSmsPluginNotInstalled;
+
+        public PlaceHolder PhSms;
         public DropDownList DdlIsAdministratorSmsNotify;
         public PlaceHolder PhIsAdministratorSmsNotify;
         public TextBox TbAdministratorSmsNotifyTplId;
@@ -36,31 +44,51 @@ namespace SS.Form.Pages
         {
             if (IsPostBack) return;
 
+            var settings = new FormSettings(FormInfo.Settings);
+
             TbTitle.Text = FormInfo.Title;
             TbDescription.Text = FormInfo.Description;
+
+            var themeList = ParseUtils.GetThemeList();
+            foreach (var theme in themeList)
+            {
+                DdlDefaultTheme.Items.Add(new ListItem(theme, theme));
+            }
+            Utils.SelectSingleItem(DdlDefaultTheme, settings.DefaultTheme);
+
             CbIsTimeout.Checked = FormInfo.IsTimeout;
             PhTimeout.Visible = FormInfo.IsTimeout;
             TbTimeToStart.DateTime = FormInfo.TimeToStart;
             TbTimeToEnd.DateTime = FormInfo.TimeToEnd;
 
-            var settings = new FormSettings(FormInfo.Settings);
+            CbIsCaptcha.Checked = settings.IsCaptcha;
 
-            Utils.SelectListItems(DdlIsAdministratorSmsNotify, settings.IsAdministratorSmsNotify.ToString());
-            TbAdministratorSmsNotifyTplId.Text = settings.AdministratorSmsNotifyTplId;
-
-            var keys = settings.AdministratorSmsNotifyKeys.Split(',');
-            LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.Id), nameof(LogInfo.Id)));
-            LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.AddDate), nameof(LogInfo.AddDate)));
-            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
-            foreach (var fieldInfo in fieldInfoList)
+            var smsPlugin = Main.Instance.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
+            if (smsPlugin != null && smsPlugin.IsReady)
             {
-                LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(fieldInfo.Title, fieldInfo.Title));
+                PhSms.Visible = true;
+
+                Utils.SelectSingleItem(DdlIsAdministratorSmsNotify, settings.IsAdministratorSmsNotify.ToString());
+                TbAdministratorSmsNotifyTplId.Text = settings.AdministratorSmsNotifyTplId;
+
+                var keys = settings.AdministratorSmsNotifyKeys.Split(',');
+                LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.Id), nameof(LogInfo.Id)));
+                LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.AddDate), nameof(LogInfo.AddDate)));
+                var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+                foreach (var fieldInfo in fieldInfoList)
+                {
+                    LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(fieldInfo.Title, fieldInfo.Title));
+                }
+                Utils.SelectMultiItems(LbAdministratorSmsNotifyKeys, keys);
+
+                TbAdministratorSmsNotifyMobile.Text = settings.AdministratorSmsNotifyMobile;
+
+                PhIsAdministratorSmsNotify.Visible = Convert.ToBoolean(DdlIsAdministratorSmsNotify.SelectedValue);
             }
-            Utils.SelectListItems(LbAdministratorSmsNotifyKeys, keys);
-
-            TbAdministratorSmsNotifyMobile.Text = settings.AdministratorSmsNotifyMobile;
-
-            PhIsAdministratorSmsNotify.Visible = Convert.ToBoolean(DdlIsAdministratorSmsNotify.SelectedValue);
+            else
+            {
+                PhSmsPluginNotInstalled.Visible = true;
+            }
         }
 
         public void CbIsTimeout_CheckedChanged(object sender, EventArgs e)
@@ -75,20 +103,23 @@ namespace SS.Form.Pages
 
         public void BtnSubmit_Click(object sender, EventArgs e)
         {
+            var settings = new FormSettings(FormInfo.Settings)
+            {
+                DefaultTheme = DdlDefaultTheme.SelectedValue,
+                IsCaptcha = CbIsCaptcha.Checked,
+                IsAdministratorSmsNotify = Convert.ToBoolean(DdlIsAdministratorSmsNotify.SelectedValue),
+                AdministratorSmsNotifyTplId = TbAdministratorSmsNotifyTplId.Text,
+                AdministratorSmsNotifyKeys =
+                    Utils.GetSelectedListControlValueCollection(LbAdministratorSmsNotifyKeys),
+                AdministratorSmsNotifyMobile = TbAdministratorSmsNotifyMobile.Text
+            };
+
             FormInfo.Title = TbTitle.Text;
             FormInfo.Description = TbDescription.Text;
             FormInfo.IsTimeout = CbIsTimeout.Checked;
             FormInfo.TimeToStart = TbTimeToStart.DateTime;
             FormInfo.TimeToEnd = TbTimeToEnd.DateTime;
-
-            var settings = new FormSettings(FormInfo.Settings)
-            {
-                IsAdministratorSmsNotify = Convert.ToBoolean(DdlIsAdministratorSmsNotify.SelectedValue),
-                AdministratorSmsNotifyTplId = TbAdministratorSmsNotifyTplId.Text,
-                AdministratorSmsNotifyKeys =
-                                Utils.GetSelectedListControlValueCollection(LbAdministratorSmsNotifyKeys),
-                AdministratorSmsNotifyMobile = TbAdministratorSmsNotifyMobile.Text
-            };
+            
             FormInfo.Settings = settings.ToString();
 
             Main.Instance.FormDao.Update(FormInfo);

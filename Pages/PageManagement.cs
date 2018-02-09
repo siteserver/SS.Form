@@ -72,7 +72,7 @@ namespace SS.Form.Pages
                 {
                     var formInfo = Main.Instance.FormDao.GetFormInfo(_formId);
                     CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview",
-                        Main.Instance.DataApi.Encrypt(StlForm.GetDefaultStlFormStlElement(formInfo)),
+                        Main.Instance.DataApi.Encrypt(ParseUtils.GetFormStlElement(formInfo)),
                         5);
                     Response.Redirect(Main.Instance.FilesApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={Main.Instance.DataApi.Encrypt(_returnUrl)}"));
                     return;
@@ -208,7 +208,10 @@ namespace SS.Form.Pages
                     {
                         Title = TbTitle.Text,
                         Description = TbDescription.Text,
-                        SiteId = _siteId
+                        SiteId = _siteId,
+                        IsTimeout = false,
+                        TimeToStart = DateTime.Now,
+                        TimeToEnd = DateTime.Now.AddMonths(3)
                     };
 
                     Main.Instance.FormDao.Insert(formInfo);

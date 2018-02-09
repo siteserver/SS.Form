@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Collections.Generic;
 using System.Text;
 using SiteServer.Plugin;
 using SS.Form.Core;
@@ -20,18 +12,24 @@ namespace SS.Form.Parse
         public const string ElementName = "stl:form";
 
         public const string AttributeTitle = "title";
+        public const string AttributeTheme = "theme";
 
         public static string Parse(IParseContext context)
         {
             var title = string.Empty;
+            var theme = string.Empty;
 
-            foreach (var name in context.Attributes.Keys)
+            foreach (var name in context.StlElementAttributes.Keys)
             {
-                var value = context.Attributes[name];
+                var value = context.StlElementAttributes[name];
 
                 if (Utils.EqualsIgnoreCase(name, AttributeTitle))
                 {
-                    title = value;
+                    title = Main.Instance.ParseApi.ParseAttributeValue(value, context);
+                }
+                else if (Utils.EqualsIgnoreCase(name, AttributeTheme))
+                {
+                    theme = value;
                 }
             }
 
@@ -39,41 +37,57 @@ namespace SS.Form.Parse
             if (formId <= 0) return string.Empty;
 
             var formInfo = Main.Instance.FormDao.GetFormInfo(formId);
+            var formSettings = new FormSettings(formInfo.Settings);
+
+            if (string.IsNullOrEmpty(theme))
+            {
+                theme = formSettings.DefaultTheme;
+            }
+            theme = ParseUtils.GetTheme(theme);
 
             var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formId, true);
 
-            var stlElements = Main.Instance.ParseApi.GetStlElements(context.InnerXml, new List<string>
-            {
-                "stl:template",
-                "stl:yes"
-            });
+            var vueId = "vm_" + System.Guid.NewGuid().ToString().Replace("-", string.Empty);
+
             string template;
-            stlElements.TryGetValue("stl:template", out template);
-            string yes;
-            stlElements.TryGetValue("stl:yes", out yes);
-
-            var vueId = $"stl_form_{formInfo.Id}";
-
-            if (string.IsNullOrEmpty(template))
+            if (!string.IsNullOrWhiteSpace(context.StlElementInnerXml))
             {
-                template = GetDefaultTemplate(formInfo, fieldInfoList);
+                template = Main.Instance.ParseApi.ParseInnerXml(context.StlElementInnerXml, context);
             }
-            if (string.IsNullOrEmpty(yes))
+            else
             {
-                yes = GetDefaultYes(formInfo, fieldInfoList);
+                template = ParseUtils.GetTemplateHtml(theme);
             }
-
-            template = Main.Instance.ParseApi.ParseInnerXml(template, context);
 
             var pluginUrl = Main.Instance.PluginApi.GetPluginUrl();
-            var imgUrl = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiGetCode), formInfo.Id.ToString());
-            var apiUrlSubmit = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiSubmit), formInfo.Id.ToString());
+            var imgUrl = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiUtils.Captcha), formInfo.Id.ToString());
+            var apiUrlSubmit = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiUtils.Submit), formInfo.Id.ToString());
 
+            if (!context.FootCodes.ContainsKey(nameof(StlForm)))
+            {
+                context.FootCodes.Add(nameof(StlForm), $@"
+<script src=""{pluginUrl}/assets/js/vue-2.1.10.min.js"" type=""text/javascript""></script>
+<script src=""{pluginUrl}/assets/js/vee-validate.js"" type=""text/javascript""></script>
+<script src=""{pluginUrl}/assets/js/jquery.min.js"" type=""text/javascript""></script>");
+            }
+
+            var schemas = new List<object>();
             var values = new StringBuilder();
             foreach (var fieldInfo in fieldInfoList)
             {
                 var fieldType = FieldTypeUtils.GetEnumType(fieldInfo.FieldType);
                 var attributeName = FieldManager.GetAttributeId(fieldInfo.Id);
+                var settings = new FieldSettings(fieldInfo.Settings);
+                schemas.Add(new
+                {
+                    AttributeName = attributeName,
+                    fieldInfo.Title,
+                    fieldInfo.Description,
+                    fieldInfo.FieldType,
+                    settings.IsRequired,
+                    Items = fieldInfo.Items ?? new List<FieldItemInfo>()
+                });
+
                 if (fieldType == FieldType.SelectMultiple || fieldType == FieldType.CheckBox)
                 {
                     values.Append($"{attributeName}: [],");
@@ -84,29 +98,22 @@ namespace SS.Form.Parse
                 }
             }
 
-            var templateBuilder = new StringBuilder();
-            templateBuilder.Append($@"
-<link rel=""stylesheet"" type=""text/css"" href=""{pluginUrl}/assets/001/css/style.css"" />
-<div id=""{vueId}"">
-    {template}
-    {yes}
-</div>
-<script src=""{pluginUrl}/assets/js/vue-2.1.10.min.js"" type=""text/javascript""></script>
-<script src=""{pluginUrl}/assets/js/vee-validate.js"" type=""text/javascript""></script>
-<script src=""{pluginUrl}/assets/js/jquery.min.js"" type=""text/javascript""></script>
+            context.FootCodes[nameof(StlForm) + vueId] = $@"
 <script type=""text/javascript"">
 Vue.use(VeeValidate);
 new Vue({{
     el: '#{vueId}',
     data: {{
-        isTimeout: {formInfo.IsTimeout.ToString().ToLower()},
-        timeToStart: new Date('{formInfo.TimeToStart:yyyy-MM-dd HH:mm}'),
-        timeToEnd: new Date('{formInfo.TimeToEnd:yyyy-MM-dd HH:mm}'),
+        title: {Utils.JsonSerialize(formInfo.Title)},
+        description: {Utils.JsonSerialize(formInfo.Description)},
+        isEnabled: {(formInfo.IsTimeout ? $"new Date() > new Date('{formInfo.TimeToStart:yyyy-MM-dd HH:mm}') && new Date() < new Date('{formInfo.TimeToEnd:yyyy-MM-dd HH:mm}')" : true.ToString().ToLower())},
+        isCaptcha: {formSettings.IsCaptcha.ToString().ToLower()},
         attributes: {{{values.ToString().Trim()}}},
         code: '',
         imgUrl: '{imgUrl}?' + new Date().getTime(),
         isSuccess: false,
-        errorMessage: ''
+        errorMessage: '',
+        schemas: {Utils.JsonSerialize(schemas)}
     }},
     methods: {{
         reload: function (event) {{
@@ -144,248 +151,136 @@ new Vue({{
         }}
     }}
 }});
-</script>
-");
+</script>";
 
-            var formElements = Utils.GetHtmlFormElements(templateBuilder.ToString());
-            if (formElements != null && formElements.Count > 0)
-            {
-                foreach (var formElement in formElements)
-                {
-                    string tagName;
-                    string innerXml;
-                    NameValueCollection attributes;
-                    Utils.ParseHtmlElement(formElement, out tagName, out innerXml, out attributes);
+            return $@"
+<div id=""{vueId}"">
+    {template}
+</div>
+";
 
-                    if (string.IsNullOrEmpty(attributes["id"])) continue;
+            //var formElements = Utils.GetHtmlFormElements(templateBuilder.ToString());
+            //if (formElements != null && formElements.Count > 0)
+            //{
+            //    foreach (var formElement in formElements)
+            //    {
+            //        string tagName;
+            //        string innerXml;
+            //        NameValueCollection attributes;
+            //        Utils.ParseHtmlElement(formElement, out tagName, out innerXml, out attributes);
 
-                    foreach (var fieldInfo in fieldInfoList)
-                    {
-                        if (!Utils.EqualsIgnoreCase(fieldInfo.Title, attributes["id"])) continue;
+            //        if (string.IsNullOrEmpty(attributes["id"])) continue;
 
-                        //var fieldSettings = new FieldSettings(fieldInfo.Settings);
+            //        foreach (var fieldInfo in fieldInfoList)
+            //        {
+            //            if (!Utils.EqualsIgnoreCase(fieldInfo.Title, attributes["id"])) continue;
 
-                        attributes["id"] = fieldInfo.Title;
-                        attributes["name"] = fieldInfo.Title;
+            //            //var fieldSettings = new FieldSettings(fieldInfo.Settings);
 
-                        var replace = Utils.EqualsIgnoreCase(tagName, "input")
-                            ? $@"<{tagName} {Utils.ToAttributesString(attributes)} />"
-                            : $@"<{tagName} {Utils.ToAttributesString(attributes)} >{innerXml}</{tagName}>";
+            //            attributes["id"] = fieldInfo.Title;
+            //            attributes["name"] = fieldInfo.Title;
 
-                        templateBuilder.Replace(formElement, replace);
-                    }
-                }
-            }
+            //            var replace = Utils.EqualsIgnoreCase(tagName, "input")
+            //                ? $@"<{tagName} {Utils.ToAttributesString(attributes)} />"
+            //                : $@"<{tagName} {Utils.ToAttributesString(attributes)} >{innerXml}</{tagName}>";
+
+            //            templateBuilder.Replace(formElement, replace);
+            //        }
+            //    }
+            //}
 
             //Utils.RewriteSubmitButton(templateBuilder, $"inputSubmit(this, '{stlFormId}', '{stlContainerId}', [{Utils.ToStringWithQuote(attributeNames)}]);return false;");
 
-            return Main.Instance.ParseApi.ParseInnerXml(templateBuilder.ToString(), context);
+            //return Main.Instance.ParseApi.ParseInnerXml(templateBuilder.ToString(), context);
         }
 
-        public static HttpResponseMessage ApiGetCode(IRequest request, string id)
-        {
-            var response = new HttpResponseMessage();
+        //        private static string GetDefaultTemplate(FormInfo formInfo, List<FieldInfo> fieldInfoList)
+        //        {
+        //            if (fieldInfoList == null) return string.Empty;
 
-            var random = new Random();
-            var validateCode = "";
+        //            var header = !string.IsNullOrEmpty(formInfo.Title) ? $@"<h1 class=""ss_form_head_title"">{formInfo.Title}</h1>" : string.Empty;
+        //            if (!string.IsNullOrEmpty(formInfo.Description))
+        //            {
+        //                header += $@"<div class=""ss_form_head_desc"">{formInfo.Description}</div>";
+        //            }
 
-            char[] s = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-            for (var i = 0; i < 4; i++)
-            {
-                validateCode += s[random.Next(0, s.Length)].ToString();
-            }
+        //            var form = string.Empty;
+        //            foreach (var fieldInfo in fieldInfoList)
+        //            {
+        //                var attributeName = FieldManager.GetAttributeId(fieldInfo.Id);
+        //                var settings = new FieldSettings(fieldInfo.Settings);
+        //                var title = fieldInfo.Title;
+        //                if (settings.IsRequired)
+        //                {
+        //                    title += "<i>*</i>";
+        //                }
+        //                if (!string.IsNullOrEmpty(fieldInfo.Description))
+        //                {
+        //                    title += $"<div>{fieldInfo.Description}</div>";
+        //                }
+        //                var body = FieldTypeParser.Parse(fieldInfo, settings);
 
-            var validateimage = new Bitmap(105, 35, PixelFormat.Format32bppRgb);
+        //                form += $@"
+        //<li>
+        //  <div class=""ss_form_title"">
+        //    {title}
+        //    <div class=""error"" v-show=""errors.has('{attributeName}')"">请填写此项</div>
+        //  </div>
+        //  <div class=""ss_form_body"">
+        //    {body}
+        //  </div>
+        //</li>
+        //";
+        //            }
 
-            var colors = Utils.Colors[random.Next(0, 5)];
+        //            return $@"
+        //<div class=""ss_form_wrapper"">
+        //	<div class=""ss_form_main"">
+        //		{header}
+        //		<div class=""ss_form_bg""></div>
 
-            var g = Graphics.FromImage(validateimage);
-            g.FillRectangle(new SolidBrush(Color.FromArgb(240, 243, 248)), 0, 0, 105, 105); //矩形框
-            g.DrawString(validateCode, new Font(FontFamily.GenericSerif, 24, FontStyle.Bold | FontStyle.Italic), new SolidBrush(colors), new PointF(10, 0));//字体/颜色
+        //        <ul class=""ss_form_ul"">
+        //            {form}
+        //        </ul>
+        //        <div class=""ss_form_failure"" v-show=""errorMessage"" v-html=""errorMessage"" style=""display: none""></div>
+        //        <div>
+        //            <div class=""ss_form_code"">
+        //			    <input type=""text"" v-model=""code"" />
+        //			    <img :src=""imgUrl"" class=""ss_form_code_img"" @click=""reload"" style=""width: 105px; height: 35px"" />
+        //			    <span>请输入验证码</span>
+        //		    </div>
+        //            <a @click=""submit"" href=""javascript:;"" class=""ss_form_btn"">提 交</a>
+        //        </div>
+        //	</div>
+        //</div>
+        //";
+        //        }
 
-            for (var i = 0; i < 100; i++)
-            {
-                var x = random.Next(validateimage.Width);
-                var y = random.Next(validateimage.Height);
+        //        private static string GetDefaultYes(FormInfo formInfo, List<FieldInfo> fieldInfoList)
+        //        {
+        //            if (fieldInfoList == null) return string.Empty;
 
-                validateimage.SetPixel(x, y, Color.FromArgb(random.Next()));
-            }
+        //            var header = !string.IsNullOrEmpty(formInfo.Title) ? $@"<h1 class=""ss_form_head_title"">{formInfo.Title}</h1>" : string.Empty;
+        //            if (!string.IsNullOrEmpty(formInfo.Description))
+        //            {
+        //                header += $@"<div class=""ss_form_head_desc"">{formInfo.Description}</div>";
+        //            }
 
-            g.Save();
-            var ms = new MemoryStream();
-            validateimage.Save(ms, ImageFormat.Png);
+        //            return $@"
+        //<div class=""ss_form_wrapper"">
+        //	<div class=""ss_form_main"">
+        //		{header}
+        //		<div class=""ss_form_bg""></div>
+        //        <div class=""ss_form_success"">表单提交成功</div>
+        //	</div>
+        //</div>
+        //";
+        //        }
 
-            request.SetCookie("ss-form:" + id, validateCode, DateTime.Now.AddDays(1));
-
-            response.Content = new ByteArrayContent(ms.ToArray());
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-            response.StatusCode = HttpStatusCode.OK;
-
-            return response;
-        }
-
-        public static object ApiSubmit(IRequest request, string id)
-        {
-            var formId = Convert.ToInt32(id);
-
-            var formInfo = Main.Instance.FormDao.GetFormInfo(formId);
-            if (formInfo == null) return null;
-
-            var code = request.GetPostString("code");
-            var cookie = request.GetCookie("ss-form:" + id);
-            if (string.IsNullOrEmpty(cookie) || !Utils.EqualsIgnoreCase(cookie, code))
-            {
-                throw new Exception("提交失败，验证码不正确！");
-            }
-
-            var logInfo = new LogInfo
-            {
-                FormId = formId,
-                AddDate = DateTime.Now
-            };
-
-            var attributes = request.GetPostObject<Dictionary<string, object>>("attributes");
-
-            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formInfo.Id, true);
-            foreach (var fieldInfo in fieldInfoList)
-            {
-                object value;
-                attributes.TryGetValue(FieldManager.GetAttributeId(fieldInfo.Id), out value);
-                if (value != null && value.ToString() != "[]")
-                {
-                    logInfo.Set(fieldInfo.Title, value.ToString());
-                    if (FieldManager.IsExtra(fieldInfo))
-                    {
-                        foreach (var item in fieldInfo.Items)
-                        {
-                            var extrasId = FieldManager.GetExtrasId(fieldInfo.Id, item.Id);
-                            object extras;
-                            attributes.TryGetValue(extrasId, out extras);
-                            if (!string.IsNullOrEmpty(extras?.ToString()))
-                            {
-                                logInfo.Set(extrasId, extras.ToString());
-                            }
-                        }
-                    }
-                }
-            }
-
-            Main.Instance.LogDao.Insert(logInfo);
-
-            return new
-            {
-
-            };
-        }
-
-        private static string GetDefaultTemplate(FormInfo formInfo, List<FieldInfo> fieldInfoList)
-        {
-            if (fieldInfoList == null) return string.Empty;
-
-            var header = !string.IsNullOrEmpty(formInfo.Title) ? $@"<h1 class=""ss_form_head_title"">{formInfo.Title}</h1>" : string.Empty;
-            if (!string.IsNullOrEmpty(formInfo.Description))
-            {
-                header += $@"<div class=""ss_form_head_desc"">{formInfo.Description}</div>";
-            }
-
-            var form = string.Empty;
-            foreach (var fieldInfo in fieldInfoList)
-            {
-                var attributeName = FieldManager.GetAttributeId(fieldInfo.Id);
-                var settings = new FieldSettings(fieldInfo.Settings);
-                var title = fieldInfo.Title;
-                if (settings.IsRequired)
-                {
-                    title += "<i>*</i>";
-                }
-                if (!string.IsNullOrEmpty(fieldInfo.Description))
-                {
-                    title += $"<div>{fieldInfo.Description}</div>";
-                }
-                var body = FieldTypeParser.Parse(fieldInfo, settings);
-
-                form += $@"
-<li>
-  <div class=""ss_form_title"">
-    {title}
-    <div class=""error"" v-show=""errors.has('{attributeName}')"">请填写此项</div>
-  </div>
-  <div class=""ss_form_body"">
-    {body}
-  </div>
-</li>
-";
-            }
-
-            return $@"
-<div class=""ss_form_wrapper"" v-show=""!isSuccess"">
-	<div class=""ss_form_main"">
-		{header}
-		<div class=""ss_form_bg""></div>
-
-        <ul class=""ss_form_ul"">
-            {form}
-        </ul>
-        <div class=""ss_form_failure"" v-show=""errorMessage"" v-html=""errorMessage"" style=""display: none""></div>
-        <div>
-            <div class=""ss_form_code"">
-			    <input type=""text"" v-model=""code"" />
-			    <img :src=""imgUrl"" class=""ss_form_code_img"" @click=""reload"" style=""width: 105px; height: 35px"" />
-			    <span>请输入验证码</span>
-		    </div>
-            <a @click=""submit"" href=""javascript:;"" class=""ss_form_btn"">提 交</a>
-        </div>
-	</div>
-</div>
-";
-        }
-
-        private static string GetDefaultYes(FormInfo formInfo, List<FieldInfo> fieldInfoList)
-        {
-            if (fieldInfoList == null) return string.Empty;
-
-            var header = !string.IsNullOrEmpty(formInfo.Title) ? $@"<h1 class=""ss_form_head_title"">{formInfo.Title}</h1>" : string.Empty;
-            if (!string.IsNullOrEmpty(formInfo.Description))
-            {
-                header += $@"<div class=""ss_form_head_desc"">{formInfo.Description}</div>";
-            }
-
-            return $@"
-<div class=""ss_form_wrapper"" v-show=""isSuccess"">
-	<div class=""ss_form_main"">
-		{header}
-		<div class=""ss_form_bg""></div>
-        <div class=""ss_form_success"" v-show=""isSuccess"" style=""display: none"">恭喜，表单提供成功。</div>
-	</div>
-</div>
-";
-        }
-
-        public static string GetPostMessageScript(int formId, bool isSuccess)
-        {
-            var containerId = $"stl_input_{formId}";
-            return $"<script>window.parent.postMessage({{containerId: '{containerId}', isSuccess: {isSuccess.ToString().ToLower()}}}, '*');</script>";
-        }
-
-        public static string GetDefaultStlFormStlElement(FormInfo formInfo)
-        {
-            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formInfo.Id, true);
-            var template = GetDefaultTemplate(formInfo, fieldInfoList);
-            var yes = GetDefaultYes(formInfo, fieldInfoList);
-
-            var titleAttr = formInfo.ContentId == 0 && !string.IsNullOrEmpty(formInfo.Title)
-                ? $@" title=""{formInfo.Title}"""
-                : string.Empty;
-
-            return $@" <stl:form{titleAttr}>
-    <stl:template>
-        {template}
-    </stl:template>
-
-    <stl:yes>
-        {yes}
-    </stl:yes>
-</stl:form>";
-        }
+        //        public static string GetPostMessageScript(int formId, bool isSuccess)
+        //        {
+        //            var containerId = $"stl_input_{formId}";
+        //            return $"<script>window.parent.postMessage({{containerId: '{containerId}', isSuccess: {isSuccess.ToString().ToLower()}}}, '*');</script>";
+        //        }
     }
 }

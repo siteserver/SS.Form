@@ -7,6 +7,18 @@
             
         }
 
+        public string DefaultTheme
+        {
+            get { return GetString("DefaultTheme"); }
+            set { Set("DefaultTheme", value); }
+        }
+
+        public bool IsCaptcha
+        {
+            get { return GetBool("IsCaptcha"); }
+            set { Set("IsCaptcha", value.ToString()); }
+        }
+
         //向管理员发送短信通知
         public bool IsAdministratorSmsNotify
         {
