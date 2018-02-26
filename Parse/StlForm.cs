@@ -19,9 +19,9 @@ namespace SS.Form.Parse
             var title = string.Empty;
             var theme = string.Empty;
 
-            foreach (var name in context.StlElementAttributes.Keys)
+            foreach (var name in context.StlAttributes.Keys)
             {
-                var value = context.StlElementAttributes[name];
+                var value = context.StlAttributes[name];
 
                 if (Utils.EqualsIgnoreCase(name, AttributeTitle))
                 {
@@ -49,23 +49,15 @@ namespace SS.Form.Parse
 
             var vueId = "vm_" + System.Guid.NewGuid().ToString().Replace("-", string.Empty);
 
-            string template;
-            if (!string.IsNullOrWhiteSpace(context.StlElementInnerXml))
-            {
-                template = Main.Instance.ParseApi.ParseInnerXml(context.StlElementInnerXml, context);
-            }
-            else
-            {
-                template = ParseUtils.GetTemplateHtml(theme);
-            }
+            var template = !string.IsNullOrWhiteSpace(context.StlInnerXml) ? Main.Instance.ParseApi.ParseInnerXml(context.StlInnerXml, context) : ParseUtils.GetTemplateHtml(theme);
 
             var pluginUrl = Main.Instance.PluginApi.GetPluginUrl();
             var imgUrl = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiUtils.Captcha), formInfo.Id.ToString());
             var apiUrlSubmit = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiUtils.Submit), formInfo.Id.ToString());
 
-            if (!context.FootCodes.ContainsKey(nameof(StlForm)))
+            if (!context.StlPageFoot.ContainsKey(nameof(StlForm)))
             {
-                context.FootCodes.Add(nameof(StlForm), $@"
+                context.StlPageFoot.Add(nameof(StlForm), $@"
 <script src=""{pluginUrl}/assets/js/vue-2.1.10.min.js"" type=""text/javascript""></script>
 <script src=""{pluginUrl}/assets/js/vee-validate.js"" type=""text/javascript""></script>
 <script src=""{pluginUrl}/assets/js/jquery.min.js"" type=""text/javascript""></script>");
@@ -98,7 +90,7 @@ namespace SS.Form.Parse
                 }
             }
 
-            context.FootCodes[nameof(StlForm) + vueId] = $@"
+            context.StlPageFoot[nameof(StlForm) + vueId] = $@"
 <script type=""text/javascript"">
 Vue.use(VeeValidate);
 new Vue({{

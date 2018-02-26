@@ -93,7 +93,6 @@
       artifact: /.*\.nupkg/
 
   notifications:
-
     - provider: Webhook
       url: http://api.siteserver.cn/v1.0/packages/SS.Form?isNightly=true
       headers:
