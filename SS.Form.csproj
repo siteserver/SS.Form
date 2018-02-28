@@ -34,11 +34,11 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SiteServer.Plugin, Version=1.3.39.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SiteServer.Plugin.1.3.39-beta\lib\net45\SiteServer.Plugin.dll</HintPath>
+    <Reference Include="SiteServer.Plugin, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SiteServer.Plugin.1.4.0\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
-    <Reference Include="SS.SMS, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SS.SMS.1.1.5\lib\net461\SS.SMS.dll</HintPath>
+    <Reference Include="SS.SMS, Version=1.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SS.SMS.1.1.8\lib\net461\SS.SMS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -118,6 +118,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\cleanslate.min.css" />
     <Content Include="assets\datePicker\calendar.js" />
     <Content Include="assets\datePicker\lang\en.js" />
     <Content Include="assets\datePicker\lang\zh-cn.js" />
@@ -161,6 +162,7 @@
     <Content Include="assets\readme\import05.png" />
     <Content Include="assets\sweetalert\sweetalert.min.js" />
     <Content Include="modalSelectColumns.aspx" />
+    <Content Include="modalTest.aspx" />
     <Content Include="modalView.aspx" />
     <Content Include="pageFields.aspx" />
     <Content Include="pageLogs.aspx" />
@@ -169,7 +171,7 @@
     <Content Include="pageSettings.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="themes\bootstrap-large\style.min.css" />
+    <Content Include="themes\bootstrap-large\style.css" />
     <Content Include="themes\bootstrap-large\template.html" />
     <Content Include="themes\tech-blue\images\bg_img_large.jpg" />
     <Content Include="themes\tech-blue\images\bg_img_small.jpg" />
