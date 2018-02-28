@@ -3,7 +3,7 @@
   <metadata>
     <id>SS.Form</id>
     <version>$version$</version>
-    <title>SiteServer CMS 自定义表单插件</title>
+    <title>自定义表单插件</title>
     <authors>SiteServer CMS</authors>
     <owners>siteserver</owners>
     <licenseUrl>https://github.com/siteserver/SS.Form/blob/master/LICENSE</licenseUrl>
