@@ -65,11 +65,14 @@ namespace SS.Form.Core
 
             var settings = new FormSettings(formInfo.Settings);
 
-            var code = request.GetPostString("code");
-            var cookie = request.GetCookie("ss-form:" + id);
-            if (string.IsNullOrEmpty(cookie) || !Utils.EqualsIgnoreCase(cookie, code))
+            if (settings.IsCaptcha)
             {
-                throw new Exception("提交失败，验证码不正确！");
+                var code = request.GetPostString("code");
+                var cookie = request.GetCookie("ss-form:" + id);
+                if (string.IsNullOrEmpty(cookie) || !Utils.EqualsIgnoreCase(cookie, code))
+                {
+                    throw new Exception("提交失败，验证码不正确！");
+                }
             }
 
             var logInfo = new LogInfo
