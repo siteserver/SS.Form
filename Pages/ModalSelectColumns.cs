@@ -14,10 +14,7 @@ namespace SS.Form.Pages
 
         public static string GetOpenScript(int siteId, int formId)
         {
-            return LayerUtils.GetOpenScript("选择需要显示的项",
-                Main.Instance.PluginApi.GetPluginUrl(
-                    $"{nameof(ModalSelectColumns)}.aspx?siteId={siteId}&formId={formId}"), 520,
-                550);
+            return LayerUtils.GetOpenScript("选择需要显示的项", $"{nameof(ModalSelectColumns)}.aspx?siteId={siteId}&formId={formId}", 520, 550);
         }
 
         public void Page_Load(object sender, EventArgs e)

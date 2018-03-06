@@ -32,7 +32,7 @@ namespace SS.Form.Pages
 
         public static string GetRedirectUrl(string apiUrl, int siteId)
         {
-            return Main.Instance.PluginApi.GetPluginUrl($"{nameof(PageManagement)}.aspx?apiUrl={HttpUtility.UrlEncode(apiUrl)}&siteId={siteId}");
+            return $"{nameof(PageManagement)}.aspx?apiUrl={HttpUtility.UrlEncode(apiUrl)}&siteId={siteId}";
         }
 
         public void Page_Load(object sender, EventArgs e)

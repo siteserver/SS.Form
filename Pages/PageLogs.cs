@@ -22,16 +22,12 @@ namespace SS.Form.Pages
 
         public static string GetRedirectUrl(int siteId, int channelId, int contentId, string returnUrl)
         {
-            return
-                Main.Instance.PluginApi.GetPluginUrl(
-                    $"{nameof(PageLogs)}.aspx?siteId={siteId}&channelId={channelId}&contentId={contentId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}");
+            return $"{nameof(PageLogs)}.aspx?siteId={siteId}&channelId={channelId}&contentId={contentId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}";
         }
 
         public static string GetRedirectUrl(int siteId, int formId, string returnUrl)
         {
-            return
-                Main.Instance.PluginApi.GetPluginUrl(
-                    $"{nameof(PageLogs)}.aspx?siteId={siteId}&formId={formId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}");
+            return $"{nameof(PageLogs)}.aspx?siteId={siteId}&formId={formId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}";
         }
 
         public void Page_Load(object sender, EventArgs e)

@@ -15,9 +15,7 @@ namespace SS.Form.Pages
 
         public static string GetOpenScript(int siteId, int formId, int logId)
         {
-            return LayerUtils.GetOpenScript("查看",
-                Main.Instance.PluginApi.GetPluginUrl(
-                    $"{nameof(ModalView)}.aspx?siteId={siteId}&formId={formId}&logId={logId}"));
+            return LayerUtils.GetOpenScript("查看", $"{nameof(ModalView)}.aspx?siteId={siteId}&formId={formId}&logId={logId}");
         }
 
         public void Page_Load(object sender, EventArgs e)
