@@ -91,6 +91,9 @@ new Vue({{
                 if (result) {{
                     $.ajax({{
                         url : ""{apiUrlSubmit}"",
+                        xhrFields: {{
+                            withCredentials: true
+                        }},
                         type: ""POST"",
                         data: JSON.stringify(data),
                         contentType: ""application/json; charset=utf-8"",
