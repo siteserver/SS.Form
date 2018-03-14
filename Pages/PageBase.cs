@@ -32,14 +32,10 @@ namespace SS.Form.Pages
             FormInfo = formId > 0 ? Main.Instance.FormDao.GetFormInfo(formId) : Main.Instance.FormDao.GetFormInfoOrCreateIfNotExists(SiteId, channelId, contentId);
             ReturnUrl = HttpUtility.UrlDecode(Request.QueryString["returnUrl"]);
 
-            PageLogsUrl = Main.Instance.PluginApi.GetPluginUrl(
-                $"{nameof(PageLogs)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}");
-            PageResultsUrl = Main.Instance.PluginApi.GetPluginUrl(
-                $"{nameof(PageResults)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}");
-            PageFieldsUrl = Main.Instance.PluginApi.GetPluginUrl(
-                $"{nameof(PageFields)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}");
-            PageSettingsUrl = Main.Instance.PluginApi.GetPluginUrl(
-                $"{nameof(PageSettings)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}");
+            PageLogsUrl = $"{nameof(PageLogs)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
+            PageResultsUrl = $"{nameof(PageResults)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
+            PageFieldsUrl = $"{nameof(PageFields)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
+            PageSettingsUrl = $"{nameof(PageSettings)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
 
             if (!Main.Instance.AdminApi.IsSiteAuthorized(SiteId))
             {

@@ -35,9 +35,7 @@ namespace SS.Form.Pages
 
         public static string GetRedirectUrl(int siteId, int formId, string returnUrl)
         {
-            return
-                Main.Instance.PluginApi.GetPluginUrl(
-                    $"{nameof(PageSettings)}.aspx?siteId={siteId}&formId={formId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}");
+            return $"{nameof(PageSettings)}.aspx?siteId={siteId}&formId={formId}&returnUrl={HttpUtility.UrlEncode(returnUrl)}";
         }
 
         public void Page_Load(object sender, EventArgs e)

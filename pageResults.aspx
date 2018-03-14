@@ -14,68 +14,47 @@
 
     <form runat="server">
 
-      <header id="topnav">
-        <div class="navbar-custom">
-          <div class="container">
-            <div id="navigation">
-              <ul class="navigation-menu">
-                <li class="has-submenu">
-                  <a href="<%=PageLogsUrl%>">
-                    <i class="ion-compose"></i>
-                    数据列表
-                  </a>
-                </li>
-                <li class="has-submenu active">
-                  <a href="<%=PageResultsUrl%>">
-                    <i class="ion-compose"></i>
-                    数据统计
-                  </a>
-                </li>
-                <li class="has-submenu">
-                  <a href="<%=PageFieldsUrl%>">
-                    <i class="ion-compose"></i>
-                    字段管理
-                  </a>
-                </li>
-                <li class="has-submenu">
-                  <a href="<%=PageSettingsUrl%>">
-                    <i class="ion-compose"></i>
-                    选项设置
-                  </a>
-                </li>
-                <li class="has-submenu">
-                  <asp:LinkButton id="LbTemplate" onclick="LbTemplate_Click" runat="server">
-                    <i class="ion-compose"></i>
-                    自定义模板
-                  </asp:LinkButton>
-                </li>
-                <li class="has-submenu">
-                  <a href="<%=ReturnUrl%>">
-                    <i class="ion-ios-undo"></i>
-                    返回列表
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </header>
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" href="<%=PageLogsUrl%>">数据列表</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="<%=PageResultsUrl%>">数据统计</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<%=PageFieldsUrl%>">字段管理</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<%=PageSettingsUrl%>">选项设置</a>
+        </li>
+        <li class="nav-item">
+          <asp:LinkButton id="LbTemplate" class="nav-link" onclick="LbTemplate_Click" runat="server">
+            自定义模板
+          </asp:LinkButton>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<%=ReturnUrl%>">
+            <i class="ion-ios-undo"></i>
+            返回列表
+          </a>
+        </li>
+      </ul>
 
       <!-- container start -->
-      <div class="container" style="margin-top: 70px;">
+      <div class="container">
         <div class="m-b-25"></div>
 
         <div class="row">
-            <div class="col-sm-12">
-                <div class="text-center card-box">
-                    <h3 class="text-success counter">
-                        <asp:Literal id="LtlCount" runat="server" />
-                    </h3>
-                    <p class="text-muted">
-                        <asp:Button class="btn btn-success" id="BtnExport" onclick="BtnExport_Click" Text="导 出" runat="server" />
-                    </p>
-                </div>
+          <div class="col-sm-12">
+            <div class="text-center card-box">
+              <h3 class="text-success counter">
+                <asp:Literal id="LtlCount" runat="server" />
+              </h3>
+              <p class="text-muted">
+                <asp:Button class="btn btn-success" id="BtnExport" onclick="BtnExport_Click" Text="导 出" runat="server" />
+              </p>
             </div>
+          </div>
         </div>
 
         <div class="row">

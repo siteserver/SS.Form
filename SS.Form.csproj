@@ -118,7 +118,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\cleanslate.min.css" />
     <Content Include="assets\datePicker\calendar.js" />
     <Content Include="assets\datePicker\lang\en.js" />
     <Content Include="assets\datePicker\lang\zh-cn.js" />
@@ -147,6 +146,7 @@
     <Content Include="assets\layer\skin\default\xubox_title0.png" />
     <Content Include="assets\layer\skin\layer.css" />
     <Content Include="assets\layer\skin\layer.ext.css" />
+    <Content Include="assets\normalize.css" />
     <Content Include="assets\plugin-utils\css\bootstrap.min.css" />
     <Content Include="assets\plugin-utils\css\font-awesome.min.css" />
     <Content Include="assets\plugin-utils\css\ionicons.min.css" />
