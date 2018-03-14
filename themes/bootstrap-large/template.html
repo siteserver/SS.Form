@@ -34,7 +34,7 @@
 						<input type="checkbox" v-bind:id="schema.attributeName + '_' + item.id" v-bind:name="schema.attributeName" v-bind:value="item.value"
 						  v-model="attributes[schema.attributeName]">
 						<label v-bind:for="schema.attributeName + '_' + item.id">{{ item.value }}</label>
-						<input v-if="item.isExtra" type="text" value="" v-bind:name="schema.attributeName + '_' + item.id" v-model="attributes[schema.attributeName + '_' + item.id]"
+						<input v-if="item.isExtras" type="text" value="" v-bind:name="schema.attributeName + '_' + item.id" v-model="attributes[schema.attributeName + '_' + item.id]"
 						  style="width: 300px;margin-left: 10px;">
 						<br />
 					</div>
@@ -44,7 +44,7 @@
 						<input type="radio" v-bind:id="schema.attributeName + '_' + item.id" v-bind:name="schema.attributeName" v-bind:value="item.value"
 						  v-model="attributes[schema.attributeName]">
 						<label v-bind:for="schema.attributeName + '_' + item.id">{{ item.value }}</label>
-						<input v-if="item.isExtra" type="text" value="" v-bind:name="schema.attributeName + '_' + item.id" v-model="attributes[schema.attributeName + '_' + item.id]"
+						<input v-if="item.isExtras" type="text" value="" v-bind:name="schema.attributeName + '_' + item.id" v-model="attributes[schema.attributeName + '_' + item.id]"
 						  style="width: 300px;margin-left: 10px;">
 						<br />
 					</div>

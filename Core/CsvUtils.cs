@@ -56,9 +56,8 @@ namespace SS.Form.Core
             return retval;
         }
 
-        public static void Export(string relatedPath, List<string> head, List<List<string>> rows)
+        public static void Export(string filePath, List<string> head, List<List<string>> rows)
         {
-            var filePath = Main.Instance.FilesApi.GetTemporaryFilesPath(relatedPath);
             DeleteFileIfExists(filePath);
 
             var builder = new StringBuilder();
