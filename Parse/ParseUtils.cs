@@ -61,7 +61,7 @@ namespace SS.Form.Parse
             context.StlPageFoot["SS.Form.Parse.Foot." + vueId] = $@"
 <script type=""text/javascript"">
 Vue.use(VeeValidate);
-new Vue({{
+var {vueId} = new Vue({{
     el: '#{vueId}',
     data: {{
         title: {Utils.JsonSerialize(formInfo.Title)},
@@ -70,13 +70,13 @@ new Vue({{
         isCaptcha: {formSettings.IsCaptcha.ToString().ToLower()},
         attributes: {{{values.ToString().Trim()}}},
         code: '',
-        imgUrl: '{imgUrl}?' + new Date().getTime(),
+        imgUrl: '',
         isSuccess: false,
         errorMessage: '',
         schemas: {Utils.JsonSerialize(schemas)}
     }},
     methods: {{
-        reload: function (event) {{
+        load: function (event) {{
             this.imgUrl = '{imgUrl}?' + new Date().getTime();
         }},
         submit: function (event) {{
@@ -114,6 +114,7 @@ new Vue({{
         }}
     }}
 }});
+{vueId}.load();
 </script>";
         }
 

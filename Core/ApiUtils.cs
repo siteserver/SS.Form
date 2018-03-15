@@ -58,7 +58,7 @@ namespace SS.Form.Core
 
         public static object Submit(IRequest request, string id)
         {
-            var formId = Convert.ToInt32(id);
+            var formId = Utils.ToInt(id);
 
             var formInfo = Main.Instance.FormDao.GetFormInfo(formId);
             if (formInfo == null) return null;

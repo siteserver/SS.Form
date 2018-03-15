@@ -56,7 +56,9 @@ namespace SS.Form.Parse
 
             return $@"
 <div id=""{vueId}"" class=""normalize"">
-    {templateHtml}
+    <template v-show=""imgUrl"" style=""display: none"">
+        {templateHtml}
+    </template>
 </div>
 ";
         }

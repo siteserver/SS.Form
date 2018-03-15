@@ -25,10 +25,10 @@ namespace SS.Form.Pages
         {
             base.OnInit(e);
 
-            SiteId = Convert.ToInt32(Request.QueryString["siteId"]);
-            var channelId = Convert.ToInt32(Request.QueryString["channelId"]);
-            var contentId = Convert.ToInt32(Request.QueryString["contentId"]);
-            var formId = Convert.ToInt32(Request.QueryString["formId"]);
+            SiteId = Utils.ToInt(Request.QueryString["siteId"]);
+            var channelId = Utils.ToInt(Request.QueryString["channelId"]);
+            var contentId = Utils.ToInt(Request.QueryString["contentId"]);
+            var formId = Utils.ToInt(Request.QueryString["formId"]);
             FormInfo = formId > 0 ? Main.Instance.FormDao.GetFormInfo(formId) : Main.Instance.FormDao.GetFormInfoOrCreateIfNotExists(SiteId, channelId, contentId);
             ReturnUrl = HttpUtility.UrlDecode(Request.QueryString["returnUrl"]);
 
@@ -49,7 +49,7 @@ namespace SS.Form.Pages
             CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview", Main.Instance.DataApi.Encrypt(ParseUtils.GetFormStlElement(FormInfo)), 5);
             var url =
                 Main.Instance.FilesApi.GetAdminDirectoryUrl(
-                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={Main.Instance.DataApi.Encrypt(PageLogsUrl)}");
+                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={Main.Instance.DataApi.Encrypt(Main.Instance.PluginApi.GetPluginUrl(PageLogsUrl))}");
 
             Response.Redirect(Main.Instance.FilesApi.GetAdminDirectoryUrl($"loading.aspx?redirectUrl={Main.Instance.DataApi.Encrypt(url)}"));
         }

@@ -20,7 +20,7 @@ namespace SS.Form.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _logInfo = Main.Instance.LogDao.GetLogInfo(Convert.ToInt32(Request.QueryString["logId"]));
+            _logInfo = Main.Instance.LogDao.GetLogInfo(Utils.ToInt(Request.QueryString["logId"]));
 
             if (IsPostBack) return;
 

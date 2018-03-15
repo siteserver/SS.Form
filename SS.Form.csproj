@@ -70,10 +70,22 @@
     <Compile Include="Model\FieldItemInfo.cs" />
     <Compile Include="Model\FieldType.cs" />
     <Compile Include="Model\FormSettings.cs" />
+    <Compile Include="Pages\ModalFieldValidate.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Pages\ModalView.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\ModalSelectColumns.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\ModalFieldAdd.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\ModalFormAdd.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\ModalFormImport.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\PageManagement.cs">

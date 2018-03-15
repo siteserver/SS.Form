@@ -84,7 +84,7 @@ namespace SS.Form.Provider
         {
             int formId;
 
-            if (formInfo.ChannelId > 0 && formInfo.ContentId > 0)
+            if (formInfo.ContentId == 0)
             {
                 formInfo.Taxis = GetMaxTaxis(formInfo.SiteId) + 1;
             }
@@ -261,7 +261,7 @@ namespace SS.Form.Provider
                 {nameof(FormInfo.TimeToStart)}, 
                 {nameof(FormInfo.TimeToEnd)}, 
                 {nameof(FormInfo.Settings)}
-            FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = 0 AND {nameof(FormInfo.ContentId)} = 0 ORDER BY Id DESC";
+            FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = 0 AND {nameof(FormInfo.ContentId)} = 0 ORDER BY Taxis DESC";
 
             using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
             {

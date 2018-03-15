@@ -49,6 +49,26 @@ namespace SS.Form.Core
             return datetime;
         }
 
+        public static bool ToBool(string boolStr)
+        {
+            bool boolean;
+            if (!bool.TryParse(boolStr?.Trim(), out boolean))
+            {
+                boolean = false;
+            }
+            return boolean;
+        }
+
+        public static int ToInt(string intStr)
+        {
+            int i;
+            if (!int.TryParse(intStr?.Trim(), out i))
+            {
+                i = 0;
+            }
+            return i;
+        }
+
         public static string GetMessageHtml(string message, bool isSuccess)
         {
             return isSuccess

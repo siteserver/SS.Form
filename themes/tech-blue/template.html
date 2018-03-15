@@ -5,10 +5,10 @@
 	<!-- template start -->
 	<div class="ss_form_wrapper">
 		<div class="ss_form_main">
-			<h1 class="ss_form_head_title">
+			<h1 class="ss_form_head_title" v-show="title">
 				{{ title }}
 			</h1>
-			<div class="ss_form_head_desc">
+			<div class="ss_form_head_desc" v-show="description">
 				{{ description }}
 			</div>
 			<div class="ss_form_bg"></div>
@@ -32,7 +32,7 @@
 						<div v-else-if="schema.fieldType === 'CheckBox'" class="ss_form_body">
 							<div v-for="item in schema.items">
 								<input type="checkbox" v-bind:id="schema.attributeName + '_' + item.id" v-bind:name="schema.attributeName" v-bind:value="item.value"
-								  v-model="attributes[schema.attributeName]">
+								  v-model="attributes[schema.attributeName]" v-validate="{ required: schema.isRequired }">
 								<label v-bind:for="schema.attributeName + '_' + item.id">{{ item.value }}</label>
 								<input v-if="item.isExtras" type="text" value="" v-bind:name="schema.attributeName + '_' + item.id" v-model="attributes[schema.attributeName + '_' + item.id]"
 								  style="width: 300px;margin-left: 10px;">
@@ -42,7 +42,7 @@
 						<div v-else-if="schema.fieldType === 'Radio'" class="ss_form_body">
 							<div v-for="item in schema.items">
 								<input type="radio" v-bind:id="schema.attributeName + '_' + item.id" v-bind:name="schema.attributeName" v-bind:value="item.value"
-								  v-model="attributes[schema.attributeName]">
+								  v-model="attributes[schema.attributeName]" v-validate="{ required: schema.isRequired }">
 								<label v-bind:for="schema.attributeName + '_' + item.id">{{ item.value }}</label>
 								<input v-if="item.isExtras" type="text" value="" v-bind:name="schema.attributeName + '_' + item.id" v-model="attributes[schema.attributeName + '_' + item.id]"
 								  style="width: 300px;margin-left: 10px;">

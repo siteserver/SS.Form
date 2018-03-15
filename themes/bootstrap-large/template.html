@@ -4,12 +4,11 @@
 <div class="bootstrap-large">
 
 	<div class="container">
-		<div class="py-5 text-center">
-
-			<h2>
+		<div class="py-5 text-center" v-show="title || description">
+			<h2 v-show="title">
 				{{ title }}
 			</h2>
-			<p class="lead">
+			<p class="lead" v-show="description">
 				{{ description }}
 			</p>
 		</div>
@@ -17,12 +16,12 @@
 		<div v-show="isEnabled && !isSuccess" style="display: none">
 
 			<div class="mb-3" v-for="schema in schemas">
-				<label for="email">
-					{{ schema.title }}
-					<span class="text-muted" v-if="schema.description">
+				<label>
+					<span class="font-weight-bold">{{ schema.title }}</span>
+					<span class="font-weight-light" v-if="schema.description">
 						{{ schema.description }}
 					</span>
-					<i v-if="schema.isRequired">(必填)</i>
+					<span class="font-italic" v-if="schema.isRequired">(必填)</span>
 				</label>
 
 				<div v-if="schema.fieldType === 'TextArea'">
@@ -32,7 +31,7 @@
 				<div v-else-if="schema.fieldType === 'CheckBox'">
 					<div v-for="item in schema.items">
 						<input type="checkbox" v-bind:id="schema.attributeName + '_' + item.id" v-bind:name="schema.attributeName" v-bind:value="item.value"
-						  v-model="attributes[schema.attributeName]">
+						  v-model="attributes[schema.attributeName]" v-validate="{ required: schema.isRequired }">
 						<label v-bind:for="schema.attributeName + '_' + item.id">{{ item.value }}</label>
 						<input v-if="item.isExtras" type="text" value="" v-bind:name="schema.attributeName + '_' + item.id" v-model="attributes[schema.attributeName + '_' + item.id]"
 						  style="width: 300px;margin-left: 10px;">
@@ -42,7 +41,7 @@
 				<div v-else-if="schema.fieldType === 'Radio'">
 					<div v-for="item in schema.items">
 						<input type="radio" v-bind:id="schema.attributeName + '_' + item.id" v-bind:name="schema.attributeName" v-bind:value="item.value"
-						  v-model="attributes[schema.attributeName]">
+						  v-model="attributes[schema.attributeName]" v-validate="{ required: schema.isRequired }">
 						<label v-bind:for="schema.attributeName + '_' + item.id">{{ item.value }}</label>
 						<input v-if="item.isExtras" type="text" value="" v-bind:name="schema.attributeName + '_' + item.id" v-model="attributes[schema.attributeName + '_' + item.id]"
 						  style="width: 300px;margin-left: 10px;">

@@ -40,7 +40,6 @@
         </li>
       </ul>
 
-      <!-- container start -->
       <div class="container">
         <div class="m-b-25"></div>
         <div class="row">
@@ -84,9 +83,7 @@
           </div>
         </div>
       </div>
-      <!-- container end -->
 
-      <asp:Literal id="LtlScript" runat="server"></asp:Literal>
     </form>
   </body>
 

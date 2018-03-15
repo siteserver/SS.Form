@@ -16,8 +16,6 @@ namespace SS.Form.Pages
         public Button BtnExport;
         public Button BtnSettings;
 
-        public Literal LtlScript;
-
         private List<FieldInfo> _fieldInfoList;
 
         public static string GetRedirectUrl(int siteId, int channelId, int contentId, string returnUrl)
@@ -37,7 +35,7 @@ namespace SS.Form.Pages
             if (!string.IsNullOrEmpty(Request.QueryString["delete"]) &&
                 !string.IsNullOrEmpty(Request.QueryString["logId"]))
             {
-                var logId = Convert.ToInt32(Request.QueryString["logId"]);
+                var logId = Utils.ToInt(Request.QueryString["logId"]);
                 Main.Instance.LogDao.Delete(logId);
                 LtlMessage.Text = Utils.GetMessageHtml("删除成功！", true);
             }
