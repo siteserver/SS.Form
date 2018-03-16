@@ -76,7 +76,7 @@
 
 					<div class="clearfix">
 						<input type="text" class="form-control float-left" style="width:180px; margin-right: 10px" name="code" v-model="code" :class="{'error': errors.has('code') }" v-validate="{ required: true }">
-						<img :src="imgUrl" @click="reload" class="float-left" style="width: 105px; height: 35px" />
+						<img :src="imgUrl" @click="load" class="float-left" style="width: 105px; height: 35px" />
 					</div>
 
 					<div class="invalid-feedback" style="display: block" v-show="errors.has('code')">

@@ -74,7 +74,7 @@
 
 				<div v-if="isCaptcha" class="ss_form_code">
 					<input type="text" v-model="code" />
-					<img :src="imgUrl" class="ss_form_code_img" @click="reload" style="width: 105px; height: 35px" />
+					<img :src="imgUrl" class="ss_form_code_img" @click="load" style="width: 105px; height: 35px" />
 					<span>请输入验证码</span>
 				</div>
 				<a @click="submit" href="javascript:;" class="ss_form_btn">提 交</a>
@@ -150,7 +150,7 @@
 			}]
 		},
 		methods: {
-			reload: function (event) {
+			load: function (event) {
 				this.imgUrl = '/api/plugins/SS.Form/Captcha/2?' + new Date().getTime();
 			},
 
