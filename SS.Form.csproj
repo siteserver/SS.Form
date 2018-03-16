@@ -173,6 +173,10 @@
     <Content Include="assets\readme\003.jpg" />
     <Content Include="assets\readme\import05.png" />
     <Content Include="assets\sweetalert\sweetalert.min.js" />
+    <Content Include="modalFieldAdd.aspx" />
+    <Content Include="modalFieldValidate.aspx" />
+    <Content Include="modalFormAdd.aspx" />
+    <Content Include="modalFormImport.aspx" />
     <Content Include="modalSelectColumns.aspx" />
     <Content Include="modalTest.aspx" />
     <Content Include="modalView.aspx" />
