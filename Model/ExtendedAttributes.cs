@@ -187,7 +187,7 @@ namespace SS.Form.Model
             _dataNvc.Remove(name);
         }
 
-        public void Set(string name, string value)
+        public void Set(string name, object value)
         {
             name = name.ToLower();
 
@@ -197,7 +197,7 @@ namespace SS.Form.Model
             }
             else
             {
-                _dataNvc[name] = value;
+                _dataNvc[name] = value.ToString();
             }
         }
 
@@ -256,6 +256,10 @@ namespace SS.Form.Model
         }
 
         public int Count => _dataNvc.Count;
+        public string Get(string name)
+        {
+            return GetString(name);
+        }
     }
 
     internal class ExtendAttributesUtils
