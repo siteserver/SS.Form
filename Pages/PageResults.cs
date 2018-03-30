@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.UI.WebControls;
 using Newtonsoft.Json;
 using SS.Form.Core;
@@ -272,7 +273,7 @@ namespace SS.Form.Pages
 
             CsvUtils.Export(Main.Instance.PluginApi.GetPluginPath(relatedPath), head, rows);
 
-            Response.Redirect(Main.Instance.PluginApi.GetPluginUrl(relatedPath));
+            HttpContext.Current.Response.Redirect(Main.Instance.PluginApi.GetPluginUrl(relatedPath));
         }
 
         //        private void RptItems_ItemDataBound(object sender, RepeaterItemEventArgs e)

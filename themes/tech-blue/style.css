@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 
 .ss_form_wrapper { 
   font-family: '微软雅黑', 'Open Sans', Arial, 'Microsoft YaHei', sans-serif; font-size: 14px; font-style: normal; line-height: 22px; font-weight: normal; font-variant: normal; color: #333333; background: #fff; 
@@ -6,7 +6,7 @@
 }
 .ss_form_main { margin: 0; padding: 0; background: rgba(255, 255, 255, 0.8); width: 1039px; margin: 30px auto 100px; color: #4b4b4b; overflow: hidden; padding-bottom: 110px; }
 
-.ss_form_main .ss_form_head_title { margin: 0; padding: 0; padding: 40px 0; text-align: center; font-size: 40px; color: #156ec0; font-weight: 400; }
+.ss_form_main .ss_form_head_title { margin: 0; padding: 0; padding: 40px 0; text-align: center; font-size: 40px; color: #156ec0; font-weight: 400; line-height: 1.2; }
 
 .ss_form_main .ss_form_head_desc { margin: 0; padding: 0; padding: 0 90px 40px; font-size: 18px; line-height: 1.8; }
 
