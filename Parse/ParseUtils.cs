@@ -15,16 +15,13 @@ namespace SS.Form.Parse
         {
             var assetsUrl = Main.Instance.PluginApi.GetPluginUrl("assets");
 
-            context.StlPageHead["SS.Form.Parse.Head"] = $@"
-<link rel=""stylesheet"" type=""text/css"" href=""{assetsUrl}/normalize.css"" />";
-
             context.StlPageFoot["SS.Form.Parse.Foot"] = $@"
 <script src=""{assetsUrl}/js/vue-2.1.10.min.js"" type=""text/javascript""></script>
 <script src=""{assetsUrl}/js/vee-validate.js"" type=""text/javascript""></script>
 <script src=""{assetsUrl}/js/jquery.min.js"" type=""text/javascript""></script>";
         }
 
-        public static void RegisterFormCode(IParseContext context, string vueId, FormInfo formInfo, FormSettings formSettings)
+        public static void RegisterCode(IParseContext context, string vueId, FormInfo formInfo, FormSettings formSettings)
         {
             var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formInfo.Id, true);
 
@@ -78,6 +75,13 @@ var {vueId} = new Vue({{
     methods: {{
         load: function (event) {{
             this.imgUrl = '{imgUrl}?' + new Date().getTime();
+        }},
+        getAttributeName: function (title) {{
+            var result = $.grep(this.schemas, function (e) {{ return e.title == title; }});
+            if (result && result.length == 1) {{
+                return result[0].attributeName;
+            }}
+            return '';
         }},
         submit: function (event) {{
             this.errorMessage = '';

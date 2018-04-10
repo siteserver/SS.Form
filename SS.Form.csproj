@@ -161,7 +161,6 @@
     <Content Include="assets\layer\skin\default\xubox_title0.png" />
     <Content Include="assets\layer\skin\layer.css" />
     <Content Include="assets\layer\skin\layer.ext.css" />
-    <Content Include="assets\normalize.css" />
     <Content Include="assets\plugin-utils\css\bootstrap.min.css" />
     <Content Include="assets\plugin-utils\css\font-awesome.min.css" />
     <Content Include="assets\plugin-utils\css\ionicons.min.css" />

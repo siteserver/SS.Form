@@ -4,13 +4,12 @@ using SS.Form.Model;
 
 namespace SS.Form.Parse
 {
-    public class StlForm
+    public static class StlForm
     {
-        private StlForm() { }
         public const string ElementName = "stl:form";
 
-        public const string AttributeTitle = "title";
-        public const string AttributeTheme = "theme";
+        private const string AttributeTitle = "title";
+        private const string AttributeTheme = "theme";
 
         public static string Parse(IParseContext context)
         {
@@ -42,20 +41,26 @@ namespace SS.Form.Parse
             }
             theme = ParseUtils.GetTheme(theme);
 
-            return formInfo == null ? string.Empty : ParseImpl(context, formInfo, formSettings, theme);
+            if (formInfo == null) return string.Empty;
+
+            var templateHtml = context.StlInnerXml;
+            if (string.IsNullOrWhiteSpace(templateHtml))
+            {
+                templateHtml = ParseUtils.GetTemplateHtml(theme);
+            }
+
+            return ParseImpl(context, formInfo, formSettings, templateHtml);
         }
 
-        public static string ParseImpl(IParseContext context, FormInfo formInfo, FormSettings formSettings, string theme)
+        private static string ParseImpl(IParseContext context, FormInfo formInfo, FormSettings formSettings, string templateHtml)
         {
             ParseUtils.RegisterPage(context);
 
             var vueId = "vm_" + System.Guid.NewGuid().ToString().Replace("-", string.Empty);
-            ParseUtils.RegisterFormCode(context, vueId, formInfo, formSettings);
-
-            var templateHtml = !string.IsNullOrWhiteSpace(context.StlInnerXml) ? Main.Instance.ParseApi.ParseInnerXml(context.StlInnerXml, context) : ParseUtils.GetTemplateHtml(theme);
+            ParseUtils.RegisterCode(context, vueId, formInfo, formSettings);
 
             return $@"
-<div id=""{vueId}"" class=""normalize"">
+<div id=""{vueId}"">
     <template v-show=""imgUrl"" style=""display: none"">
         {templateHtml}
     </template>
