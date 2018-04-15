@@ -66,12 +66,19 @@
     - Release
 
   environment:
+    nodejs_version: "8"
     TreatWarningsAsErrors: false
+
+  install:
+    - npm install gulp-cli -g
+    - npm install gitbook-cli -g
+    - npm install
 
   skip_tags: true
 
   cache:
     - packages -> **\packages.config
+    - node_modules                        # local npm modules
 
   before_build:
     - nuget restore SS.Form.sln
@@ -79,6 +86,10 @@
   build:
     project: SS.Form.sln       # path to Visual Studio solution or project
     publish_nuget: true
+
+  after_build:
+    - gulp build
+    - gulp publish
 
   artifacts:
     - path: '**/*.nupkg'

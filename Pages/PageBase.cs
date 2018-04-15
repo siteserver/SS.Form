@@ -12,6 +12,7 @@ namespace SS.Form.Pages
         protected int SiteId { get; private set; }
         protected FormInfo FormInfo { get; private set; }
         protected string ReturnUrl { get; private set; }
+        protected string FormTitle { get; private set; }
 
         public string PageLogsUrl { get; private set; }
 
@@ -31,6 +32,7 @@ namespace SS.Form.Pages
             var formId = Utils.ToInt(Request.QueryString["formId"]);
             FormInfo = formId > 0 ? Main.Instance.FormDao.GetFormInfo(formId) : Main.Instance.FormDao.GetFormInfoOrCreateIfNotExists(SiteId, channelId, contentId);
             ReturnUrl = HttpUtility.UrlDecode(Request.QueryString["returnUrl"]);
+            FormTitle = FormInfo.Title;
 
             PageLogsUrl = $"{nameof(PageLogs)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
             PageResultsUrl = $"{nameof(PageResults)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";

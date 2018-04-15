@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
+using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 
@@ -36,7 +37,7 @@ namespace SS.Form.Pages
             var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
             var fieldInfo = fieldId > 0 ? Main.Instance.FieldDao.GetFieldInfo(fieldId, true) : new FieldInfo();
 
-            FieldTypeUtils.AddListItems(DdlFieldType);
+            Utils.AddListItems(DdlFieldType);
 
             DdlIsRapid.SelectedValue = fieldInfo.Id != 0 ? false.ToString() : true.ToString();
 
@@ -89,12 +90,12 @@ namespace SS.Form.Pages
             if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem) return;
 
             var item = (FieldItemInfo) e.Item.DataItem;
-            var fieldType = FieldTypeUtils.GetEnumType(DdlFieldType.SelectedValue);
+            var fieldType = DdlFieldType.SelectedValue;
 
             var cbIsSelected = (CheckBox) e.Item.FindControl("CbIsSelected");
             var cbIsExtras = (CheckBox)e.Item.FindControl("CbIsExtras");
 
-            if (fieldType == FieldType.CheckBox || fieldType == FieldType.Radio)
+            if (fieldType == InputType.CheckBox.Value || fieldType == InputType.Radio.Value)
             {
                 cbIsExtras.Visible = true;
             }
@@ -240,8 +241,8 @@ namespace SS.Form.Pages
                         var cbIsSelected = (CheckBox) item.FindControl("CbIsSelected");
                         var cbIsExtras = (CheckBox)item.FindControl("CbIsExtras");
 
-                        if ((Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.Radio)) ||
-                             Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.SelectOne))) && isHasSelected &&
+                        if ((Utils.EqualsIgnoreCase(fieldInfo.FieldType, InputType.Radio.Value) ||
+                             Utils.EqualsIgnoreCase(fieldInfo.FieldType, InputType.SelectOne.Value)) && isHasSelected &&
                             cbIsSelected.Checked)
                         {
                             LtlMessage.Text = Utils.GetMessageHtml("操作失败，只能有一个初始化时选定项！", false);

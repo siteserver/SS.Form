@@ -272,7 +272,117 @@ namespace SS.Form.Provider
                 rdr.Close();
             }
 
+            if (list.Count == 0)
+            {
+                list.Add(CreateDefaultForm(siteId));
+            }
+
             return list;
+        }
+
+        private FormInfo CreateDefaultForm(int siteId)
+        {
+            var formInfo = new FormInfo
+            {
+                SiteId = siteId,
+                ChannelId = 0,
+                ContentId = 0,
+                Title = "默认表单",
+                Description = "系统创建的默认表单",
+                IsTimeout = false,
+                TimeToStart = DateTime.Now,
+                TimeToEnd = DateTime.Now.AddMonths(3)
+            };
+            formInfo.Id = Insert(formInfo);
+
+            Main.Instance.FieldDao.Insert(new FieldInfo
+            {
+                FormId = formInfo.Id,
+                Title = "姓名",
+                PlaceHolder = "请输入您的姓名",
+                FieldType = InputType.Text.Value,
+                Settings = new FieldSettings
+                {
+                    IsRequired = true,
+                    IsVisibleInList = true
+                }.ToString()
+            });
+            Main.Instance.FieldDao.Insert(new FieldInfo
+            {
+                FormId = formInfo.Id,
+                Title = "手机",
+                PlaceHolder = "请输入您的手机号码",
+                FieldType = InputType.Text.Value,
+                Settings = new FieldSettings
+                {
+                    IsRequired = true,
+                    IsVisibleInList = true,
+                    ValidateType = ValidateType.Mobile
+                }.ToString()
+            });
+            Main.Instance.FieldDao.Insert(new FieldInfo
+            {
+                FormId = formInfo.Id,
+                Title = "年龄",
+                PlaceHolder = "请输入您的年龄",
+                FieldType = InputType.Text.Value,
+                Settings = new FieldSettings
+                {
+                    IsRequired = true,
+                    IsVisibleInList = true,
+                    ValidateType = ValidateType.Integer
+                }.ToString()
+            });
+            Main.Instance.FieldDao.Insert(new FieldInfo
+            {
+                FormId = formInfo.Id,
+                Title = "所在城市",
+                PlaceHolder = "请输入您的所在城市",
+                FieldType = InputType.Text.Value,
+                Settings = new FieldSettings
+                {
+                    IsRequired = true,
+                    IsVisibleInList = true
+                }.ToString()
+            });
+            var sex = new FieldInfo
+            {
+                FormId = formInfo.Id,
+                Title = "性别",
+                FieldType = InputType.Radio.Value,
+                Settings = new FieldSettings
+                {
+                    IsRequired = true,
+                    IsVisibleInList = true
+                }.ToString()
+            };
+
+            sex.Id = Main.Instance.FieldDao.Insert(sex);
+            sex.Items = new List<FieldItemInfo>
+            {
+                new FieldItemInfo
+                {
+                    FieldId = sex.Id,
+                    FormId = formInfo.Id,
+                    Value = "男"
+                },
+                new FieldItemInfo
+                {
+                    FieldId = sex.Id,
+                    FormId = formInfo.Id,
+                    Value = "女"
+                }
+            };
+            Main.Instance.FieldItemDao.InsertItems(formInfo.Id, sex.Id, sex.Items);
+            Main.Instance.FieldDao.Insert(new FieldInfo
+            {
+                FormId = formInfo.Id,
+                Title = "留言",
+                PlaceHolder = "请输入您的留言",
+                FieldType = InputType.TextArea.Value
+            });
+
+            return formInfo;
         }
 
         public FormInfo GetFormInfoOrCreateIfNotExists(int siteId, int channelId, int contentId)

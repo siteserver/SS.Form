@@ -22,8 +22,6 @@ namespace SS.Form.Pages
         public DateTimeTextBox TbTimeToEnd;
         public CheckBox CbIsCaptcha;
 
-        public PlaceHolder PhSmsPluginNotInstalled;
-
         public PlaceHolder PhSms;
         public DropDownList DdlIsAdministratorSmsNotify;
         public PlaceHolder PhIsAdministratorSmsNotify;
@@ -82,10 +80,6 @@ namespace SS.Form.Pages
                 TbAdministratorSmsNotifyMobile.Text = settings.AdministratorSmsNotifyMobile;
 
                 PhIsAdministratorSmsNotify.Visible = Convert.ToBoolean(DdlIsAdministratorSmsNotify.SelectedValue);
-            }
-            else
-            {
-                PhSmsPluginNotInstalled.Visible = true;
             }
         }
 

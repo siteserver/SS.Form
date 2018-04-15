@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.UI.WebControls;
 using Newtonsoft.Json;
+using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 
@@ -44,9 +45,7 @@ namespace SS.Form.Pages
                 e.Item.Visible = false;
                 return;
             }
-            if (_fieldInfo.FieldType != nameof(FieldType.CheckBox) && _fieldInfo.FieldType != nameof(FieldType.Radio) &&
-                _fieldInfo.FieldType != nameof(FieldType.SelectOne) &&
-                _fieldInfo.FieldType != nameof(FieldType.SelectMultiple))
+            if (Utils.IsSelectFieldType(_fieldInfo.FieldType))
             {
                 e.Item.Visible = false;
                 return;
@@ -79,8 +78,8 @@ namespace SS.Form.Pages
                     itemValues.Add(item.Value);
                 }
             }
-            var isMultiple = fieldInfo.FieldType == nameof(FieldType.CheckBox) ||
-                             fieldInfo.FieldType == nameof(FieldType.SelectMultiple);
+            var isMultiple = fieldInfo.FieldType == InputType.CheckBox.Value ||
+                             fieldInfo.FieldType == InputType.SelectMultiple.Value;
 
             
             foreach (var logInfo in logInfoList)
@@ -125,8 +124,8 @@ namespace SS.Form.Pages
             if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem) return;
 
             var itemInfo = (FieldItemInfo)e.Item.DataItem;
-            var isMultiple = _fieldInfo.FieldType == nameof(FieldType.CheckBox) ||
-                             _fieldInfo.FieldType == nameof(FieldType.SelectMultiple);
+            var isMultiple = _fieldInfo.FieldType == InputType.CheckBox.Value ||
+                             _fieldInfo.FieldType == InputType.SelectMultiple.Value;
 
             var ltlTitle = (Literal)e.Item.FindControl("ltlTitle");
             var ltlSummary = (Literal)e.Item.FindControl("ltlSummary");
@@ -194,10 +193,7 @@ namespace SS.Form.Pages
             {
                 if (fieldInfo.Items == null || fieldInfo.Items.Count == 0) continue;
 
-                if (fieldInfo.FieldType != nameof(FieldType.CheckBox) &&
-                    fieldInfo.FieldType != nameof(FieldType.Radio) &&
-                    fieldInfo.FieldType != nameof(FieldType.SelectOne) &&
-                    fieldInfo.FieldType != nameof(FieldType.SelectMultiple)) continue;
+                if (Utils.IsSelectFieldType(fieldInfo.FieldType)) continue;
 
                 rows.Add(new List<string>
                 {
@@ -210,8 +206,8 @@ namespace SS.Form.Pages
 
                 var logTotalCount = GetLogTotalCount(fieldInfo, _logInfoList);
 
-                var isMultiple = fieldInfo.FieldType == nameof(FieldType.CheckBox) ||
-                             fieldInfo.FieldType == nameof(FieldType.SelectMultiple);
+                var isMultiple = fieldInfo.FieldType == InputType.CheckBox.Value ||
+                             fieldInfo.FieldType == InputType.SelectMultiple.Value;
 
                 foreach (var itemInfo in fieldInfo.Items)
                 {

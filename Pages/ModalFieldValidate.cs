@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 
@@ -31,7 +32,7 @@ namespace SS.Form.Pages
             var settings = new FieldSettings(fieldInfo.Settings);
             Utils.SelectSingleItem(DdlIsRequired, settings.IsRequired.ToString());
 
-            if (Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.Text)) || Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.TextArea)))
+            if (Utils.EqualsIgnoreCase(fieldInfo.FieldType, InputType.Text.Value) || Utils.EqualsIgnoreCase(fieldInfo.FieldType, InputType.TextArea.Value))
             {
                 PhNum.Visible = PhValidateType.Visible = true;
             }

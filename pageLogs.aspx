@@ -4,19 +4,18 @@
 
   <head>
     <meta charset="utf-8">
-    <link href="assets/plugin-utils/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/plugin-utils.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/siteserver.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/ionicons.min.css" rel="stylesheet" type="text/css" />
   </head>
 
   <body>
 
     <form runat="server">
 
-      <ul class="nav nav-tabs">
-        <li class="nav-item active">
-          <a class="nav-link" href="<%=PageLogsUrl%>">数据列表</a>
+      <ul class="nav nav-tabs tabs-bordered nav-justified">
+        <li class="nav-item">
+          <a class="nav-link active" href="<%=PageLogsUrl%>">数据列表</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="<%=PageResultsUrl%>">数据统计</a>
@@ -40,10 +39,25 @@
         </li>
       </ul>
 
-      <div class="container">
-        <div class="m-b-25"></div>
+      <div class="m-3">
+
         <div class="row">
-          <div class="col-sm-12">
+          <div class="m-2 col-12">
+            <div class="float-right">
+              <a href="http://plugins.siteserver.cn/ss.form/docs/" target="_blank">使用教程</a>
+              模板标签：
+              <code>
+                  &lt;stl:form title="<%=FormTitle%>"&gt;&lt;/stl:form&gt;
+              </code>
+            </div>
+            <h4 class="float-left">
+              <%=FormTitle%>
+            </h4>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
             <div class="card-box">
               <h4 class="text-dark  header-title m-t-0">数据提交记录</h4>
               <p class="text-muted m-b-25 font-13"></p>
@@ -82,6 +96,7 @@
             </div>
           </div>
         </div>
+
       </div>
 
     </form>
@@ -89,6 +104,5 @@
 
   </html>
   <script src="assets/plugin-utils/js/jquery.min.js"></script>
-  <script src="assets/plugin-utils/js/bootstrap.min.js"></script>
   <script src="assets/layer/layer.min.js" type="text/javascript"></script>
   <script src="assets/sweetalert/sweetalert.min.js" type="text/javascript"></script>

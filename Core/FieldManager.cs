@@ -29,7 +29,7 @@ namespace SS.Form.Core
 
         public static bool IsExtra(FieldInfo fieldInfo)
         {
-            if (!FieldTypeUtils.IsItems(FieldTypeUtils.GetEnumType(fieldInfo.FieldType)) || fieldInfo.Items == null || fieldInfo.Items.Count == 0) return false;
+            if (!Utils.IsSelectFieldType(fieldInfo.FieldType) || fieldInfo.Items == null || fieldInfo.Items.Count == 0) return false;
             foreach (var item in fieldInfo.Items)
             {
                 if (item.IsExtras)

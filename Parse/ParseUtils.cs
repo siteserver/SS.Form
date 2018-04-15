@@ -32,7 +32,7 @@ namespace SS.Form.Parse
             var values = new StringBuilder();
             foreach (var fieldInfo in fieldInfoList)
             {
-                var fieldType = FieldTypeUtils.GetEnumType(fieldInfo.FieldType);
+                var fieldType = fieldInfo.FieldType;
                 var attributeName = FieldManager.GetAttributeId(fieldInfo.Id);
                 var settings = new FieldSettings(fieldInfo.Settings);
                 schemas.Add(new
@@ -45,7 +45,7 @@ namespace SS.Form.Parse
                     Items = fieldInfo.Items ?? new List<FieldItemInfo>()
                 });
 
-                if (fieldType == FieldType.SelectMultiple || fieldType == FieldType.CheckBox)
+                if (fieldType == InputType.SelectMultiple.Value || fieldType == InputType.CheckBox.Value)
                 {
                     values.Append($"{attributeName}: [],");
                 }

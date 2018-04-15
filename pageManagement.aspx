@@ -4,17 +4,15 @@
 
   <head>
     <meta charset="utf-8">
-    <link href="assets/plugin-utils/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/plugin-utils.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/siteserver.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/ionicons.min.css" rel="stylesheet" type="text/css" />
   </head>
 
   <body>
     <form runat="server">
 
-      <div class="container">
-        <div class="m-b-25"></div>
+      <div class="m-3">
 
         <div class="row">
           <div class="col-sm-12">

@@ -78,7 +78,7 @@ namespace SS.Form.Pages
 
             ltlTitle.Text = fieldInfo.Title;
             ltlDescription.Text = fieldInfo.Description;
-            ltlFieldType.Text = FieldTypeUtils.GetText(FieldTypeUtils.GetEnumType(fieldInfo.FieldType));
+            ltlFieldType.Text = Utils.GetFieldTypeText(fieldInfo.FieldType);
 
             ltlValidate.Text = ValidateTypeUtils.GetValidateInfo(settings.IsRequired,
                 settings.MinNum, settings.MaxNum, settings.ValidateType);

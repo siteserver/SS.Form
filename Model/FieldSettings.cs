@@ -5,6 +5,11 @@ namespace SS.Form.Model
 {
     public class FieldSettings : ExtendedAttributes
     {
+        public FieldSettings()
+        {
+
+        }
+
         public FieldSettings(string extendValues): base(extendValues) { }
 
         public bool IsVisibleInList
@@ -15,7 +20,7 @@ namespace SS.Form.Model
 
         public bool IsRequired
         {
-            get { return GetBool("IsRequired", true); }
+            get { return GetBool("IsRequired"); }
             set { Set("IsRequired", value.ToString()); }
         }
 

@@ -11,13 +11,73 @@ using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using SS.Form.Model;
+using SiteServer.Plugin;
 
 namespace SS.Form.Core
 {
-    public class Utils
+    public static class Utils
     {
         public static readonly Color[] Colors = { Color.FromArgb(37, 72, 91), Color.FromArgb(68, 24, 25), Color.FromArgb(17, 46, 2), Color.FromArgb(70, 16, 100), Color.FromArgb(24, 88, 74) };
+
+        public static string GetFieldTypeText(string fieldType)
+        {
+            if (fieldType == InputType.CheckBox.Value)
+            {
+                return "多选项";
+            }
+            if (fieldType == InputType.Radio.Value)
+            {
+                return "单选项";
+            }
+            if (fieldType == InputType.SelectOne.Value)
+            {
+                return "下拉列表(单选)";
+            }
+            if (fieldType == InputType.SelectMultiple.Value)
+            {
+                return "下拉列表(多选)";
+            }
+            if (fieldType == InputType.Text.Value)
+            {
+                return "文本框(单行)";
+            }
+            if (fieldType == InputType.TextArea.Value)
+            {
+                return "文本框(多行)";
+            }
+            throw new Exception();
+        }
+
+        public static ListItem GetListItem(InputType type, bool selected)
+        {
+            var item = new ListItem(GetFieldTypeText(type.Value), type.Value);
+            if (selected)
+            {
+                item.Selected = true;
+            }
+            return item;
+        }
+
+        public static void AddListItems(ListControl listControl)
+        {
+            if (listControl != null)
+            {
+                listControl.Items.Add(GetListItem(InputType.Text, false));
+                listControl.Items.Add(GetListItem(InputType.TextArea, false));
+                listControl.Items.Add(GetListItem(InputType.CheckBox, false));
+                listControl.Items.Add(GetListItem(InputType.Radio, false));
+                listControl.Items.Add(GetListItem(InputType.SelectOne, false));
+                listControl.Items.Add(GetListItem(InputType.SelectMultiple, false));
+            }
+        }
+
+        public static bool IsSelectFieldType(string fieldType)
+        {
+            return EqualsIgnoreCase(fieldType, InputType.CheckBox.Value) ||
+                   EqualsIgnoreCase(fieldType, InputType.Radio.Value) ||
+                   EqualsIgnoreCase(fieldType, InputType.SelectMultiple.Value) ||
+                   EqualsIgnoreCase(fieldType, InputType.SelectOne.Value);
+        }
 
         public static bool EqualsIgnoreCase(string a, string b)
         {
@@ -31,7 +91,7 @@ namespace SS.Form.Core
             return ToDateTime(dateTimeStr, DateTime.Now);
         }
 
-        public static DateTime ToDateTime(string dateTimeStr, DateTime defaultValue)
+        private static DateTime ToDateTime(string dateTimeStr, DateTime defaultValue)
         {
             var datetime = defaultValue;
             if (!string.IsNullOrEmpty(dateTimeStr))
@@ -164,14 +224,6 @@ namespace SS.Form.Core
         {
             var o = Eval(dataItem, name);
             return o != null && Convert.ToBoolean(o.ToString());
-        }
-
-        public static bool IsSelectFieldType(string inputType)
-        {
-            return EqualsIgnoreCase(inputType, nameof(FieldType.CheckBox)) ||
-                   EqualsIgnoreCase(inputType, nameof(FieldType.Radio)) ||
-                   EqualsIgnoreCase(inputType, nameof(FieldType.SelectMultiple)) ||
-                   EqualsIgnoreCase(inputType, nameof(FieldType.SelectOne));
         }
 
         public static string GetPostMessageScript(int siteId, int channelId, int contentId, bool isSuccess)

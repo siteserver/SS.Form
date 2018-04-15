@@ -4,22 +4,21 @@
 
   <head>
     <meta charset="utf-8">
-    <link href="assets/plugin-utils/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/plugin-utils.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugin-utils/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/siteserver.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/ionicons.min.css" rel="stylesheet" type="text/css" />
   </head>
 
   <body>
 
     <form runat="server">
 
-      <ul class="nav nav-tabs">
+      <ul class="nav nav-tabs tabs-bordered nav-justified">
         <li class="nav-item">
           <a class="nav-link" href="<%=PageLogsUrl%>">数据列表</a>
         </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="<%=PageResultsUrl%>">数据统计</a>
+        <li class="nav-item">
+          <a class="nav-link active" href="<%=PageResultsUrl%>">数据统计</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="<%=PageFieldsUrl%>">字段管理</a>
@@ -41,8 +40,22 @@
       </ul>
 
       <!-- container start -->
-      <div class="container">
-        <div class="m-b-25"></div>
+      <div class="m-3">
+
+        <div class="row">
+          <div class="m-2 col-12">
+            <div class="float-right">
+              <a href="http://plugins.siteserver.cn/ss.form/docs/" target="_blank">使用教程</a>
+              模板标签：
+              <code>
+                      &lt;stl:form title="<%=FormTitle%>"&gt;&lt;/stl:form&gt;
+                  </code>
+            </div>
+            <h4 class="float-left">
+              <%=FormTitle%>
+            </h4>
+          </div>
+        </div>
 
         <div class="row">
           <div class="col-sm-12">

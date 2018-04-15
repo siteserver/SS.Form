@@ -17,38 +17,43 @@ namespace SS.Form.Core
         {
             string retval;
 
-            var fieldType = FieldTypeUtils.GetEnumType(fieldInfo.FieldType);
+            var fieldType = fieldInfo.FieldType;
             var attributeName = FieldManager.GetAttributeId(fieldInfo.Id);
             var attributes = GetGeneralAttributes(fieldType, attributeName, settings);
 
-            switch (fieldType)
+            if (fieldType == InputType.Text.Value)
             {
-                case FieldType.Text:
-                    retval = ParseText(attributeName, attributes, fieldInfo, settings);
-                    break;
-                case FieldType.TextArea:
-                    retval = ParseTextArea(attributeName, attributes, fieldInfo, settings);
-                    break;
-                case FieldType.CheckBox:
-                    retval = ParseCheckBox(attributeName, attributes, fieldInfo);
-                    break;
-                case FieldType.Radio:
-                    retval = ParseRadio(attributeName, attributes, fieldInfo);
-                    break;
-                case FieldType.SelectOne:
-                    retval = ParseSelectOne(attributes, fieldInfo);
-                    break;
-                case FieldType.SelectMultiple:
-                    retval = ParseSelectMultiple(attributes, fieldInfo);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                retval = ParseText(attributeName, attributes, fieldInfo, settings);
+            }
+            else if (fieldType == InputType.TextArea.Value)
+            {
+                retval = ParseTextArea(attributeName, attributes, fieldInfo, settings);
+            }
+            else if (fieldType == InputType.CheckBox.Value)
+            {
+                retval = ParseCheckBox(attributeName, attributes, fieldInfo);
+            }
+            else if (fieldType == InputType.Radio.Value)
+            {
+                retval = ParseRadio(attributeName, attributes, fieldInfo);
+            }
+            else if (fieldType == InputType.SelectOne.Value)
+            {
+                retval = ParseSelectOne(attributes, fieldInfo);
+            }
+            else if (fieldType == InputType.SelectMultiple.Value)
+            {
+                retval = ParseSelectMultiple(attributes, fieldInfo);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException();
             }
 
             return retval;
         }
 
-        private static string GetGeneralAttributes(FieldType fieldType, string attributeName, FieldSettings settings)
+        private static string GetGeneralAttributes(string fieldType, string attributeName, FieldSettings settings)
         {
             var attributes = new Dictionary<string, string>
             {
@@ -62,7 +67,7 @@ namespace SS.Form.Core
                 validateList.Add("required");
             }
 
-            if (fieldType == FieldType.Text || fieldType == FieldType.TextArea)
+            if (fieldType == InputType.Text.Value || fieldType == InputType.TextArea.Value)
             {
                 attributes.Add(":class", $@"{{'error': errors.has('{attributeName}') }}");
                 if (settings.MinNum > 0)

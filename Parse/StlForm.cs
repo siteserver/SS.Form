@@ -1,4 +1,5 @@
-﻿using SiteServer.Plugin;
+﻿using System.Collections.Generic;
+using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 
@@ -47,6 +48,15 @@ namespace SS.Form.Parse
             if (string.IsNullOrWhiteSpace(templateHtml))
             {
                 templateHtml = ParseUtils.GetTemplateHtml(theme);
+            }
+            else
+            {
+                var stlElements = Main.Instance.ParseApi.GetStlElements(templateHtml, new List<string>
+                {
+                    "stl:template",
+                    "stl:yes",
+                    "stl:no"
+                });
             }
 
             return ParseImpl(context, formInfo, formSettings, templateHtml);

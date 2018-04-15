@@ -192,7 +192,7 @@ ORDER BY {nameof(FieldInfo.Taxis)}";
                     {
                         if (isItems)
                         {
-                            if (Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.CheckBox)) || Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.Radio)) || Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.SelectMultiple)) || Utils.EqualsIgnoreCase(fieldInfo.FieldType, nameof(FieldType.SelectOne)))
+                            if (Utils.IsSelectFieldType(fieldInfo.FieldType))
                             {
                                 var items = Main.Instance.FieldItemDao.GetItemInfoList(fieldInfo.Id);
                                 if (items != null && items.Count > 0)

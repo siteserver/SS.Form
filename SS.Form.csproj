@@ -60,7 +60,6 @@
     <Compile Include="Controls\DateTimeTextBox.cs" />
     <Compile Include="Core\FieldManager.cs" />
     <Compile Include="Core\FieldTypeParser.cs" />
-    <Compile Include="Core\FieldTypeUtils.cs" />
     <Compile Include="Core\LayerUtils.cs" />
     <Compile Include="Core\Utils.cs" />
     <Compile Include="Core\ValidateTypeUtils.cs" />
@@ -68,7 +67,6 @@
     <Compile Include="Model\FieldSettings.cs" />
     <Compile Include="Model\FieldInfo.cs" />
     <Compile Include="Model\FieldItemInfo.cs" />
-    <Compile Include="Model\FieldType.cs" />
     <Compile Include="Model\FormSettings.cs" />
     <Compile Include="Pages\ModalFieldValidate.cs">
       <SubType>ASPXCodeBehind</SubType>
