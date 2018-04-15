@@ -35,7 +35,7 @@ var copy = function () {
     .pipe(gulp.dest("./build/docs/gitbook"));
 
   gulp
-    .src(["./logo.svg", "./logo.png"])
+    .src(["./logo.svg", "./logo.png", "./index.html"])
     .pipe(gulp.dest("./build"));
 
   console.log('build completed');

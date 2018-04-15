@@ -58,7 +58,7 @@
 
         <div class="row">
           <div class="col-12">
-            <div class="card-box">
+            <div class="card-box table-responsive">
               <h4 class="text-dark  header-title m-t-0">数据提交记录</h4>
               <p class="text-muted m-b-25 font-13"></p>
               <asp:Literal id="LtlMessage" runat="server" />
