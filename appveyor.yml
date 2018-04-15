@@ -70,6 +70,7 @@
     TreatWarningsAsErrors: false
 
   install:
+    - ps: Install-Product node $env:nodejs_version
     - npm install gulp-cli -g
     - npm install gitbook-cli -g
     - npm install
