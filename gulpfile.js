@@ -17,30 +17,6 @@ var client = new OSS({
 });
 var ossPrefix = 'ss.form';
 
-var install = function () {
-  child_process.execSync('gitbook install docs', { stdio: [0, 1, 2] });
-}
-
-var build = function () {
-  child_process.execSync('gitbook build docs', { stdio: [0, 1, 2] });
-}
-
-var copy = function () {
-  gulp
-    .src(["./docs/_book/**/*"])
-    .pipe(gulp.dest("./build/docs"));
-
-  gulp
-    .src(["./docs/gitbook/**/*"])
-    .pipe(gulp.dest("./build/docs/gitbook"));
-
-  gulp
-    .src(["./logo.svg", "./logo.png", "./index.html"])
-    .pipe(gulp.dest("./build"));
-
-  console.log('build completed');
-}
-
 var upload = function (relatedPath, buff, contentType) {
   client.put(relatedPath, buff, {
     mime: contentType ? contentType : mime.getType(relatedPath)
@@ -49,21 +25,16 @@ var upload = function (relatedPath, buff, contentType) {
   });
 }
 
-gulp.task("build", function () {
-  install();
-  build();
-  copy();
-});
-
 gulp.task('publish', function () {
   var dirname = __dirname;
 
-  return gulp.src(['./build/**/*', '!./build/**/*.md'])
+  return gulp.src(['./index.html', './logo.svg', './docs/**/*'])
     .pipe(through.obj(function (file, enc, cb) {
       if (file.contents) {
         var filePath = file.path;
         var relatedPath = file.path.substr(dirname.length);
-        relatedPath = relatedPath.replace(/\\/g, '/').replace(/(^\/*)|(\/*$)/g, "").replace('build/', ossPrefix + '/');
+        relatedPath = relatedPath.replace(/\\/g, '/').replace(/(^\/*)|(\/*$)/g, "");
+        relatedPath = ossPrefix + '/' + relatedPath
         console.log(relatedPath);
 
         upload(relatedPath, file.contents);

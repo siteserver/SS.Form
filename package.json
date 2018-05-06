@@ -11,6 +11,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "start": "docsify serve ./docs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/siteserver/ss.form.git",

@@ -72,7 +72,6 @@
   install:
     - ps: Install-Product node $env:nodejs_version
     - npm install gulp-cli -g
-    - npm install gitbook-cli -g
     - npm install
 
   skip_tags: true
@@ -89,7 +88,6 @@
     publish_nuget: true
 
   after_build:
-    - gulp build
     - gulp publish
 
   artifacts:
