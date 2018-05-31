@@ -44,7 +44,7 @@ namespace SS.Form.Parse
 
             if (formInfo == null) return string.Empty;
 
-            var templateHtml = context.StlInnerXml;
+            var templateHtml = context.StlInnerHtml;
             if (string.IsNullOrWhiteSpace(templateHtml))
             {
                 templateHtml = ParseUtils.GetTemplateHtml(theme);

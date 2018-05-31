@@ -34,11 +34,11 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SiteServer.Plugin, Version=1.6.55.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SiteServer.Plugin.1.6.55\lib\net45\SiteServer.Plugin.dll</HintPath>
+    <Reference Include="SiteServer.Plugin, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SiteServer.Plugin.1.7.0\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
-    <Reference Include="SS.SMS, Version=1.1.17.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SS.SMS.1.1.17\lib\net452\SS.SMS.dll</HintPath>
+    <Reference Include="SS.SMS, Version=1.1.21.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SS.SMS.1.1.21\lib\net452\SS.SMS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -127,6 +127,25 @@
     <None Include="assets\plugin-utils\fonts\ionicons.eot" />
     <None Include="assets\plugin-utils\fonts\ionicons.ttf" />
     <None Include="assets\plugin-utils\fonts\ionicons.woff" />
+    <None Include="docs\.nojekyll" />
+    <None Include="docs\additional-settings.md" />
+    <None Include="docs\admin-screen.md" />
+    <None Include="docs\captcha.md" />
+    <None Include="docs\customizing-validation-error-messages.md" />
+    <None Include="docs\dom-events.md" />
+    <None Include="docs\editing-form-template.md" />
+    <None Include="docs\editing-messages.md" />
+    <None Include="docs\README.md" />
+    <None Include="docs\redirecting-to-another-url-after-submissions.md" />
+    <None Include="docs\setting-placeholder-text.md" />
+    <None Include="docs\setting-up-sms.md" />
+    <None Include="docs\styling-form.md" />
+    <None Include="docs\submit-button.md" />
+    <None Include="docs\tag-syntax.md" />
+    <None Include="docs\text-fields.md" />
+    <None Include="docs\text-options.md" />
+    <None Include="docs\why-isnt-my-form-working-correctly.md" />
+    <None Include="docs\_sidebar.md" />
     <None Include="NuGet.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -180,6 +199,23 @@
     <Content Include="assets\readme\003.jpg" />
     <Content Include="assets\readme\import05.png" />
     <Content Include="assets\sweetalert\sweetalert.min.js" />
+    <Content Include="docs\assets\admin-screen\01.png" />
+    <Content Include="docs\assets\admin-screen\02.png" />
+    <Content Include="docs\assets\admin-screen\03.png" />
+    <Content Include="docs\assets\admin-screen\04.png" />
+    <Content Include="docs\assets\admin-screen\05.png" />
+    <Content Include="docs\assets\captcha\01.png" />
+    <Content Include="docs\assets\editing-form-template\01.png" />
+    <Content Include="docs\assets\editing-messages\01.png" />
+    <Content Include="docs\assets\readme\01.png" />
+    <Content Include="docs\assets\readme\02.png" />
+    <Content Include="docs\assets\readme\03.png" />
+    <Content Include="docs\assets\setting-up-sms\01.png" />
+    <Content Include="docs\assets\tag-syntax\01.png" />
+    <Content Include="docs\assets\tag-syntax\02.png" />
+    <Content Include="docs\assets\text-fields\01.png" />
+    <Content Include="docs\favicon.png" />
+    <Content Include="docs\index.html" />
     <Content Include="logo.svg" />
     <Content Include="modalFieldAdd.aspx" />
     <Content Include="modalFieldValidate.aspx" />
@@ -203,6 +239,17 @@
     <Content Include="themes\tech-blue\images\survey_img2.jpg" />
     <Content Include="themes\tech-blue\style.css" />
     <Content Include="themes\tech-blue\template.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="docs\assets\additional-settings\" />
+    <Folder Include="docs\assets\customizing-validation-error-messages\" />
+    <Folder Include="docs\assets\dom-events\" />
+    <Folder Include="docs\assets\redirecting-to-another-url-after-submissions\" />
+    <Folder Include="docs\assets\setting-placeholder-text\" />
+    <Folder Include="docs\assets\styling-form\" />
+    <Folder Include="docs\assets\submit-button\" />
+    <Folder Include="docs\assets\text-options\" />
+    <Folder Include="docs\assets\why-isnt-my-form-working-correctly\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
