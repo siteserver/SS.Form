@@ -17,7 +17,7 @@ namespace SS.Form.Parse
             var title = string.Empty;
             var theme = string.Empty;
 
-            foreach (var name in context.StlAttributes.Keys)
+            foreach (var name in context.StlAttributes.AllKeys)
             {
                 var value = context.StlAttributes[name];
 
