@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
-using System.Text;
-using System.Web.UI;
+using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using SiteServer.Plugin;
+using SS.Form.Core;
 
 namespace SS.Form.Model
 {
@@ -12,23 +15,27 @@ namespace SS.Form.Model
     /// Provides standard implementation for simple extendent data storage
     /// </summary>
     [Serializable]
-    public class ExtendedAttributes: IAttributes
+    public class ExtendedAttributes : IAttributes
     {
-        private object _dataObj;
-        private NameValueCollection _dataNvc = new NameValueCollection();
+        private readonly Dictionary<string, object> _dataDict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
         public ExtendedAttributes()
         {
         }
 
-        public ExtendedAttributes(object dataItem)
+        public ExtendedAttributes(IDataReader reader)
         {
-            Load(dataItem);
+            Load(reader);
         }
 
-        public ExtendedAttributes(IDataReader rdr)
+        public ExtendedAttributes(IDataRecord record)
         {
-            Load(rdr);
+            Load(record);
+        }
+
+        public ExtendedAttributes(DataRow row)
+        {
+            Load(row);
         }
 
         public ExtendedAttributes(NameValueCollection attributes)
@@ -36,22 +43,48 @@ namespace SS.Form.Model
             Load(attributes);
         }
 
-        public ExtendedAttributes(string str)
+        public ExtendedAttributes(Dictionary<string, object> dict)
         {
-            Load(str);
+            Load(dict);
         }
 
-        public void Load(object dataItem)
+        public ExtendedAttributes(string json)
         {
-            _dataObj = dataItem;
+            Load(json);
         }
 
-        public void Load(IDataReader rdr)
+        public void Load(DataRow row)
         {
-            for (var i = 0; i < rdr.FieldCount; i++)
+            if (row == null) return;
+
+            var dict = row.Table.Columns
+                .Cast<DataColumn>()
+                .ToDictionary(c => c.ColumnName, c => row[c]);
+
+            Load(dict);
+        }
+
+        public void Load(IDataReader reader)
+        {
+            if (reader == null) return;
+
+            for (var i = 0; i < reader.FieldCount; i++)
             {
-                var name = rdr.GetName(i);
-                var value = Convert.ToString(rdr.GetValue(i));
+                var name = reader.GetName(i);
+                var value = reader.GetValue(i);
+
+                Set(name, value);
+            }
+        }
+
+        public void Load(IDataRecord record)
+        {
+            if (record == null) return;
+
+            for (var i = 0; i < record.FieldCount; i++)
+            {
+                var name = record.GetName(i);
+                var value = record.GetValue(i);
                 Set(name, value);
             }
         }
@@ -67,289 +100,181 @@ namespace SS.Form.Model
             }
         }
 
-        public void Load(string str)
+        public void Load(Dictionary<string, object> dict)
         {
-            _dataNvc = ExtendAttributesUtils.ToNameValueCollection(str);
-        }
+            if (dict == null) return;
 
-        public string GetString(string name, string defaultValue)
-        {
-            var v = GetString(name);
-            return string.IsNullOrEmpty(v) ? defaultValue : v;
-        }
-
-        public string GetString(string name)
-        {
-            name = name.ToLower();
-            var returnValue = _dataNvc[name];
-
-            if (returnValue == null && _dataObj != null)
+            foreach (var key in dict.Keys)
             {
-                var obj = ExtendAttributesUtils.Eval(_dataObj, name);
-                if (obj != null)
+                Set(key, dict[key]);
+            }
+        }
+
+        public void Load(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return;
+
+            if (json.StartsWith("{") && json.EndsWith("}"))
+            {
+                var dict = Utils.JsonDeserialize<Dictionary<string, object>>(json);
+                foreach (var key in dict.Keys)
                 {
-                    if (obj is string)
-                    {
-                        returnValue = _dataNvc[name] = obj as string;
-                    }
-                    else
-                    {
-                        returnValue = _dataNvc[name] = obj.ToString();
-                    }
+                    _dataDict[key] = dict[key];
                 }
             }
-
-            if (!string.IsNullOrEmpty(returnValue))
+            else
             {
-                returnValue = ExtendAttributesUtils.UnFilterSql(returnValue);
+                var nameValues = ExtendAttributesUtils.ToNameValueCollection(json);
+                foreach (string key in nameValues.Keys)
+                {
+                    Set(key, nameValues[key]);
+                }
+            }
+        }
+
+        public object Get(string name)
+        {
+            object value;
+            if (_dataDict.TryGetValue(name, out value))
+            {
+                return value;
             }
 
-            return returnValue ?? string.Empty;
+            return null;
+        }
+
+        public string GetString(string name, string defaultValue = "")
+        {
+            var value = Get(name);
+            if (value == null) return defaultValue;
+            if (value is string) return (string)value;
+            return value.ToString();
         }
 
         public bool GetBool(string name, bool defaultValue = false)
         {
-            name = name.ToLower();
-            var b = GetString(name);
-            if (b == null || b.Trim().Length == 0)
-                return defaultValue;
-            try
-            {
-                return bool.Parse(b);
-            }
-            catch
-            {
-                // ignored
-            }
-            return defaultValue;
+            var value = Get(name);
+            if (value == null) return defaultValue;
+            if (value is bool) return (bool)value;
+            return Utils.ToBool(value.ToString(), defaultValue);
         }
 
         public int GetInt(string name, int defaultValue = 0)
         {
-            name = name.ToLower();
-            var i = GetString(name);
-            if (i == null || i.Trim().Length == 0)
-                return defaultValue;
-
-            var retval = defaultValue;
-            try
-            {
-                retval = int.Parse(i);
-            }
-            catch
-            {
-                // ignored
-            }
-            return retval;
+            var value = Get(name);
+            if (value == null) return defaultValue;
+            if (value is int) return (int)value;
+            return Utils.ToIntWithNagetive(value.ToString(), defaultValue);
         }
 
         public decimal GetDecimal(string name, decimal defaultValue = 0)
         {
-            name = name.ToLower();
-            var i = GetString(name);
-            if (i == null || i.Trim().Length == 0)
-                return defaultValue;
-
-            var retval = defaultValue;
-            try
-            {
-                retval = decimal.Parse(i);
-            }
-            catch
-            {
-                // ignored
-            }
-            return retval;
+            var value = Get(name);
+            if (value == null) return defaultValue;
+            if (value is decimal) return (decimal)value;
+            return Utils.ToDecimalWithNagetive(value.ToString(), defaultValue);
         }
 
         public DateTime GetDateTime(string name, DateTime defaultValue)
         {
-            name = name.ToLower();
-            var d = GetString(name);
-            if (d == null || d.Trim().Length == 0)
-                return defaultValue;
-
-            var retval = defaultValue;
-            try
-            {
-                retval = DateTime.Parse(d);
-            }
-            catch
-            {
-                // ignored
-            }
-            return retval;
+            var value = Get(name);
+            if (value == null) return defaultValue;
+            if (value is DateTime) return (DateTime)value;
+            return Utils.ToDateTime(value.ToString(), defaultValue);
         }
 
         public void Remove(string name)
         {
-            name = name.ToLower();
-            _dataNvc.Remove(name);
+            _dataDict.Remove(name);
         }
 
         public void Set(string name, object value)
         {
-            name = name.ToLower();
-
             if (value == null)
             {
-                _dataNvc.Remove(name);
+                _dataDict.Remove(name);
             }
             else
             {
-                _dataNvc[name] = value.ToString();
+                _dataDict[name] = value;
             }
         }
 
         public bool ContainsKey(string name)
         {
-            name = name.ToLower();
-            var returnValue = _dataNvc[name];
-
-            if (returnValue == null && _dataObj != null)
-            {
-                var obj = ExtendAttributesUtils.Eval(_dataObj, name);
-                if (obj != null)
-                {
-                    if (obj is string)
-                    {
-                        returnValue = _dataNvc[name] = obj as string;
-                    }
-                    else
-                    {
-                        returnValue = _dataNvc[name] = obj.ToString();
-                    }
-                }
-            }
-
-            return returnValue != null;
+            return _dataDict.ContainsKey(name);
         }
 
         public override string ToString()
         {
-            if (_dataNvc != null && _dataNvc.Count > 0)
-            {
-                return ExtendAttributesUtils.NameValueCollectionToString(_dataNvc);
-            }
-            return string.Empty;
+            return Utils.JsonSerialize(_dataDict);
         }
 
-        public string ToString(List<string> lowerCaseExcludeAttributeNames)
+        public string ToString(List<string> excludeAttributeNames)
         {
-            if (_dataNvc == null || _dataNvc.Count <= 0 || lowerCaseExcludeAttributeNames == null)
-                return string.Empty;
+            if (excludeAttributeNames == null || excludeAttributeNames.Count == 0) return ToString();
 
-            var nvc = new NameValueCollection();
-            foreach (string key in _dataNvc.Keys)
+            var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            foreach (var key in _dataDict.Keys)
             {
-                if (!lowerCaseExcludeAttributeNames.Contains(key))
+                if (!Utils.ContainsIgnoreCase(excludeAttributeNames, key))
                 {
-                    nvc[key] = _dataNvc[key];
+                    dict[key] = _dataDict[key];
                 }
             }
-            return ExtendAttributesUtils.NameValueCollectionToString(nvc);
+            return Utils.JsonSerialize(dict);
         }
 
-        public NameValueCollection ToNameValueCollection()
+        public int Count => _dataDict.Count;
+
+        public Dictionary<string, object> ToDictionary()
         {
-            return _dataNvc;
+            return _dataDict;
         }
 
-        public int Count => _dataNvc.Count;
-        public string Get(string name)
-        {
-            return GetString(name);
-        }
-    }
+        #region private utils
 
-    internal class ExtendAttributesUtils
-    {
-        public static object Eval(object dataItem, string name)
+        private static class ExtendAttributesUtils
         {
-            object o = null;
-            try
+            private static string ValueFromUrl(string value)
             {
-                o = DataBinder.Eval(dataItem, name);
-            }
-            catch
-            {
-                // ignored
-            }
-            if (o == DBNull.Value)
-            {
-                o = null;
-            }
-            return o;
-        }
-
-        public static string UnFilterSql(string objStr)
-        {
-            if (string.IsNullOrEmpty(objStr)) return string.Empty;
-
-            return objStr.Replace("_sqlquote_", "'").Replace("_sqldoulbeline_", "--").Replace("_sqlleftparenthesis_", "\\(").Replace("_sqlrightparenthesis_", "\\)");
-        }
-
-        public static string NameValueCollectionToString(NameValueCollection attributes, char seperator = '&')
-        {
-            if (attributes == null || attributes.Count <= 0) return string.Empty;
-
-            var builder = new StringBuilder();
-            foreach (string key in attributes.Keys)
-            {
-                builder.Append(
-                    $@"{ValueToUrl(key)}={ValueToUrl(attributes[key])}{seperator}");
-            }
-            builder.Length--;
-            return builder.ToString();
-        }
-
-        public static string ValueToUrl(string value)
-        {
-            var retval = string.Empty;
-            if (!string.IsNullOrEmpty(value))
-            {
-                //替换url中的换行符，update by sessionliang at 20151211
-                retval = value.Replace("=", "_equals_").Replace("&", "_and_").Replace("?", "_question_").Replace("'", "_quote_").Replace("+", "_add_").Replace("\r", "").Replace("\n", "");
-            }
-            return retval;
-        }
-
-        public static NameValueCollection ToNameValueCollection(string separateString)
-        {
-            if (!string.IsNullOrEmpty(separateString))
-            {
-                separateString = separateString.Replace("/u0026", "&");
-            }
-            return ToNameValueCollection(separateString, '&');
-        }
-
-        public static string ValueFromUrl(string value)
-        {
-            var retval = string.Empty;
-            if (!string.IsNullOrEmpty(value))
-            {
-                retval = value.Replace("_equals_", "=").Replace("_and_", "&").Replace("_question_", "?").Replace("_quote_", "'").Replace("_add_", "+");
-            }
-            return retval;
-        }
-
-        public static NameValueCollection ToNameValueCollection(string separateString, char seperator)
-        {
-            var attributes = new NameValueCollection();
-            if (!string.IsNullOrEmpty(separateString))
-            {
-                var pairs = separateString.Split(seperator);
-                foreach (var pair in pairs)
+                var retval = string.Empty;
+                if (!string.IsNullOrEmpty(value))
                 {
-                    if (pair.IndexOf("=", StringComparison.Ordinal) != -1)
+                    retval = value.Replace("_equals_", "=").Replace("_and_", "&").Replace("_question_", "?").Replace("_quote_", "'").Replace("_add_", "+").Replace("_return_", "\r").Replace("_newline_", "\n");
+                }
+                return retval;
+            }
+
+            public static NameValueCollection ToNameValueCollection(string separateString)
+            {
+                if (!string.IsNullOrEmpty(separateString))
+                {
+                    separateString = separateString.Replace("/u0026", "&");
+                }
+                return ToNameValueCollection(separateString, '&');
+            }
+
+            private static NameValueCollection ToNameValueCollection(string separateString, char seperator)
+            {
+                var attributes = new NameValueCollection();
+                if (!string.IsNullOrEmpty(separateString))
+                {
+                    var pairs = separateString.Split(seperator);
+                    foreach (var pair in pairs)
                     {
-                        var name = ValueFromUrl(pair.Split('=')[0]);
-                        var value = ValueFromUrl(pair.Split('=')[1]);
-                        attributes.Add(name.ToLower(), value);
+                        if (pair.IndexOf("=", StringComparison.Ordinal) != -1)
+                        {
+                            var name = ValueFromUrl(pair.Split('=')[0]);
+                            var value = ValueFromUrl(pair.Split('=')[1]);
+                            attributes.Add(name.ToLower(), value);
+                        }
                     }
                 }
+                return attributes;
             }
-            return attributes;
         }
+
+        #endregion private utils
     }
 }

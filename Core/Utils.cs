@@ -87,7 +87,7 @@ namespace SS.Form.Core
             return ToDateTime(dateTimeStr, DateTime.Now);
         }
 
-        private static DateTime ToDateTime(string dateTimeStr, DateTime defaultValue)
+        public static DateTime ToDateTime(string dateTimeStr, DateTime defaultValue)
         {
             var datetime = defaultValue;
             if (!string.IsNullOrEmpty(dateTimeStr))
@@ -105,6 +105,26 @@ namespace SS.Form.Core
             return datetime;
         }
 
+        public static bool ToBool(string boolStr)
+        {
+            bool boolean;
+            if (!bool.TryParse(boolStr?.Trim(), out boolean))
+            {
+                boolean = false;
+            }
+            return boolean;
+        }
+
+        public static bool ToBool(string boolStr, bool defaultValue)
+        {
+            bool boolean;
+            if (!bool.TryParse(boolStr?.Trim(), out boolean))
+            {
+                boolean = defaultValue;
+            }
+            return boolean;
+        }
+
         public static int ToInt(string intStr)
         {
             int i;
@@ -113,6 +133,69 @@ namespace SS.Form.Core
                 i = 0;
             }
             return i;
+        }
+
+        public static int ToIntWithNagetive(string intStr)
+        {
+            return ToIntWithNagetive(intStr, 0);
+        }
+
+        public static int ToIntWithNagetive(string intStr, int defaultValue)
+        {
+            int i;
+            if (!int.TryParse(intStr?.Trim(), out i))
+            {
+                i = defaultValue;
+            }
+            return i;
+        }
+
+        public static decimal ToDecimal(string intStr)
+        {
+            return ToDecimal(intStr, 0);
+        }
+
+        public static decimal ToDecimal(string intStr, decimal defaultValue)
+        {
+            decimal i;
+            if (!decimal.TryParse(intStr?.Trim(), out i))
+            {
+                i = defaultValue;
+            }
+            if (i < 0)
+            {
+                i = defaultValue;
+            }
+            return i;
+        }
+
+        public static decimal ToDecimalWithNagetive(string intStr)
+        {
+            return ToDecimalWithNagetive(intStr, 0);
+        }
+
+        public static decimal ToDecimalWithNagetive(string intStr, decimal defaultValue)
+        {
+            decimal i;
+            if (!decimal.TryParse(intStr?.Trim(), out i))
+            {
+                i = defaultValue;
+            }
+            return i;
+        }
+
+        public static bool ContainsIgnoreCase(List<string> list, string str)
+        {
+            if (list == null || list.Count == 0) return false;
+            foreach (var item in list)
+            {
+                if (EqualsIgnoreCase(item, str))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static string GetMessageHtml(string message, bool isSuccess)
@@ -195,6 +278,22 @@ namespace SS.Form.Core
             catch
             {
                 return string.Empty;
+            }
+        }
+
+        public static T JsonDeserialize<T>(string json)
+        {
+            try
+            {
+                var settings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+                var timeFormat = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
+                settings.Converters.Add(timeFormat);
+
+                return JsonConvert.DeserializeObject<T>(json, settings);
+            }
+            catch
+            {
+                return default(T);
             }
         }
 
