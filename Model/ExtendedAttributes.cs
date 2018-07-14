@@ -53,6 +53,13 @@ namespace SS.Form.Model
             Load(json);
         }
 
+        public void Load(DataRowView view)
+        {
+            if (view == null) return;
+
+            Load(view.Row);
+        }
+
         public void Load(DataRow row)
         {
             if (row == null) return;
