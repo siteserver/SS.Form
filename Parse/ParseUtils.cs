@@ -25,8 +25,8 @@ namespace SS.Form.Parse
         {
             var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formInfo.Id, true);
 
-            var imgUrl = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiUtils.Captcha), formInfo.Id.ToString());
-            var apiUrlSubmit = Main.Instance.PluginApi.GetPluginApiUrl(nameof(ApiUtils.Submit), formInfo.Id.ToString());
+            var imgUrl = $"{Main.Instance.PluginApi.PluginApiUrl}/{nameof(ApiUtils.Captcha)}/{formInfo.Id}";
+            var apiUrlSubmit = $"{Main.Instance.PluginApi.PluginApiUrl}/{nameof(ApiUtils.Submit)}/{formInfo.Id}";
 
             var schemas = new List<object>();
             var values = new StringBuilder();

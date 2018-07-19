@@ -39,7 +39,7 @@ namespace SS.Form.Pages
             PageFieldsUrl = $"{nameof(PageFields)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
             PageSettingsUrl = $"{nameof(PageSettings)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
 
-            if (!Main.Instance.AdminApi.IsSiteAuthorized(SiteId))
+            if (!Main.Instance.AdminApi.HasSitePermissions(SiteId, Main.Instance.Id))
             {
                 HttpContext.Current.Response.Write("<h1>未授权访问</h1>");
                 HttpContext.Current.Response.End();

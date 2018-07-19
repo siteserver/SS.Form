@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Web.UI.WebControls;
 using SiteServer.Plugin;
 using SS.Form.Core;
-using SS.Form.Model;
 using SS.Form.Pages;
 using SS.Form.Parse;
 using SS.Form.Provider;
@@ -50,10 +48,10 @@ namespace SS.Form
                         Menus = menus
                     };
                 })
-                .AddContentLink(new HyperLink
+                .AddContentMenu(new Menu
                 {
                     Text = "表单管理",
-                    NavigateUrl = $"{nameof(PageLogs)}.aspx"
+                    Href = $"{nameof(PageLogs)}.aspx"
                 })
                 .AddDatabaseTable(FormDao.TableName, FormDao.Columns)
                 .AddDatabaseTable(LogDao.TableName, LogDao.Columns)
@@ -73,9 +71,9 @@ namespace SS.Form
 
         private object ServiceOnApiPost(object sender, ApiEventArgs args)
         {
-            if (Utils.EqualsIgnoreCase(args.Action, nameof(ApiUtils.Submit)))
+            if (Utils.EqualsIgnoreCase(args.RouteResource, nameof(ApiUtils.Submit)))
             {
-                return ApiUtils.Submit(args.Request, args.Id);
+                return ApiUtils.Submit(args.Request, args.RouteId);
             }
 
             throw new Exception("请求的资源不在服务器上");
@@ -83,9 +81,9 @@ namespace SS.Form
 
         private object Service_ApiGet(object sender, ApiEventArgs args)
         {
-            if (Utils.EqualsIgnoreCase(args.Action, nameof(ApiUtils.Captcha)))
+            if (Utils.EqualsIgnoreCase(args.RouteResource, nameof(ApiUtils.Captcha)))
             {
-                return ApiUtils.Captcha(args.Request, args.Id);
+                return ApiUtils.Captcha(args.Request, args.RouteId);
             }
 
             throw new Exception("请求的资源不在服务器上");
