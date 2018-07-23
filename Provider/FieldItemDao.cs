@@ -45,9 +45,9 @@ namespace SS.Form.Provider
         };
 
         private readonly string _connectionString;
-        private readonly IDataApi _helper;
+        private readonly IDatabaseApi _helper;
 
-        public FieldItemDao(string connectionString, IDataApi helper)
+        public FieldItemDao(string connectionString, IDatabaseApi helper)
         {
             _connectionString = connectionString;
             _helper = helper;

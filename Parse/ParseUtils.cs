@@ -15,7 +15,7 @@ namespace SS.Form.Parse
         {
             var assetsUrl = Main.Instance.PluginApi.GetPluginUrl("assets");
 
-            context.StlPageFoot["SS.Form.Parse.Foot"] = $@"
+            context.FootCodes["SS.Form.Parse.Foot"] = $@"
 <script src=""{assetsUrl}/js/vue-2.1.10.min.js"" type=""text/javascript""></script>
 <script src=""{assetsUrl}/js/vee-validate.js"" type=""text/javascript""></script>
 <script src=""{assetsUrl}/js/jquery.min.js"" type=""text/javascript""></script>";
@@ -55,7 +55,7 @@ namespace SS.Form.Parse
                 }
             }
 
-            context.StlPageFoot["SS.Form.Parse.Foot." + vueId] = $@"
+            context.FootCodes["SS.Form.Parse.Foot." + vueId] = $@"
 <script type=""text/javascript"">
 Vue.use(VeeValidate);
 var {vueId} = new Vue({{

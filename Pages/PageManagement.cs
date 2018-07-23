@@ -59,9 +59,9 @@ namespace SS.Form.Pages
                 {
                     var formInfo = Main.Instance.FormDao.GetFormInfo(_formId);
                     CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview",
-                        Main.Instance.DataApi.Encrypt(ParseUtils.GetFormStlElement(formInfo)),
+                        Main.Instance.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(formInfo)),
                         5);
-                    Response.Redirect(Main.Instance.FilesApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={Main.Instance.DataApi.Encrypt(Main.Instance.PluginApi.GetPluginUrl(_returnUrl))}"));
+                    Response.Redirect(Main.Instance.UtilsApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={Main.Instance.UtilsApi.Encrypt(Main.Instance.PluginApi.GetPluginUrl(_returnUrl))}"));
                     return;
                 }
             }

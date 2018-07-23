@@ -47,9 +47,9 @@ namespace SS.Form.Provider
         };
 
         private readonly string _connectionString;
-        private readonly IDataApi _helper;
+        private readonly IDatabaseApi _helper;
 
-        public LogDao(string connectionString, IDataApi helper)
+        public LogDao(string connectionString, IDatabaseApi helper)
         {
             _connectionString = connectionString;
             _helper = helper;

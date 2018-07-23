@@ -48,12 +48,12 @@ namespace SS.Form.Pages
 
         public void LbTemplate_Click(object sender, EventArgs e)
         {
-            CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview", Main.Instance.DataApi.Encrypt(ParseUtils.GetFormStlElement(FormInfo)), 5);
+            CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview", Main.Instance.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(FormInfo)), 5);
             var url =
-                Main.Instance.FilesApi.GetAdminDirectoryUrl(
-                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={Main.Instance.DataApi.Encrypt(Main.Instance.PluginApi.GetPluginUrl(PageLogsUrl))}");
+                Main.Instance.UtilsApi.GetAdminDirectoryUrl(
+                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={Main.Instance.UtilsApi.Encrypt(Main.Instance.PluginApi.GetPluginUrl(PageLogsUrl))}");
 
-            Response.Redirect(Main.Instance.FilesApi.GetAdminDirectoryUrl($"loading.aspx?redirectUrl={Main.Instance.DataApi.Encrypt(url)}"));
+            Response.Redirect(Main.Instance.UtilsApi.GetAdminDirectoryUrl($"loading.aspx?redirectUrl={Main.Instance.UtilsApi.Encrypt(url)}"));
         }
     }
 }

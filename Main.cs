@@ -20,10 +20,10 @@ namespace SS.Form
 
         public override void Startup(IService service)
         {
-            FormDao = new FormDao(ConnectionString, DataApi);
-            LogDao = new LogDao(ConnectionString, DataApi);
-            FieldDao = new FieldDao(ConnectionString, DataApi);
-            FieldItemDao = new FieldItemDao(ConnectionString, DataApi);
+            FormDao = new FormDao(ConnectionString, DatabaseApi);
+            LogDao = new LogDao(ConnectionString, DatabaseApi);
+            FieldDao = new FieldDao(ConnectionString, DatabaseApi);
+            FieldItemDao = new FieldItemDao(ConnectionString, DatabaseApi);
 
             service
                 .AddSiteMenu(siteId =>

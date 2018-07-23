@@ -72,9 +72,9 @@ namespace SS.Form.Provider
         };
 
         private readonly string _connectionString;
-        private readonly IDataApi _helper;
+        private readonly IDatabaseApi _helper;
 
-        public FormDao(string connectionString, IDataApi helper)
+        public FormDao(string connectionString, IDatabaseApi helper)
         {
             _connectionString = connectionString;
             _helper = helper;
@@ -222,7 +222,7 @@ namespace SS.Form.Provider
         {
             if (siteId > 0 && channelId > 0 && contentId > 0)
             {
-                return _helper.ExecuteInt(_connectionString, $"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
+                return (int)_helper.ExecuteScalar(_connectionString, $"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
             }
 
             return 0;
@@ -240,7 +240,7 @@ namespace SS.Form.Provider
                     _helper.GetParameter(nameof(FormInfo.Title), title)
                 };
 
-                return _helper.ExecuteInt(_connectionString, sqlString, parameters);
+                return (int)_helper.ExecuteScalar(_connectionString, sqlString, parameters);
             }
 
             return 0;
@@ -517,13 +517,13 @@ namespace SS.Form.Provider
         {
             string sqlString =
                 $"SELECT MAX({nameof(FormInfo.Taxis)}) FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId}";
-            return _helper.ExecuteInt(_connectionString, sqlString);
+            return (int)_helper.ExecuteScalar(_connectionString, sqlString);
         }
 
         private int GetTaxis(int formId)
         {
             string sqlString = $"SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId})";
-            return _helper.ExecuteInt(_connectionString, sqlString);
+            return (int)_helper.ExecuteScalar(_connectionString, sqlString);
         }
 
         private void SetTaxis(int formId, int taxis)

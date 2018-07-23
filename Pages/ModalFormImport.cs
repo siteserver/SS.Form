@@ -43,7 +43,7 @@ namespace SS.Form.Pages
 
             try
             {
-                var localFilePath = Main.Instance.FilesApi.GetTemporaryFilesPath(Path.GetFileName(filePath));
+                var localFilePath = Main.Instance.UtilsApi.GetTemporaryFilesPath(Path.GetFileName(filePath));
 
                 HifImport.PostedFile.SaveAs(localFilePath);
 

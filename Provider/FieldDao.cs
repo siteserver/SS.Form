@@ -59,9 +59,9 @@ namespace SS.Form.Provider
         };
 
         private readonly string _connectionString;
-        private readonly IDataApi _helper;
+        private readonly IDatabaseApi _helper;
 
-        public FieldDao(string connectionString, IDataApi helper)
+        public FieldDao(string connectionString, IDatabaseApi helper)
         {
             _connectionString = connectionString;
             _helper = helper;
@@ -246,7 +246,7 @@ ORDER BY {nameof(FieldInfo.Taxis)}";
                 _helper.GetParameter(nameof(FieldInfo.FormId), formId)
             };
 
-            return _helper.ExecuteInt(_connectionString, sqlString, parms);
+            return (int)_helper.ExecuteScalar(_connectionString, sqlString, parms);
         }
 
         public FieldInfo GetFieldInfo(int id, bool isItems)
