@@ -63,13 +63,13 @@ namespace SS.Form
             service.ContentTranslateCompleted += Service_ContentTranslateCompleted;
             service.ContentDeleteCompleted += Service_ContentDeleteCompleted;
 
-            service.ApiPost += ServiceOnApiPost;
-            service.ApiGet += Service_ApiGet;
+            service.RestApiPost += Service_RestApiPost;
+            service.RestApiGet += Service_RestApiGet;
 
             Instance = this;
         }
 
-        private object ServiceOnApiPost(object sender, ApiEventArgs args)
+        private object Service_RestApiPost(object sender, RestApiEventArgs args)
         {
             if (Utils.EqualsIgnoreCase(args.RouteResource, nameof(ApiUtils.Submit)))
             {
@@ -79,7 +79,7 @@ namespace SS.Form
             throw new Exception("请求的资源不在服务器上");
         }
 
-        private object Service_ApiGet(object sender, ApiEventArgs args)
+        private object Service_RestApiGet(object sender, RestApiEventArgs args)
         {
             if (Utils.EqualsIgnoreCase(args.RouteResource, nameof(ApiUtils.Captcha)))
             {
