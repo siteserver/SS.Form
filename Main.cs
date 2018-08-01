@@ -13,6 +13,7 @@ namespace SS.Form
     {
         public static Main Instance { get; private set; }
 
+        public Dao Dao { get; private set; }
         public FormDao FormDao { get; private set; }
         public LogDao LogDao { get; private set; }
         public FieldDao FieldDao { get; private set; }
@@ -20,6 +21,7 @@ namespace SS.Form
 
         public override void Startup(IService service)
         {
+            Dao = new Dao(ConnectionString, DatabaseApi);
             FormDao = new FormDao(ConnectionString, DatabaseApi);
             LogDao = new LogDao(ConnectionString, DatabaseApi);
             FieldDao = new FieldDao(ConnectionString, DatabaseApi);

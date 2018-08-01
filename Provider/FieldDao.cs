@@ -246,7 +246,7 @@ ORDER BY {nameof(FieldInfo.Taxis)}";
                 _helper.GetParameter(nameof(FieldInfo.FormId), formId)
             };
 
-            return (int)_helper.ExecuteScalar(_connectionString, sqlString, parms);
+            return Main.Instance.Dao.GetIntResult(sqlString, parms);
         }
 
         public FieldInfo GetFieldInfo(int id, bool isItems)

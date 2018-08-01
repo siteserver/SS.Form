@@ -222,7 +222,7 @@ namespace SS.Form.Provider
         {
             if (siteId > 0 && channelId > 0 && contentId > 0)
             {
-                return (int)_helper.ExecuteScalar(_connectionString, $"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
+                return Main.Instance.Dao.GetIntResult($"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
             }
 
             return 0;
@@ -240,7 +240,7 @@ namespace SS.Form.Provider
                     _helper.GetParameter(nameof(FormInfo.Title), title)
                 };
 
-                return (int)_helper.ExecuteScalar(_connectionString, sqlString, parameters);
+                return Main.Instance.Dao.GetIntResult(sqlString, parameters);
             }
 
             return 0;
@@ -515,15 +515,15 @@ namespace SS.Form.Provider
 
         private int GetMaxTaxis(int siteId)
         {
-            string sqlString =
+            var sqlString =
                 $"SELECT MAX({nameof(FormInfo.Taxis)}) FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId}";
-            return (int)_helper.ExecuteScalar(_connectionString, sqlString);
+            return Main.Instance.Dao.GetIntResult(sqlString);
         }
 
         private int GetTaxis(int formId)
         {
-            string sqlString = $"SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId})";
-            return (int)_helper.ExecuteScalar(_connectionString, sqlString);
+            var sqlString = $"SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId})";
+            return Main.Instance.Dao.GetIntResult(sqlString);
         }
 
         private void SetTaxis(int formId, int taxis)
