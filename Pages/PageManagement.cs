@@ -29,7 +29,7 @@ namespace SS.Form.Pages
             _formId = Utils.ToInt(Request.QueryString["formId"]);
             _returnUrl = GetRedirectUrl(_siteId);
 
-            if (!Main.Instance.AdminApi.HasSitePermissions(_siteId, Main.Instance.Id))
+            if (!Main.Instance.Request.AdminPermissions.HasSitePermissions(_siteId, Main.Instance.Id))
             {
                 Response.Write("<h1>未授权访问</h1>");
                 Response.End();

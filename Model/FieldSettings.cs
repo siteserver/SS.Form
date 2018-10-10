@@ -3,7 +3,7 @@ using SS.Form.Core;
 
 namespace SS.Form.Model
 {
-    public class FieldSettings : ExtendedAttributes
+    public class FieldSettings : AttributesImpl
     {
         public FieldSettings()
         {

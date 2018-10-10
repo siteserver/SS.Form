@@ -1,6 +1,6 @@
 ﻿namespace SS.Form.Model
 {
-    public class FormSettings : ExtendedAttributes
+    public class FormSettings : AttributesImpl
     {
         public FormSettings(string str) : base(str)
         {

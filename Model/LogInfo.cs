@@ -2,7 +2,7 @@
 
 namespace SS.Form.Model
 {
-    public class LogInfo : ExtendedAttributes
+    public class LogInfo : AttributesImpl
     {
         public int Id { get; set; }
 
