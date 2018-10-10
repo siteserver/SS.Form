@@ -5,6 +5,7 @@
       - master
 
   version: 1.1.{build}
+  image: Visual Studio 2017
 
   assembly_info:
     patch: true
@@ -52,6 +53,7 @@
       - dev
 
   version: 1.1.{build}-beta
+  image: Visual Studio 2017
 
   assembly_info:
     patch: true
