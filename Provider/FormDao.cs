@@ -188,8 +188,8 @@ namespace SS.Form.Provider
             string sqlString = $"DELETE FROM {TableName} WHERE {nameof(FormInfo.Id)} = {formId}";
             _helper.ExecuteNonQuery(_connectionString, sqlString);
 
-            Main.Instance.FieldDao.DeleteByFormId(formId);
-            Main.Instance.LogDao.DeleteByFormId(formId);
+            Main.FieldDao.DeleteByFormId(formId);
+            Main.LogDao.DeleteByFormId(formId);
         }
 
         public bool IsTitleExists(int siteId, string title)
@@ -222,7 +222,7 @@ namespace SS.Form.Provider
         {
             if (siteId > 0 && channelId > 0 && contentId > 0)
             {
-                return Main.Instance.Dao.GetIntResult($"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
+                return Main.Dao.GetIntResult($"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
             }
 
             return 0;
@@ -240,7 +240,7 @@ namespace SS.Form.Provider
                     _helper.GetParameter(nameof(FormInfo.Title), title)
                 };
 
-                return Main.Instance.Dao.GetIntResult(sqlString, parameters);
+                return Main.Dao.GetIntResult(sqlString, parameters);
             }
 
             return 0;
@@ -295,7 +295,7 @@ namespace SS.Form.Provider
             };
             formInfo.Id = Insert(formInfo);
 
-            Main.Instance.FieldDao.Insert(new FieldInfo
+            Main.FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "姓名",
@@ -307,7 +307,7 @@ namespace SS.Form.Provider
                     IsVisibleInList = true
                 }.ToString()
             });
-            Main.Instance.FieldDao.Insert(new FieldInfo
+            Main.FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "手机",
@@ -320,7 +320,7 @@ namespace SS.Form.Provider
                     ValidateType = ValidateType.Mobile
                 }.ToString()
             });
-            Main.Instance.FieldDao.Insert(new FieldInfo
+            Main.FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "年龄",
@@ -333,7 +333,7 @@ namespace SS.Form.Provider
                     ValidateType = ValidateType.Integer
                 }.ToString()
             });
-            Main.Instance.FieldDao.Insert(new FieldInfo
+            Main.FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "所在城市",
@@ -357,7 +357,7 @@ namespace SS.Form.Provider
                 }.ToString()
             };
 
-            sex.Id = Main.Instance.FieldDao.Insert(sex);
+            sex.Id = Main.FieldDao.Insert(sex);
             sex.Items = new List<FieldItemInfo>
             {
                 new FieldItemInfo
@@ -373,8 +373,8 @@ namespace SS.Form.Provider
                     Value = "女"
                 }
             };
-            Main.Instance.FieldItemDao.InsertItems(formInfo.Id, sex.Id, sex.Items);
-            Main.Instance.FieldDao.Insert(new FieldInfo
+            Main.FieldItemDao.InsertItems(formInfo.Id, sex.Id, sex.Items);
+            Main.FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "留言",
@@ -517,13 +517,13 @@ namespace SS.Form.Provider
         {
             var sqlString =
                 $"SELECT MAX({nameof(FormInfo.Taxis)}) FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId}";
-            return Main.Instance.Dao.GetIntResult(sqlString);
+            return Main.Dao.GetIntResult(sqlString);
         }
 
         private int GetTaxis(int formId)
         {
             var sqlString = $"SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId})";
-            return Main.Instance.Dao.GetIntResult(sqlString);
+            return Main.Dao.GetIntResult(sqlString);
         }
 
         private void SetTaxis(int formId, int taxis)

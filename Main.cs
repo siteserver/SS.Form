@@ -11,21 +11,29 @@ namespace SS.Form
 {
     public class Main : PluginBase
     {
-        public static Main Instance { get; private set; }
+        public static string PluginId { get; private set; }
 
-        public Dao Dao { get; private set; }
-        public FormDao FormDao { get; private set; }
-        public LogDao LogDao { get; private set; }
-        public FieldDao FieldDao { get; private set; }
-        public FieldItemDao FieldItemDao { get; private set; }
+        public static Dao Dao { get; }
+        public static FormDao FormDao { get; }
+        public static LogDao LogDao { get; }
+        public static FieldDao FieldDao { get; }
+        public static FieldItemDao FieldItemDao { get; }
+
+        static Main()
+        {
+            var connectionString = PluginContext.ConnectionString;
+            var databaseApi = PluginContext.DatabaseApi;
+
+            Dao = new Dao(connectionString, databaseApi);
+            FormDao = new FormDao(connectionString, databaseApi);
+            LogDao = new LogDao(connectionString, databaseApi);
+            FieldDao = new FieldDao(connectionString, databaseApi);
+            FieldItemDao = new FieldItemDao(connectionString, databaseApi);
+        }
 
         public override void Startup(IService service)
         {
-            Dao = new Dao(ConnectionString, DatabaseApi);
-            FormDao = new FormDao(ConnectionString, DatabaseApi);
-            LogDao = new LogDao(ConnectionString, DatabaseApi);
-            FieldDao = new FieldDao(ConnectionString, DatabaseApi);
-            FieldItemDao = new FieldItemDao(ConnectionString, DatabaseApi);
+            PluginId = Id;
 
             service
                 .AddSiteMenu(siteId =>
@@ -67,8 +75,6 @@ namespace SS.Form
 
             service.RestApiPost += Service_RestApiPost;
             service.RestApiGet += Service_RestApiGet;
-
-            Instance = this;
         }
 
         private object Service_RestApiPost(object sender, RestApiEventArgs args)

@@ -142,7 +142,7 @@ namespace SS.Form.Provider
 
             _helper.ExecuteNonQuery(_connectionString, sqlString, parms);
 
-            Main.Instance.FieldItemDao.DeleteByFieldId(fieldId);
+            Main.FieldItemDao.DeleteByFieldId(fieldId);
         }
 
         public void DeleteByFormId(int formId)
@@ -156,7 +156,7 @@ namespace SS.Form.Provider
 
             _helper.ExecuteNonQuery(_connectionString, sqlString, parms);
 
-            Main.Instance.FieldItemDao.DeleteByFormId(formId);
+            Main.FieldItemDao.DeleteByFormId(formId);
         }
 
         public List<FieldInfo> GetFieldInfoList(int formId, bool isItems)
@@ -194,7 +194,7 @@ ORDER BY {nameof(FieldInfo.Taxis)}";
                         {
                             if (Utils.IsSelectFieldType(fieldInfo.FieldType))
                             {
-                                var items = Main.Instance.FieldItemDao.GetItemInfoList(fieldInfo.Id);
+                                var items = Main.FieldItemDao.GetItemInfoList(fieldInfo.Id);
                                 if (items != null && items.Count > 0)
                                 {
                                     fieldInfo.Items = items;
@@ -246,7 +246,7 @@ ORDER BY {nameof(FieldInfo.Taxis)}";
                 _helper.GetParameter(nameof(FieldInfo.FormId), formId)
             };
 
-            return Main.Instance.Dao.GetIntResult(sqlString, parms);
+            return Main.Dao.GetIntResult(sqlString, parms);
         }
 
         public FieldInfo GetFieldInfo(int id, bool isItems)
@@ -282,7 +282,7 @@ WHERE {nameof(FieldInfo.Id)} = @{nameof(FieldInfo.Id)}";
 
             if (fieldInfo != null && isItems)
             {
-                fieldInfo.Items = Main.Instance.FieldItemDao.GetItemInfoList(fieldInfo.Id);
+                fieldInfo.Items = Main.FieldItemDao.GetItemInfoList(fieldInfo.Id);
             }
 
             return fieldInfo;

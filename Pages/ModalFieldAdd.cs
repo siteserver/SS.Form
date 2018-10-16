@@ -35,7 +35,7 @@ namespace SS.Form.Pages
             if (IsPostBack) return;
 
             var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
-            var fieldInfo = fieldId > 0 ? Main.Instance.FieldDao.GetFieldInfo(fieldId, true) : new FieldInfo();
+            var fieldInfo = fieldId > 0 ? Main.FieldDao.GetFieldInfo(fieldId, true) : new FieldInfo();
 
             Utils.AddListItems(DdlFieldType);
 
@@ -139,7 +139,7 @@ namespace SS.Form.Pages
                 List<FieldItemInfo> items = null;
                 if (fieldId > 0)
                 {
-                    items = Main.Instance.FieldItemDao.GetItemInfoList(fieldId);
+                    items = Main.FieldItemDao.GetItemInfoList(fieldId);
                 }
                 RptItems.DataSource = GetDataSource(count, items);
                 RptItems.DataBind();
@@ -170,7 +170,7 @@ namespace SS.Form.Pages
 
             var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
             var fieldInfo = fieldId > 0
-                ? Main.Instance.FieldDao.GetFieldInfo(fieldId, true)
+                ? Main.FieldDao.GetFieldInfo(fieldId, true)
                 : new FieldInfo
                 {
                     FormId = FormInfo.Id
@@ -189,7 +189,7 @@ namespace SS.Form.Pages
         {
             if (fieldInfo.Id == 0)
             {
-                if (Main.Instance.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
+                if (Main.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
                 {
                     LtlMessage.Text = Utils.GetMessageHtml($@"操作失败，字段名""{TbTitle.Text}""已存在", false);
                     return false;
@@ -198,7 +198,7 @@ namespace SS.Form.Pages
             else
             {
                 if (fieldInfo.Title != TbTitle.Text &&
-                Main.Instance.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
+                Main.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
                 {
                     LtlMessage.Text = Utils.GetMessageHtml($@"操作失败，字段名""{TbTitle.Text}""已存在", false);
                     return false;
@@ -265,15 +265,15 @@ namespace SS.Form.Pages
             {
                 if (fieldInfo.Id > 0)
                 {
-                    Main.Instance.FieldDao.Update(fieldInfo);
-                    Main.Instance.FieldItemDao.DeleteByFieldId(fieldInfo.Id);
+                    Main.FieldDao.Update(fieldInfo);
+                    Main.FieldItemDao.DeleteByFieldId(fieldInfo.Id);
                 }
                 else
                 {
-                    fieldInfo.Id = Main.Instance.FieldDao.Insert(fieldInfo);
+                    fieldInfo.Id = Main.FieldDao.Insert(fieldInfo);
                 }
 
-                Main.Instance.FieldItemDao.InsertItems(FormInfo.Id, fieldInfo.Id, fieldItems);
+                Main.FieldItemDao.InsertItems(FormInfo.Id, fieldInfo.Id, fieldItems);
 
                 return true;
             }

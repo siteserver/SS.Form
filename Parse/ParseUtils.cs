@@ -13,7 +13,7 @@ namespace SS.Form.Parse
     {
         public static void RegisterPage(IParseContext context)
         {
-            var assetsUrl = Main.Instance.PluginApi.GetPluginUrl("assets");
+            var assetsUrl = PluginContext.PluginApi.GetPluginUrl("assets");
 
             context.FootCodes["SS.Form.Parse.Foot"] = $@"
 <script src=""{assetsUrl}/js/vue-2.1.10.min.js"" type=""text/javascript""></script>
@@ -23,10 +23,10 @@ namespace SS.Form.Parse
 
         public static void RegisterCode(IParseContext context, string vueId, FormInfo formInfo, FormSettings formSettings)
         {
-            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formInfo.Id, true);
+            var fieldInfoList = Main.FieldDao.GetFieldInfoList(formInfo.Id, true);
 
-            var imgUrl = $"{Main.Instance.PluginApi.PluginApiUrl}/{nameof(ApiUtils.Captcha)}/{formInfo.Id}";
-            var apiUrlSubmit = $"{Main.Instance.PluginApi.PluginApiUrl}/{nameof(ApiUtils.Submit)}/{formInfo.Id}";
+            var imgUrl = $"{PluginContext.PluginApi.GetPluginApiUrl(Main.PluginId)}/{nameof(ApiUtils.Captcha)}/{formInfo.Id}";
+            var apiUrlSubmit = $"{PluginContext.PluginApi.GetPluginApiUrl(Main.PluginId)}/{nameof(ApiUtils.Submit)}/{formInfo.Id}";
 
             var schemas = new List<object>();
             var values = new StringBuilder();
@@ -126,7 +126,7 @@ var {vueId} = new Vue({{
         {
             var retval = theme;
             if (string.IsNullOrEmpty(retval) ||
-                !File.Exists(Main.Instance.PluginApi.GetPluginPath($"themes/{retval}/template.html")))
+                !File.Exists(PluginContext.PluginApi.GetPluginPath($"themes/{retval}/template.html")))
             {
                 retval = "bootstrap-large";
             }
@@ -135,14 +135,14 @@ var {vueId} = new Vue({{
 
         public static List<string> GetThemeList()
         {
-            var directoryPath = Main.Instance.PluginApi.GetPluginPath("themes");
+            var directoryPath = PluginContext.PluginApi.GetPluginPath("themes");
             return Utils.GetDirectoryNames(directoryPath).ToList();
         }
 
         public static string GetTemplateHtml(string theme)
         {
-            var htmlPath = Main.Instance.PluginApi.GetPluginPath($"themes/{theme}/template.html");
-            var themeUrl = Main.Instance.PluginApi.GetPluginUrl($"themes/{theme}");
+            var htmlPath = PluginContext.PluginApi.GetPluginPath($"themes/{theme}/template.html");
+            var themeUrl = PluginContext.PluginApi.GetPluginUrl($"themes/{theme}");
 
             var html = CacheUtils.Get<string>(htmlPath);
             if (html != null) return html;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 
@@ -24,7 +25,7 @@ namespace SS.Form.Pages
         {
             _siteId = Utils.ToInt(Request.QueryString["siteId"]);
 
-            if (!Main.Instance.Request.AdminPermissions.HasSitePermissions(_siteId, Main.Instance.Id))
+            if (!PluginContext.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
             {
                 Response.Write("<h1>未授权访问</h1>");
                 Response.End();
@@ -35,7 +36,7 @@ namespace SS.Form.Pages
         {
             try
             {
-                if (Main.Instance.FormDao.IsTitleExists(_siteId, TbTitle.Text))
+                if (Main.FormDao.IsTitleExists(_siteId, TbTitle.Text))
                 {
                     LtlMessage.Text = Utils.GetMessageHtml("表单添加失败，表单名称已存在！", false);
                     return;
@@ -51,7 +52,7 @@ namespace SS.Form.Pages
                     TimeToEnd = DateTime.Now.AddMonths(3)
                 };
 
-                Main.Instance.FormDao.Insert(formInfo);
+                Main.FormDao.Insert(formInfo);
 
                 LayerUtils.Close(Page);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.UI.WebControls;
+using SiteServer.Plugin;
 using SS.Form.Controls;
 using SS.Form.Core;
 using SS.Form.Model;
@@ -59,7 +60,7 @@ namespace SS.Form.Pages
 
             CbIsCaptcha.Checked = settings.IsCaptcha;
 
-            var smsPlugin = Main.Instance.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
+            var smsPlugin = PluginContext.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
             if (smsPlugin != null && smsPlugin.IsReady)
             {
                 PhSms.Visible = true;
@@ -70,7 +71,7 @@ namespace SS.Form.Pages
                 var keys = settings.AdministratorSmsNotifyKeys.Split(',');
                 LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.Id), nameof(LogInfo.Id)));
                 LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.AddDate), nameof(LogInfo.AddDate)));
-                var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+                var fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
                 foreach (var fieldInfo in fieldInfoList)
                 {
                     LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(fieldInfo.Title, fieldInfo.Title));
@@ -114,7 +115,7 @@ namespace SS.Form.Pages
             
             FormInfo.Settings = settings.ToString();
 
-            Main.Instance.FormDao.Update(FormInfo);
+            Main.FormDao.Update(FormInfo);
 
             LtlMessage.Text = Utils.GetMessageHtml("设置保存成功！", true);
         }

@@ -23,7 +23,7 @@ namespace SS.Form.Parse
 
                 if (Utils.EqualsIgnoreCase(name, AttributeTitle))
                 {
-                    title = Main.Instance.ParseApi.ParseAttributeValue(value, context);
+                    title = PluginContext.ParseApi.ParseAttributeValue(value, context);
                 }
                 else if (Utils.EqualsIgnoreCase(name, AttributeTheme))
                 {
@@ -31,9 +31,9 @@ namespace SS.Form.Parse
                 }
             }
 
-            var formId = !string.IsNullOrEmpty(title) ? Main.Instance.FormDao.GetFormIdByTitle(context.SiteId, title) : Main.Instance.FormDao.GetFormIdByContentId(context.SiteId, context.ChannelId, context.ContentId);
+            var formId = !string.IsNullOrEmpty(title) ? Main.FormDao.GetFormIdByTitle(context.SiteId, title) : Main.FormDao.GetFormIdByContentId(context.SiteId, context.ChannelId, context.ContentId);
 
-            var formInfo = Main.Instance.FormDao.GetFormInfo(formId);
+            var formInfo = Main.FormDao.GetFormInfo(formId);
             var formSettings = new FormSettings(formInfo?.Settings);
 
             if (string.IsNullOrEmpty(theme))
@@ -51,7 +51,7 @@ namespace SS.Form.Parse
             }
             else
             {
-                var stlElements = Main.Instance.ParseApi.GetStlElements(templateHtml, new List<string>
+                var stlElements = PluginContext.ParseApi.GetStlElements(templateHtml, new List<string>
                 {
                     "stl:template",
                     "stl:yes",

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 using System.Web.UI.WebControls;
+using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 
@@ -30,13 +31,13 @@ namespace SS.Form.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, true);
+            _fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, true);
 
             if (!string.IsNullOrEmpty(Request.QueryString["delete"]) &&
                 !string.IsNullOrEmpty(Request.QueryString["logId"]))
             {
                 var logId = Utils.ToInt(Request.QueryString["logId"]);
-                Main.Instance.LogDao.Delete(logId);
+                Main.LogDao.Delete(logId);
                 LtlMessage.Text = Utils.GetMessageHtml("删除成功！", true);
             }
 
@@ -50,8 +51,8 @@ namespace SS.Form.Pages
                 LtlFieldNames.Text += $@"<th scope=""col"">{fieldInfo.Title}</th>";
             }
 
-            var totalCount = Main.Instance.LogDao.GetCount(FormInfo.Id);
-            var logs = Main.Instance.LogDao.GetFormLogInfoList(FormInfo.Id, totalCount, 30, 0);
+            var totalCount = Main.LogDao.GetCount(FormInfo.Id);
+            var logs = Main.LogDao.GetFormLogInfoList(FormInfo.Id, totalCount, 30, 0);
 
             RptLogs.DataSource = logs;
             RptLogs.ItemDataBound += RptLogs_ItemDataBound;
@@ -62,7 +63,7 @@ namespace SS.Form.Pages
 
         public void BtnExport_Click(object sender, EventArgs e)
         {
-            var logs = Main.Instance.LogDao.GetAllFormLogInfoList(FormInfo.Id);
+            var logs = Main.LogDao.GetAllFormLogInfoList(FormInfo.Id);
 
             var head = new List<string> { "序号"};
             foreach (var fieldInfo in _fieldInfoList)
@@ -91,9 +92,9 @@ namespace SS.Form.Pages
 
             var relatedPath = "表单清单.csv";
 
-            CsvUtils.Export(Main.Instance.PluginApi.GetPluginPath(relatedPath), head, rows);
+            CsvUtils.Export(PluginContext.PluginApi.GetPluginPath(relatedPath), head, rows);
 
-            HttpContext.Current.Response.Redirect(Main.Instance.PluginApi.GetPluginUrl(relatedPath));
+            HttpContext.Current.Response.Redirect(PluginContext.PluginApi.GetPluginUrl(relatedPath));
         }
 
         private void RptLogs_ItemDataBound(object sender, RepeaterItemEventArgs e)

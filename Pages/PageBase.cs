@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.UI;
+using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 using SS.Form.Parse;
@@ -30,7 +31,7 @@ namespace SS.Form.Pages
             var channelId = Utils.ToInt(Request.QueryString["channelId"]);
             var contentId = Utils.ToInt(Request.QueryString["contentId"]);
             var formId = Utils.ToInt(Request.QueryString["formId"]);
-            FormInfo = formId > 0 ? Main.Instance.FormDao.GetFormInfo(formId) : Main.Instance.FormDao.GetFormInfoOrCreateIfNotExists(SiteId, channelId, contentId);
+            FormInfo = formId > 0 ? Main.FormDao.GetFormInfo(formId) : Main.FormDao.GetFormInfoOrCreateIfNotExists(SiteId, channelId, contentId);
             ReturnUrl = HttpUtility.UrlDecode(Request.QueryString["returnUrl"]);
             FormTitle = FormInfo.Title;
 
@@ -39,7 +40,7 @@ namespace SS.Form.Pages
             PageFieldsUrl = $"{nameof(PageFields)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
             PageSettingsUrl = $"{nameof(PageSettings)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
 
-            if (!Main.Instance.Request.AdminPermissions.HasSitePermissions(SiteId, Main.Instance.Id))
+            if (!PluginContext.Request.AdminPermissions.HasSitePermissions(SiteId, Main.PluginId))
             {
                 HttpContext.Current.Response.Write("<h1>未授权访问</h1>");
                 HttpContext.Current.Response.End();
@@ -48,12 +49,12 @@ namespace SS.Form.Pages
 
         public void LbTemplate_Click(object sender, EventArgs e)
         {
-            CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview", Main.Instance.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(FormInfo)), 5);
+            CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview", PluginContext.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(FormInfo)), 5);
             var url =
-                Main.Instance.UtilsApi.GetAdminDirectoryUrl(
-                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={Main.Instance.UtilsApi.Encrypt(Main.Instance.PluginApi.GetPluginUrl(PageLogsUrl))}");
+                PluginContext.UtilsApi.GetAdminDirectoryUrl(
+                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={PluginContext.UtilsApi.Encrypt(PluginContext.PluginApi.GetPluginUrl(PageLogsUrl))}");
 
-            Response.Redirect(Main.Instance.UtilsApi.GetAdminDirectoryUrl($"loading.aspx?redirectUrl={Main.Instance.UtilsApi.Encrypt(url)}"));
+            Response.Redirect(PluginContext.UtilsApi.GetAdminDirectoryUrl($"loading.aspx?redirectUrl={PluginContext.UtilsApi.Encrypt(url)}"));
         }
     }
 }

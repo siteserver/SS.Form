@@ -60,7 +60,7 @@ namespace SS.Form.Core
         {
             var formId = Utils.ToInt(id);
 
-            var formInfo = Main.Instance.FormDao.GetFormInfo(formId);
+            var formInfo = Main.FormDao.GetFormInfo(formId);
             if (formInfo == null) return null;
 
             var settings = new FormSettings(formInfo.Settings);
@@ -83,7 +83,7 @@ namespace SS.Form.Core
 
             var attributes = request.GetPostObject<Dictionary<string, object>>("attributes");
 
-            var fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(formInfo.Id, true);
+            var fieldInfoList = Main.FieldDao.GetFieldInfoList(formInfo.Id, true);
             foreach (var fieldInfo in fieldInfoList)
             {
                 object value;
@@ -107,11 +107,11 @@ namespace SS.Form.Core
                 }
             }
 
-            logInfo.Id = Main.Instance.LogDao.Insert(logInfo);
+            logInfo.Id = Main.LogDao.Insert(logInfo);
 
             if (settings.IsAdministratorSmsNotify && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyMobile))
             {
-                var smsPlugin = Main.Instance.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
+                var smsPlugin = PluginContext.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
                 if (smsPlugin != null && smsPlugin.IsReady)
                 {
                     string errorMessage;

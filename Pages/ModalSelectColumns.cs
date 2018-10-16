@@ -19,7 +19,7 @@ namespace SS.Form.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _fieldInfoList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            _fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
 
             if (IsPostBack) return;
 
@@ -46,7 +46,7 @@ namespace SS.Form.Pages
                     {
                         settings.IsVisibleInList = item.Selected;
                         fieldInfo.Settings = settings.ToString();
-                        Main.Instance.FieldDao.Update(fieldInfo);
+                        Main.FieldDao.Update(fieldInfo);
                     }
 
                     break;

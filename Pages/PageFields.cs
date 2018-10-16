@@ -23,7 +23,7 @@ namespace SS.Form.Pages
             if (!string.IsNullOrEmpty(Request.QueryString["delete"]))
             {
                 var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
-                Main.Instance.FieldDao.Delete(fieldId);
+                Main.FieldDao.Delete(fieldId);
                 LtlMessage.Text = Utils.GetMessageHtml("字段删除成功！", true);
             }
             if (!string.IsNullOrEmpty(Request.QueryString["taxis"]))
@@ -34,16 +34,16 @@ namespace SS.Form.Pages
                 switch (direction.ToUpper())
                 {
                     case "UP":
-                        Main.Instance.FieldDao.TaxisUp(fieldId);
+                        Main.FieldDao.TaxisUp(fieldId);
                         break;
                     case "DOWN":
-                        Main.Instance.FieldDao.TaxisDown(fieldId);
+                        Main.FieldDao.TaxisDown(fieldId);
                         break;
                 }
                 LtlMessage.Text = Utils.GetMessageHtml("排序成功！", true);
             }
 
-            var fieldList = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            var fieldList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
 
             DgContents.DataSource = fieldList;
             DgContents.ItemDataBound += DgContents_ItemDataBound;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 using SS.Form.Parse;
@@ -29,7 +30,7 @@ namespace SS.Form.Pages
             _formId = Utils.ToInt(Request.QueryString["formId"]);
             _returnUrl = GetRedirectUrl(_siteId);
 
-            if (!Main.Instance.Request.AdminPermissions.HasSitePermissions(_siteId, Main.Instance.Id))
+            if (!PluginContext.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
             {
                 Response.Write("<h1>未授权访问</h1>");
                 Response.End();
@@ -42,33 +43,33 @@ namespace SS.Form.Pages
                 {
                     if (!string.IsNullOrEmpty(Request.QueryString["down"]))
                     {
-                        Main.Instance.FormDao.UpdateTaxisToDown(_siteId, _formId);
+                        Main.FormDao.UpdateTaxisToDown(_siteId, _formId);
                     }
                     else
                     {
-                        Main.Instance.FormDao.UpdateTaxisToUp(_siteId, _formId);
+                        Main.FormDao.UpdateTaxisToUp(_siteId, _formId);
                     }
                 }
                 if (!string.IsNullOrEmpty(Request.QueryString["delete"]))
                 {
-                    Main.Instance.FormDao.Delete(_formId);
+                    Main.FormDao.Delete(_formId);
 
                     LtlMessage.Text = Utils.GetMessageHtml("表单删除成功！", true);
                 }
                 if (!string.IsNullOrEmpty(Request.QueryString["template"]))
                 {
-                    var formInfo = Main.Instance.FormDao.GetFormInfo(_formId);
+                    var formInfo = Main.FormDao.GetFormInfo(_formId);
                     CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview",
-                        Main.Instance.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(formInfo)),
+                        PluginContext.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(formInfo)),
                         5);
-                    Response.Redirect(Main.Instance.UtilsApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={Main.Instance.UtilsApi.Encrypt(Main.Instance.PluginApi.GetPluginUrl(_returnUrl))}"));
+                    Response.Redirect(PluginContext.UtilsApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={PluginContext.UtilsApi.Encrypt(PluginContext.PluginApi.GetPluginUrl(_returnUrl))}"));
                     return;
                 }
             }
 
             if (IsPostBack) return;
 
-            DgContents.DataSource = Main.Instance.FormDao.GetFormInfoListNotInChannel(_siteId);
+            DgContents.DataSource = Main.FormDao.GetFormInfoListNotInChannel(_siteId);
             DgContents.ItemDataBound += DgContents_ItemDataBound;
             DgContents.DataBind();
 
@@ -80,7 +81,7 @@ namespace SS.Form.Pages
             //    string fileName;
             //    if (Utils.ExportInput(_formId, out fileName))
             //    {
-            //        LtlScript.Text = Utils.SwalSuccess("导出成功", "点击按钮下载导出文件", "下 载", $"location.href = '{Main.Instance.Context.FilesApi.GetRootUrl($"sitefiles/temporaryfiles/{fileName}")}'");
+            //        LtlScript.Text = Utils.SwalSuccess("导出成功", "点击按钮下载导出文件", "下 载", $"location.href = '{Main.Context.FilesApi.GetRootUrl($"sitefiles/temporaryfiles/{fileName}")}'");
             //    }
             //}
         }

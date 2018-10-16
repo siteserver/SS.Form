@@ -3,6 +3,7 @@ using System.IO;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using SiteServer.Plugin;
 using SS.Form.Core;
 
 namespace SS.Form.Pages
@@ -23,7 +24,7 @@ namespace SS.Form.Pages
         {
             _siteId = Utils.ToInt(Request.QueryString["siteId"]);
 
-            if (!Main.Instance.Request.AdminPermissions.HasSitePermissions(_siteId, Main.Instance.Id))
+            if (!PluginContext.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
             {
                 Response.Write("<h1>未授权访问</h1>");
                 Response.End();
@@ -43,7 +44,7 @@ namespace SS.Form.Pages
 
             try
             {
-                var localFilePath = Main.Instance.UtilsApi.GetTemporaryFilesPath(Path.GetFileName(filePath));
+                var localFilePath = PluginContext.UtilsApi.GetTemporaryFilesPath(Path.GetFileName(filePath));
 
                 HifImport.PostedFile.SaveAs(localFilePath);
 

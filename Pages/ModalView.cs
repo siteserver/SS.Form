@@ -20,11 +20,11 @@ namespace SS.Form.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _logInfo = Main.Instance.LogDao.GetLogInfo(Utils.ToInt(Request.QueryString["logId"]));
+            _logInfo = Main.LogDao.GetLogInfo(Utils.ToInt(Request.QueryString["logId"]));
 
             if (IsPostBack) return;
 
-            RptContents.DataSource = Main.Instance.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            RptContents.DataSource = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
             RptContents.ItemDataBound += RptContents_ItemDataBound;
             RptContents.DataBind();
 
