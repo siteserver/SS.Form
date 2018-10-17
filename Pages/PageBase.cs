@@ -5,6 +5,7 @@ using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 using SS.Form.Parse;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -31,7 +32,7 @@ namespace SS.Form.Pages
             var channelId = Utils.ToInt(Request.QueryString["channelId"]);
             var contentId = Utils.ToInt(Request.QueryString["contentId"]);
             var formId = Utils.ToInt(Request.QueryString["formId"]);
-            FormInfo = formId > 0 ? Main.FormDao.GetFormInfo(formId) : Main.FormDao.GetFormInfoOrCreateIfNotExists(SiteId, channelId, contentId);
+            FormInfo = formId > 0 ? FormDao.GetFormInfo(formId) : FormDao.GetFormInfoOrCreateIfNotExists(SiteId, channelId, contentId);
             ReturnUrl = HttpUtility.UrlDecode(Request.QueryString["returnUrl"]);
             FormTitle = FormInfo.Title;
 
@@ -49,10 +50,12 @@ namespace SS.Form.Pages
 
         public void LbTemplate_Click(object sender, EventArgs e)
         {
+            var pluginUrl = SiteServer.Plugin.Context.PluginApi.GetPluginUrl(Main.PluginId);
+
             CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview", SiteServer.Plugin.Context.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(FormInfo)), 5);
             var url =
                 SiteServer.Plugin.Context.UtilsApi.GetAdminDirectoryUrl(
-                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={SiteServer.Plugin.Context.UtilsApi.Encrypt(SiteServer.Plugin.Context.PluginApi.GetPluginUrl(PageLogsUrl))}");
+                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={SiteServer.Plugin.Context.UtilsApi.Encrypt($"{pluginUrl}/{PageLogsUrl}")}");
 
             Response.Redirect(SiteServer.Plugin.Context.UtilsApi.GetAdminDirectoryUrl($"loading.aspx?redirectUrl={SiteServer.Plugin.Context.UtilsApi.Encrypt(url)}"));
         }

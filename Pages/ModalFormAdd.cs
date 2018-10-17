@@ -3,6 +3,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -35,7 +36,7 @@ namespace SS.Form.Pages
         {
             try
             {
-                if (Main.FormDao.IsTitleExists(_siteId, TbTitle.Text))
+                if (FormDao.IsTitleExists(_siteId, TbTitle.Text))
                 {
                     LtlMessage.Text = Utils.GetMessageHtml("表单添加失败，表单名称已存在！", false);
                     return;
@@ -51,7 +52,7 @@ namespace SS.Form.Pages
                     TimeToEnd = DateTime.Now.AddMonths(3)
                 };
 
-                Main.FormDao.Insert(formInfo);
+                FormDao.Insert(formInfo);
 
                 LayerUtils.Close(Page);
             }

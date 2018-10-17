@@ -13,24 +13,6 @@ namespace SS.Form
     {
         public static string PluginId { get; private set; }
 
-        public static Dao Dao { get; }
-        public static FormDao FormDao { get; }
-        public static LogDao LogDao { get; }
-        public static FieldDao FieldDao { get; }
-        public static FieldItemDao FieldItemDao { get; }
-
-        static Main()
-        {
-            var connectionString = Context.ConnectionString;
-            var databaseApi = Context.DatabaseApi;
-
-            Dao = new Dao(connectionString, databaseApi);
-            FormDao = new FormDao(connectionString, databaseApi);
-            LogDao = new LogDao(connectionString, databaseApi);
-            FieldDao = new FieldDao(connectionString, databaseApi);
-            FieldItemDao = new FieldItemDao(connectionString, databaseApi);
-        }
-
         public override void Startup(IService service)
         {
             PluginId = Id;

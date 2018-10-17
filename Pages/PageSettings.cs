@@ -6,6 +6,7 @@ using SS.Form.Controls;
 using SS.Form.Core;
 using SS.Form.Model;
 using SS.Form.Parse;
+using SS.Form.Provider;
 using SS.SMS;
 
 namespace SS.Form.Pages
@@ -61,7 +62,7 @@ namespace SS.Form.Pages
             CbIsCaptcha.Checked = settings.IsCaptcha;
 
             var smsPlugin = SiteServer.Plugin.Context.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
-            if (smsPlugin != null && smsPlugin.IsReady)
+            if (smsPlugin != null && SmsPlugin.IsReady)
             {
                 PhSms.Visible = true;
 
@@ -71,7 +72,7 @@ namespace SS.Form.Pages
                 var keys = settings.AdministratorSmsNotifyKeys.Split(',');
                 LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.Id), nameof(LogInfo.Id)));
                 LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(nameof(LogInfo.AddDate), nameof(LogInfo.AddDate)));
-                var fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+                var fieldInfoList = FieldDao.GetFieldInfoList(FormInfo.Id, false);
                 foreach (var fieldInfo in fieldInfoList)
                 {
                     LbAdministratorSmsNotifyKeys.Items.Add(new ListItem(fieldInfo.Title, fieldInfo.Title));
@@ -115,7 +116,7 @@ namespace SS.Form.Pages
             
             FormInfo.Settings = settings.ToString();
 
-            Main.FormDao.Update(FormInfo);
+            FormDao.Update(FormInfo);
 
             LtlMessage.Text = Utils.GetMessageHtml("设置保存成功！", true);
         }

@@ -6,7 +6,7 @@ using SS.Form.Model;
 
 namespace SS.Form.Provider
 {
-    public class FormDao
+    public static class FormDao
     {
         public const string TableName = "ss_form";
 
@@ -71,16 +71,7 @@ namespace SS.Form.Provider
             }
         };
 
-        private readonly string _connectionString;
-        private readonly IDatabaseApi _helper;
-
-        public FormDao(string connectionString, IDatabaseApi helper)
-        {
-            _connectionString = connectionString;
-            _helper = helper;
-        }
-
-        public int Insert(FormInfo formInfo)
+        public static int Insert(FormInfo formInfo)
         {
             int formId;
 
@@ -114,26 +105,26 @@ namespace SS.Form.Provider
 
             var parameters = new List<IDataParameter>
             {
-                _helper.GetParameter(nameof(formInfo.SiteId), formInfo.SiteId),
-                _helper.GetParameter(nameof(formInfo.ChannelId), formInfo.ChannelId),
-                _helper.GetParameter(nameof(formInfo.ContentId), formInfo.ContentId),
-                _helper.GetParameter(nameof(formInfo.Title), formInfo.Title),
-                _helper.GetParameter(nameof(formInfo.Description), formInfo.Description),
-                _helper.GetParameter(nameof(formInfo.Taxis), formInfo.Taxis),
-                _helper.GetParameter(nameof(formInfo.IsTimeout), formInfo.IsTimeout),
-                _helper.GetParameter(nameof(formInfo.TimeToStart), formInfo.TimeToStart),
-                _helper.GetParameter(nameof(formInfo.TimeToEnd), formInfo.TimeToEnd),
-                _helper.GetParameter(nameof(formInfo.Settings), formInfo.Settings)
+                Context.DatabaseApi.GetParameter(nameof(formInfo.SiteId), formInfo.SiteId),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.ChannelId), formInfo.ChannelId),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.ContentId), formInfo.ContentId),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Title), formInfo.Title),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Description), formInfo.Description),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Taxis), formInfo.Taxis),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.IsTimeout), formInfo.IsTimeout),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.TimeToStart), formInfo.TimeToStart),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.TimeToEnd), formInfo.TimeToEnd),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Settings), formInfo.Settings)
             };
 
-            using (var conn = _helper.GetConnection(_connectionString))
+            using (var conn = Context.DatabaseApi.GetConnection(Context.ConnectionString))
             {
                 conn.Open();
                 using (var trans = conn.BeginTransaction())
                 {
                     try
                     {
-                        formId = _helper.ExecuteNonQueryAndReturnId(TableName, nameof(FormInfo.Id), trans, sqlString, parameters.ToArray());
+                        formId = Context.DatabaseApi.ExecuteNonQueryAndReturnId(TableName, nameof(FormInfo.Id), trans, sqlString, parameters.ToArray());
 
                         trans.Commit();
                     }
@@ -148,7 +139,7 @@ namespace SS.Form.Provider
             return formId;
         }
 
-        public void Update(FormInfo formInfo)
+        public static void Update(FormInfo formInfo)
         {
             string sqlString = $@"UPDATE {TableName} SET
                 {nameof(FormInfo.SiteId)} = @{nameof(FormInfo.SiteId)}, 
@@ -165,34 +156,34 @@ namespace SS.Form.Provider
 
             var parameters = new List<IDataParameter>
             {
-                _helper.GetParameter(nameof(formInfo.SiteId), formInfo.SiteId),
-                _helper.GetParameter(nameof(formInfo.ChannelId), formInfo.ChannelId),
-                _helper.GetParameter(nameof(formInfo.ContentId), formInfo.ContentId),
-                _helper.GetParameter(nameof(formInfo.Title), formInfo.Title),
-                _helper.GetParameter(nameof(formInfo.Description), formInfo.Description),
-                _helper.GetParameter(nameof(formInfo.Taxis), formInfo.Taxis),
-                _helper.GetParameter(nameof(formInfo.IsTimeout), formInfo.IsTimeout),
-                _helper.GetParameter(nameof(formInfo.TimeToStart), formInfo.TimeToStart),
-                _helper.GetParameter(nameof(formInfo.TimeToEnd), formInfo.TimeToEnd),
-                _helper.GetParameter(nameof(formInfo.Settings), formInfo.Settings),
-                _helper.GetParameter(nameof(formInfo.Id), formInfo.Id)
+                Context.DatabaseApi.GetParameter(nameof(formInfo.SiteId), formInfo.SiteId),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.ChannelId), formInfo.ChannelId),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.ContentId), formInfo.ContentId),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Title), formInfo.Title),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Description), formInfo.Description),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Taxis), formInfo.Taxis),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.IsTimeout), formInfo.IsTimeout),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.TimeToStart), formInfo.TimeToStart),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.TimeToEnd), formInfo.TimeToEnd),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Settings), formInfo.Settings),
+                Context.DatabaseApi.GetParameter(nameof(formInfo.Id), formInfo.Id)
             };
 
-            _helper.ExecuteNonQuery(_connectionString, sqlString, parameters.ToArray());
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parameters.ToArray());
         }
 
-        public void Delete(int formId)
+        public static void Delete(int formId)
         {
             if (formId <= 0) return;
 
             string sqlString = $"DELETE FROM {TableName} WHERE {nameof(FormInfo.Id)} = {formId}";
-            _helper.ExecuteNonQuery(_connectionString, sqlString);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString);
 
-            Main.FieldDao.DeleteByFormId(formId);
-            Main.LogDao.DeleteByFormId(formId);
+            FieldDao.DeleteByFormId(formId);
+            LogDao.DeleteByFormId(formId);
         }
 
-        public bool IsTitleExists(int siteId, string title)
+        public static bool IsTitleExists(int siteId, string title)
         {
             var exists = false;
 
@@ -202,11 +193,11 @@ namespace SS.Form.Provider
 
             var parms = new[]
             {
-                _helper.GetParameter(nameof(FormInfo.SiteId), siteId),
-                _helper.GetParameter(nameof(FormInfo.Title), title)
+                Context.DatabaseApi.GetParameter(nameof(FormInfo.SiteId), siteId),
+                Context.DatabaseApi.GetParameter(nameof(FormInfo.Title), title)
             };
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString, parms))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parms))
             {
                 if (rdr.Read() && !rdr.IsDBNull(0))
                 {
@@ -218,17 +209,17 @@ namespace SS.Form.Provider
             return exists;
         }
 
-        public int GetFormIdByContentId(int siteId, int channelId, int contentId)
+        public static int GetFormIdByContentId(int siteId, int channelId, int contentId)
         {
             if (siteId > 0 && channelId > 0 && contentId > 0)
             {
-                return Main.Dao.GetIntResult($"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
+                return Dao.GetIntResult($"SELECT {nameof(FormInfo.Id)} FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}");
             }
 
             return 0;
         }
 
-        public int GetFormIdByTitle(int siteId, string title)
+        public static int GetFormIdByTitle(int siteId, string title)
         {
             if (siteId > 0 && !string.IsNullOrEmpty(title))
             {
@@ -236,17 +227,17 @@ namespace SS.Form.Provider
 
                 var parameters = new[]
                 {
-                    _helper.GetParameter(nameof(FormInfo.SiteId), siteId),
-                    _helper.GetParameter(nameof(FormInfo.Title), title)
+                    Context.DatabaseApi.GetParameter(nameof(FormInfo.SiteId), siteId),
+                    Context.DatabaseApi.GetParameter(nameof(FormInfo.Title), title)
                 };
 
-                return Main.Dao.GetIntResult(sqlString, parameters);
+                return Dao.GetIntResult(sqlString, parameters);
             }
 
             return 0;
         }
 
-        public List<FormInfo> GetFormInfoListNotInChannel(int siteId)
+        public static List<FormInfo> GetFormInfoListNotInChannel(int siteId)
         {
             var list = new List<FormInfo>();
 
@@ -263,7 +254,7 @@ namespace SS.Form.Provider
                 {nameof(FormInfo.Settings)}
             FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = 0 AND {nameof(FormInfo.ContentId)} = 0 ORDER BY Taxis DESC";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 while (rdr.Read())
                 {
@@ -280,7 +271,7 @@ namespace SS.Form.Provider
             return list;
         }
 
-        private FormInfo CreateDefaultForm(int siteId)
+        private static FormInfo CreateDefaultForm(int siteId)
         {
             var formInfo = new FormInfo
             {
@@ -295,7 +286,7 @@ namespace SS.Form.Provider
             };
             formInfo.Id = Insert(formInfo);
 
-            Main.FieldDao.Insert(new FieldInfo
+            FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "姓名",
@@ -307,7 +298,7 @@ namespace SS.Form.Provider
                     IsVisibleInList = true
                 }.ToString()
             });
-            Main.FieldDao.Insert(new FieldInfo
+            FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "手机",
@@ -320,7 +311,7 @@ namespace SS.Form.Provider
                     ValidateType = ValidateType.Mobile
                 }.ToString()
             });
-            Main.FieldDao.Insert(new FieldInfo
+            FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "年龄",
@@ -333,7 +324,7 @@ namespace SS.Form.Provider
                     ValidateType = ValidateType.Integer
                 }.ToString()
             });
-            Main.FieldDao.Insert(new FieldInfo
+            FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "所在城市",
@@ -357,7 +348,7 @@ namespace SS.Form.Provider
                 }.ToString()
             };
 
-            sex.Id = Main.FieldDao.Insert(sex);
+            sex.Id = FieldDao.Insert(sex);
             sex.Items = new List<FieldItemInfo>
             {
                 new FieldItemInfo
@@ -373,8 +364,8 @@ namespace SS.Form.Provider
                     Value = "女"
                 }
             };
-            Main.FieldItemDao.InsertItems(formInfo.Id, sex.Id, sex.Items);
-            Main.FieldDao.Insert(new FieldInfo
+            FieldItemDao.InsertItems(formInfo.Id, sex.Id, sex.Items);
+            FieldDao.Insert(new FieldInfo
             {
                 FormId = formInfo.Id,
                 Title = "留言",
@@ -385,7 +376,7 @@ namespace SS.Form.Provider
             return formInfo;
         }
 
-        public FormInfo GetFormInfoOrCreateIfNotExists(int siteId, int channelId, int contentId)
+        public static FormInfo GetFormInfoOrCreateIfNotExists(int siteId, int channelId, int contentId)
         {
             FormInfo formInfo = null;
 
@@ -402,7 +393,7 @@ namespace SS.Form.Provider
             {nameof(FormInfo.Settings)}
             FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId} AND {nameof(FormInfo.ChannelId)} = {channelId} AND {nameof(FormInfo.ContentId)} = {contentId}";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read())
                 {
@@ -428,7 +419,7 @@ namespace SS.Form.Provider
             return formInfo;
         }
 
-        public FormInfo GetFormInfo(int id)
+        public static FormInfo GetFormInfo(int id)
         {
             FormInfo formInfo = null;
 
@@ -445,7 +436,7 @@ namespace SS.Form.Provider
             {nameof(FormInfo.Settings)}
             FROM {TableName} WHERE {nameof(FormInfo.Id)} = {id}";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read())
                 {
@@ -457,14 +448,14 @@ namespace SS.Form.Provider
             return formInfo;
         }
 
-        public bool UpdateTaxisToUp(int siteId, int formId)
+        public static bool UpdateTaxisToUp(int siteId, int formId)
         {
-            var sqlString = _helper.GetPageSqlString(TableName, $"{nameof(FormInfo.Id)}, {nameof(FormInfo.Taxis)}", $"WHERE (({nameof(FormInfo.Taxis)} > (SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE {nameof(FormInfo.Id)} = {formId})) AND {nameof(FormInfo.SiteId)} ={siteId})", $"ORDER BY {nameof(FormInfo.Taxis)}", 0, 1);
+            var sqlString = Context.DatabaseApi.GetPageSqlString(TableName, $"{nameof(FormInfo.Id)}, {nameof(FormInfo.Taxis)}", $"WHERE (({nameof(FormInfo.Taxis)} > (SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE {nameof(FormInfo.Id)} = {formId})) AND {nameof(FormInfo.SiteId)} ={siteId})", $"ORDER BY {nameof(FormInfo.Taxis)}", 0, 1);
 
             var higherId = 0;
             var higherTaxis = 0;
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read())
                 {
@@ -485,14 +476,14 @@ namespace SS.Form.Provider
             return false;
         }
 
-        public bool UpdateTaxisToDown(int siteId, int formId)
+        public static bool UpdateTaxisToDown(int siteId, int formId)
         {
-            var sqlString = _helper.GetPageSqlString(TableName, $"{nameof(FormInfo.Id)}, {nameof(FormInfo.Taxis)}", $"WHERE (({nameof(FormInfo.Taxis)} < (SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId}))) AND {nameof(FormInfo.SiteId)} = {siteId})", $"ORDER BY {nameof(FormInfo.Taxis)} DESC", 0, 1);
+            var sqlString = Context.DatabaseApi.GetPageSqlString(TableName, $"{nameof(FormInfo.Id)}, {nameof(FormInfo.Taxis)}", $"WHERE (({nameof(FormInfo.Taxis)} < (SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId}))) AND {nameof(FormInfo.SiteId)} = {siteId})", $"ORDER BY {nameof(FormInfo.Taxis)} DESC", 0, 1);
 
             var lowerId = 0;
             var lowerTaxis = 0;
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read())
                 {
@@ -513,23 +504,23 @@ namespace SS.Form.Provider
             return false;
         }
 
-        private int GetMaxTaxis(int siteId)
+        private static int GetMaxTaxis(int siteId)
         {
             var sqlString =
                 $"SELECT MAX({nameof(FormInfo.Taxis)}) FROM {TableName} WHERE {nameof(FormInfo.SiteId)} = {siteId}";
-            return Main.Dao.GetIntResult(sqlString);
+            return Dao.GetIntResult(sqlString);
         }
 
-        private int GetTaxis(int formId)
+        private static int GetTaxis(int formId)
         {
             var sqlString = $"SELECT {nameof(FormInfo.Taxis)} FROM {TableName} WHERE ({nameof(FormInfo.Id)} = {formId})";
-            return Main.Dao.GetIntResult(sqlString);
+            return Dao.GetIntResult(sqlString);
         }
 
-        private void SetTaxis(int formId, int taxis)
+        private static void SetTaxis(int formId, int taxis)
         {
             string sqlString = $"UPDATE {TableName} SET {nameof(FormInfo.Taxis)} = {taxis} WHERE {nameof(FormInfo.Id)} = {formId}";
-            _helper.ExecuteNonQuery(_connectionString, sqlString);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString);
         }
 
         private static FormInfo GetFormInfo(IDataRecord rdr)

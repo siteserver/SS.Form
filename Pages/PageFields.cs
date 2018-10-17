@@ -2,6 +2,7 @@
 using System.Web.UI.WebControls;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -23,7 +24,7 @@ namespace SS.Form.Pages
             if (!string.IsNullOrEmpty(Request.QueryString["delete"]))
             {
                 var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
-                Main.FieldDao.Delete(fieldId);
+                FieldDao.Delete(fieldId);
                 LtlMessage.Text = Utils.GetMessageHtml("字段删除成功！", true);
             }
             if (!string.IsNullOrEmpty(Request.QueryString["taxis"]))
@@ -34,16 +35,16 @@ namespace SS.Form.Pages
                 switch (direction.ToUpper())
                 {
                     case "UP":
-                        Main.FieldDao.TaxisUp(fieldId);
+                        FieldDao.TaxisUp(fieldId);
                         break;
                     case "DOWN":
-                        Main.FieldDao.TaxisDown(fieldId);
+                        FieldDao.TaxisDown(fieldId);
                         break;
                 }
                 LtlMessage.Text = Utils.GetMessageHtml("排序成功！", true);
             }
 
-            var fieldList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            var fieldList = FieldDao.GetFieldInfoList(FormInfo.Id, false);
 
             DgContents.DataSource = fieldList;
             DgContents.ItemDataBound += DgContents_ItemDataBound;

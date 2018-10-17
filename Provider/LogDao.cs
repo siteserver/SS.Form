@@ -6,7 +6,7 @@ using SS.Form.Model;
 
 namespace SS.Form.Provider
 {
-    public class LogDao
+    public static class LogDao
     {
         public const string TableName = "ss_form_log";
 
@@ -46,16 +46,7 @@ namespace SS.Form.Provider
             }
         };
 
-        private readonly string _connectionString;
-        private readonly IDatabaseApi _helper;
-
-        public LogDao(string connectionString, IDatabaseApi helper)
-        {
-            _connectionString = connectionString;
-            _helper = helper;
-        }
-
-        public int Insert(LogInfo logInfo)
+        public static int Insert(LogInfo logInfo)
         {
             string sqlString = $@"INSERT INTO {TableName}
 (
@@ -74,48 +65,48 @@ namespace SS.Form.Provider
 
             var parameters = new List<IDataParameter>
             {
-                _helper.GetParameter(nameof(logInfo.FormId), logInfo.FormId),
-                _helper.GetParameter(nameof(logInfo.ItemIds), logInfo.ItemIds),
-                _helper.GetParameter(nameof(logInfo.UniqueId), logInfo.UniqueId),
-                _helper.GetParameter(nameof(logInfo.AddDate), logInfo.AddDate),
-                _helper.GetParameter(nameof(logInfo.AttributeValues), logInfo.ToString())
+                Context.DatabaseApi.GetParameter(nameof(logInfo.FormId), logInfo.FormId),
+                Context.DatabaseApi.GetParameter(nameof(logInfo.ItemIds), logInfo.ItemIds),
+                Context.DatabaseApi.GetParameter(nameof(logInfo.UniqueId), logInfo.UniqueId),
+                Context.DatabaseApi.GetParameter(nameof(logInfo.AddDate), logInfo.AddDate),
+                Context.DatabaseApi.GetParameter(nameof(logInfo.AttributeValues), logInfo.ToString())
             };
 
-            return _helper.ExecuteNonQueryAndReturnId(TableName, nameof(LogInfo.Id), _connectionString, sqlString, parameters.ToArray());
+            return Context.DatabaseApi.ExecuteNonQueryAndReturnId(TableName, nameof(LogInfo.Id), Context.ConnectionString, sqlString, parameters.ToArray());
         }
 
-        public void DeleteByFormId(int formId)
+        public static void DeleteByFormId(int formId)
         {
             if (formId <= 0) return;
 
             string sqlString = $"DELETE FROM {TableName} WHERE {nameof(LogInfo.FormId)} = {formId}";
-            _helper.ExecuteNonQuery(_connectionString, sqlString);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString);
         }
 
-        public void Delete(List<int> logIdList)
+        public static void Delete(List<int> logIdList)
         {
             if (logIdList == null || logIdList.Count <= 0) return;
             string sqlString =
                 $"DELETE FROM {TableName} WHERE {nameof(LogInfo.Id)} IN ({string.Join(",", logIdList)})";
-            _helper.ExecuteNonQuery(_connectionString, sqlString);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString);
         }
 
-        public void Delete(int logId)
+        public static void Delete(int logId)
         {
             if (logId <= 0) return;
             string sqlString =
                 $"DELETE FROM {TableName} WHERE {nameof(LogInfo.Id)} = {logId}";
-            _helper.ExecuteNonQuery(_connectionString, sqlString);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString);
         }
 
-        public int GetCount(int formId)
+        public static int GetCount(int formId)
         {
             string sqlString =
                 $"SELECT COUNT(*) FROM {TableName} WHERE {nameof(LogInfo.FormId)} = {formId}";
 
             var count = 0;
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read() && !rdr.IsDBNull(0))
                 {
@@ -127,20 +118,20 @@ namespace SS.Form.Provider
             return count;
         }
 
-        public bool IsExists(int formId, string uniqueId)
+        public static bool IsExists(int formId, string uniqueId)
         {
             var sqlString =
                 $"SELECT Id FROM {TableName} WHERE {nameof(LogInfo.FormId)} = @{nameof(LogInfo.FormId)} AND {nameof(LogInfo.UniqueId)} = @{nameof(LogInfo.UniqueId)}";
 
             var parameters = new List<IDataParameter>
             {
-                _helper.GetParameter(nameof(LogInfo.FormId), formId),
-                _helper.GetParameter(nameof(LogInfo.UniqueId), uniqueId)
+                Context.DatabaseApi.GetParameter(nameof(LogInfo.FormId), formId),
+                Context.DatabaseApi.GetParameter(nameof(LogInfo.UniqueId), uniqueId)
             };
 
             var exists = false;
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString, parameters.ToArray()))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parameters.ToArray()))
             {
                 if (rdr.Read() && !rdr.IsDBNull(0))
                 {
@@ -152,7 +143,7 @@ namespace SS.Form.Provider
             return exists;
         }
 
-        public List<LogInfo> GetFormLogInfoList(int formId, int totalCount, int limit, int offset)
+        public static List<LogInfo> GetFormLogInfoList(int formId, int totalCount, int limit, int offset)
         {
             var formLogInfoList = new List<LogInfo>();
 
@@ -165,7 +156,7 @@ namespace SS.Form.Provider
     {nameof(LogInfo.AttributeValues)}
             FROM {TableName} WHERE {nameof(LogInfo.FormId)} = {formId} ORDER BY {nameof(LogInfo.Id)} DESC";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 while (rdr.Read())
                 {
@@ -181,7 +172,7 @@ namespace SS.Form.Provider
             return formLogInfoList;
         }
 
-        public List<LogInfo> GetAllFormLogInfoList(int formId)
+        public static List<LogInfo> GetAllFormLogInfoList(int formId)
         {
             var formLogInfoList = new List<LogInfo>();
 
@@ -194,7 +185,7 @@ namespace SS.Form.Provider
     {nameof(LogInfo.AttributeValues)}
             FROM {TableName} WHERE {nameof(LogInfo.FormId)} = {formId}";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 while (rdr.Read())
                 {
@@ -210,7 +201,7 @@ namespace SS.Form.Provider
             return formLogInfoList;
         }
 
-        public LogInfo GetLogInfo(int logId)
+        public static LogInfo GetLogInfo(int logId)
         {
             LogInfo logInfo = null;
 
@@ -223,7 +214,7 @@ namespace SS.Form.Provider
     {nameof(LogInfo.AttributeValues)}
             FROM {TableName} WHERE {nameof(LogInfo.Id)} = {logId}";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read())
                 {

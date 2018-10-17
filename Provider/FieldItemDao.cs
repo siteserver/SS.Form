@@ -5,7 +5,7 @@ using SS.Form.Model;
 
 namespace SS.Form.Provider
 {
-    public class FieldItemDao
+    public static class FieldItemDao
     {
         public const string TableName = "ss_form_field_item";
 
@@ -44,16 +44,7 @@ namespace SS.Form.Provider
             }
         };
 
-        private readonly string _connectionString;
-        private readonly IDatabaseApi _helper;
-
-        public FieldItemDao(string connectionString, IDatabaseApi helper)
-        {
-            _connectionString = connectionString;
-            _helper = helper;
-        }
-
-        public void Insert(IDbTransaction trans, FieldItemInfo itemInfo)
+        public static void Insert(IDbTransaction trans, FieldItemInfo itemInfo)
         {
             var sqlString = $@"INSERT INTO {TableName} (
     {nameof(FieldItemInfo.FormId)},
@@ -71,21 +62,21 @@ namespace SS.Form.Provider
 
             var parameters = new[]
             {
-                _helper.GetParameter(nameof(FieldItemInfo.FormId), itemInfo.FormId),
-                _helper.GetParameter(nameof(FieldItemInfo.FieldId), itemInfo.FieldId),
-                _helper.GetParameter(nameof(FieldItemInfo.Value), itemInfo.Value),
-                _helper.GetParameter(nameof(FieldItemInfo.IsSelected), itemInfo.IsSelected),
-                _helper.GetParameter(nameof(FieldItemInfo.IsExtras), itemInfo.IsExtras)
+                Context.DatabaseApi.GetParameter(nameof(FieldItemInfo.FormId), itemInfo.FormId),
+                Context.DatabaseApi.GetParameter(nameof(FieldItemInfo.FieldId), itemInfo.FieldId),
+                Context.DatabaseApi.GetParameter(nameof(FieldItemInfo.Value), itemInfo.Value),
+                Context.DatabaseApi.GetParameter(nameof(FieldItemInfo.IsSelected), itemInfo.IsSelected),
+                Context.DatabaseApi.GetParameter(nameof(FieldItemInfo.IsExtras), itemInfo.IsExtras)
             };
 
-            _helper.ExecuteNonQuery(trans, sqlString, parameters);
+            Context.DatabaseApi.ExecuteNonQuery(trans, sqlString, parameters);
         }
 
-        public void InsertItems(int formId, int fieldId, List<FieldItemInfo> items)
+        public static void InsertItems(int formId, int fieldId, List<FieldItemInfo> items)
         {
             if (formId <= 0 || fieldId <= 0 || items == null || items.Count == 0) return;
             
-            using (var conn = _helper.GetConnection(_connectionString))
+            using (var conn = Context.DatabaseApi.GetConnection(Context.ConnectionString))
             {
                 conn.Open();
                 using (var trans = conn.BeginTransaction())
@@ -110,7 +101,7 @@ namespace SS.Form.Provider
             }
         }
 
-        public void DeleteByFormId(int formId)
+        public static void DeleteByFormId(int formId)
         {
             if (formId == 0) return;
 
@@ -118,13 +109,13 @@ namespace SS.Form.Provider
 
             var parms = new []
 			{
-				_helper.GetParameter(nameof(FieldItemInfo.FormId), formId)
+				Context.DatabaseApi.GetParameter(nameof(FieldItemInfo.FormId), formId)
 			};
 
-            _helper.ExecuteNonQuery(_connectionString, sqlString, parms);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parms);
         }
 
-        public void DeleteByFieldId(int fieldId)
+        public static void DeleteByFieldId(int fieldId)
         {
             if (fieldId == 0) return;
 
@@ -132,13 +123,13 @@ namespace SS.Form.Provider
 
             var parms = new[]
             {
-                _helper.GetParameter(nameof(FieldItemInfo.FieldId), fieldId)
+                Context.DatabaseApi.GetParameter(nameof(FieldItemInfo.FieldId), fieldId)
             };
 
-            _helper.ExecuteNonQuery(_connectionString, sqlString, parms);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parms);
         }
 
-        public List<FieldItemInfo> GetItemInfoList(int fieldId)
+        public static List<FieldItemInfo> GetItemInfoList(int fieldId)
         {
             var items = new List<FieldItemInfo>();
 
@@ -147,10 +138,10 @@ namespace SS.Form.Provider
 
             var parms = new []
 			{
-                _helper.GetParameter(nameof(FieldItemInfo.FieldId), fieldId)
+                Context.DatabaseApi.GetParameter(nameof(FieldItemInfo.FieldId), fieldId)
 			};
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString, parms))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parms))
             {
                 while (rdr.Read())
                 {

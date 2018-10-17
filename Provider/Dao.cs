@@ -3,25 +3,16 @@ using SiteServer.Plugin;
 
 namespace SS.Form.Provider
 {
-    public class Dao
+    public static class Dao
     {
-        private readonly string _connectionString;
-        private readonly IDatabaseApi _helper;
-
-        public Dao(string connectionString, IDatabaseApi helper)
-        {
-            _connectionString = connectionString;
-            _helper = helper;
-        }
-
-        public int GetIntResult(string sqlString)
+        public static int GetIntResult(string sqlString)
         {
             var count = 0;
 
-            using (var conn = _helper.GetConnection(_connectionString))
+            using (var conn = Context.DatabaseApi.GetConnection(Context.ConnectionString))
             {
                 conn.Open();
-                using (var rdr = _helper.ExecuteReader(conn, sqlString))
+                using (var rdr = Context.DatabaseApi.ExecuteReader(conn, sqlString))
                 {
                     if (rdr.Read() && !rdr.IsDBNull(0))
                     {
@@ -33,14 +24,14 @@ namespace SS.Form.Provider
             return count;
         }
 
-        public int GetIntResult(string sqlString, IDataParameter[] parameters)
+        public static int GetIntResult(string sqlString, IDataParameter[] parameters)
         {
             var count = 0;
 
-            using (var conn = _helper.GetConnection(_connectionString))
+            using (var conn = Context.DatabaseApi.GetConnection(Context.ConnectionString))
             {
                 conn.Open();
-                using (var rdr = _helper.ExecuteReader(conn, sqlString, parameters))
+                using (var rdr = Context.DatabaseApi.ExecuteReader(conn, sqlString, parameters))
                 {
                     if (rdr.Read() && !rdr.IsDBNull(0))
                     {

@@ -5,6 +5,7 @@ using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 using SS.Form.Parse;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -43,33 +44,33 @@ namespace SS.Form.Pages
                 {
                     if (!string.IsNullOrEmpty(Request.QueryString["down"]))
                     {
-                        Main.FormDao.UpdateTaxisToDown(_siteId, _formId);
+                        FormDao.UpdateTaxisToDown(_siteId, _formId);
                     }
                     else
                     {
-                        Main.FormDao.UpdateTaxisToUp(_siteId, _formId);
+                        FormDao.UpdateTaxisToUp(_siteId, _formId);
                     }
                 }
                 if (!string.IsNullOrEmpty(Request.QueryString["delete"]))
                 {
-                    Main.FormDao.Delete(_formId);
+                    FormDao.Delete(_formId);
 
                     LtlMessage.Text = Utils.GetMessageHtml("表单删除成功！", true);
                 }
                 if (!string.IsNullOrEmpty(Request.QueryString["template"]))
                 {
-                    var formInfo = Main.FormDao.GetFormInfo(_formId);
+                    var formInfo = FormDao.GetFormInfo(_formId);
                     CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview",
                         SiteServer.Plugin.Context.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(formInfo)),
                         5);
-                    Response.Redirect(SiteServer.Plugin.Context.UtilsApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={SiteServer.Plugin.Context.UtilsApi.Encrypt(SiteServer.Plugin.Context.PluginApi.GetPluginUrl(_returnUrl))}"));
+                    Response.Redirect(SiteServer.Plugin.Context.UtilsApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={SiteServer.Plugin.Context.UtilsApi.Encrypt(SiteServer.Plugin.Context.PluginApi.GetPluginUrl(Main.PluginId, _returnUrl))}"));
                     return;
                 }
             }
 
             if (IsPostBack) return;
 
-            DgContents.DataSource = Main.FormDao.GetFormInfoListNotInChannel(_siteId);
+            DgContents.DataSource = FormDao.GetFormInfoListNotInChannel(_siteId);
             DgContents.ItemDataBound += DgContents_ItemDataBound;
             DgContents.DataBind();
 
@@ -81,7 +82,7 @@ namespace SS.Form.Pages
             //    string fileName;
             //    if (Utils.ExportInput(_formId, out fileName))
             //    {
-            //        LtlScript.Text = Utils.SwalSuccess("导出成功", "点击按钮下载导出文件", "下 载", $"location.href = '{Main.Context.FilesApi.GetRootUrl($"sitefiles/temporaryfiles/{fileName}")}'");
+            //        LtlScript.Text = Utils.SwalSuccess("导出成功", "点击按钮下载导出文件", "下 载", $"location.href = '{Context.FilesApi.GetRootUrl($"sitefiles/temporaryfiles/{fileName}")}'");
             //    }
             //}
         }

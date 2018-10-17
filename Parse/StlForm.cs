@@ -2,6 +2,7 @@
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Provider;
 
 namespace SS.Form.Parse
 {
@@ -31,9 +32,9 @@ namespace SS.Form.Parse
                 }
             }
 
-            var formId = !string.IsNullOrEmpty(title) ? Main.FormDao.GetFormIdByTitle(context.SiteId, title) : Main.FormDao.GetFormIdByContentId(context.SiteId, context.ChannelId, context.ContentId);
+            var formId = !string.IsNullOrEmpty(title) ? FormDao.GetFormIdByTitle(context.SiteId, title) : FormDao.GetFormIdByContentId(context.SiteId, context.ChannelId, context.ContentId);
 
-            var formInfo = Main.FormDao.GetFormInfo(formId);
+            var formInfo = FormDao.GetFormInfo(formId);
             var formSettings = new FormSettings(formInfo?.Settings);
 
             if (string.IsNullOrEmpty(theme))

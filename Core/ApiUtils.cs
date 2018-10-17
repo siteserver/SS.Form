@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using SiteServer.Plugin;
 using SS.Form.Model;
+using SS.Form.Provider;
 using SS.SMS;
 
 namespace SS.Form.Core
@@ -60,7 +61,7 @@ namespace SS.Form.Core
         {
             var formId = Utils.ToInt(id);
 
-            var formInfo = Main.FormDao.GetFormInfo(formId);
+            var formInfo = FormDao.GetFormInfo(formId);
             if (formInfo == null) return null;
 
             var settings = new FormSettings(formInfo.Settings);
@@ -83,7 +84,7 @@ namespace SS.Form.Core
 
             var attributes = request.GetPostObject<Dictionary<string, object>>("attributes");
 
-            var fieldInfoList = Main.FieldDao.GetFieldInfoList(formInfo.Id, true);
+            var fieldInfoList = FieldDao.GetFieldInfoList(formInfo.Id, true);
             foreach (var fieldInfo in fieldInfoList)
             {
                 object value;
@@ -107,12 +108,12 @@ namespace SS.Form.Core
                 }
             }
 
-            logInfo.Id = Main.LogDao.Insert(logInfo);
+            logInfo.Id = LogDao.Insert(logInfo);
 
             if (settings.IsAdministratorSmsNotify && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyMobile))
             {
                 var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
-                if (smsPlugin != null && smsPlugin.IsReady)
+                if (smsPlugin != null && SmsPlugin.IsReady)
                 {
                     string errorMessage;
                     var parameters = new Dictionary<string, string>();
@@ -132,7 +133,7 @@ namespace SS.Form.Core
                             parameters.Add(key, logInfo.GetString(key));
                         }
                     }
-                    smsPlugin.Send(settings.AdministratorSmsNotifyMobile, settings.AdministratorSmsNotifyTplId, parameters, out errorMessage);
+                    SmsPlugin.Send(settings.AdministratorSmsNotifyMobile, settings.AdministratorSmsNotifyTplId, parameters, out errorMessage);
                 }
             }
 

@@ -3,6 +3,7 @@ using System.Web.UI.WebControls;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -27,7 +28,7 @@ namespace SS.Form.Pages
             if (IsPostBack) return;
 
             var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
-            var fieldInfo = Main.FieldDao.GetFieldInfo(fieldId, false);
+            var fieldInfo = FieldDao.GetFieldInfo(fieldId, false);
 
             var settings = new FieldSettings(fieldInfo.Settings);
             Utils.SelectSingleItem(DdlIsRequired, settings.IsRequired.ToString());
@@ -53,7 +54,7 @@ namespace SS.Form.Pages
             var isChanged = false;
 
             var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
-            var fieldInfo = Main.FieldDao.GetFieldInfo(fieldId, false);
+            var fieldInfo = FieldDao.GetFieldInfo(fieldId, false);
             var settings = new FieldSettings(fieldInfo.Settings)
             {
                 IsRequired = Convert.ToBoolean(DdlIsRequired.SelectedValue),
@@ -66,7 +67,7 @@ namespace SS.Form.Pages
 
             try
             {
-                Main.FieldDao.Update(fieldInfo);
+                FieldDao.Update(fieldInfo);
                 isChanged = true;
             }
             catch (Exception ex)

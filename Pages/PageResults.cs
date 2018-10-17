@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -22,8 +23,8 @@ namespace SS.Form.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, true);
-            _logInfoList = Main.LogDao.GetAllFormLogInfoList(FormInfo.Id);
+            _fieldInfoList = FieldDao.GetFieldInfoList(FormInfo.Id, true);
+            _logInfoList = LogDao.GetAllFormLogInfoList(FormInfo.Id);
 
             if (IsPostBack) return;
 
@@ -267,9 +268,9 @@ namespace SS.Form.Pages
 
             var relatedPath = "数据统计.csv";
 
-            CsvUtils.Export(SiteServer.Plugin.Context.PluginApi.GetPluginPath(relatedPath), head, rows);
+            CsvUtils.Export(SiteServer.Plugin.Context.PluginApi.GetPluginPath(Main.PluginId, relatedPath), head, rows);
 
-            HttpContext.Current.Response.Redirect(SiteServer.Plugin.Context.PluginApi.GetPluginUrl(relatedPath));
+            HttpContext.Current.Response.Redirect(SiteServer.Plugin.Context.PluginApi.GetPluginUrl(Main.PluginId, relatedPath));
         }
 
         //        private void RptItems_ItemDataBound(object sender, RepeaterItemEventArgs e)

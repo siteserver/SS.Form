@@ -3,6 +3,7 @@ using System.Text;
 using System.Web.UI.WebControls;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -20,11 +21,11 @@ namespace SS.Form.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _logInfo = Main.LogDao.GetLogInfo(Utils.ToInt(Request.QueryString["logId"]));
+            _logInfo = LogDao.GetLogInfo(Utils.ToInt(Request.QueryString["logId"]));
 
             if (IsPostBack) return;
 
-            RptContents.DataSource = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            RptContents.DataSource = FieldDao.GetFieldInfoList(FormInfo.Id, false);
             RptContents.ItemDataBound += RptContents_ItemDataBound;
             RptContents.DataBind();
 

@@ -4,6 +4,7 @@ using System.Web.UI.WebControls;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -35,7 +36,7 @@ namespace SS.Form.Pages
             if (IsPostBack) return;
 
             var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
-            var fieldInfo = fieldId > 0 ? Main.FieldDao.GetFieldInfo(fieldId, true) : new FieldInfo();
+            var fieldInfo = fieldId > 0 ? FieldDao.GetFieldInfo(fieldId, true) : new FieldInfo();
 
             Utils.AddListItems(DdlFieldType);
 
@@ -139,7 +140,7 @@ namespace SS.Form.Pages
                 List<FieldItemInfo> items = null;
                 if (fieldId > 0)
                 {
-                    items = Main.FieldItemDao.GetItemInfoList(fieldId);
+                    items = FieldItemDao.GetItemInfoList(fieldId);
                 }
                 RptItems.DataSource = GetDataSource(count, items);
                 RptItems.DataBind();
@@ -170,7 +171,7 @@ namespace SS.Form.Pages
 
             var fieldId = Utils.ToInt(Request.QueryString["fieldId"]);
             var fieldInfo = fieldId > 0
-                ? Main.FieldDao.GetFieldInfo(fieldId, true)
+                ? FieldDao.GetFieldInfo(fieldId, true)
                 : new FieldInfo
                 {
                     FormId = FormInfo.Id
@@ -189,7 +190,7 @@ namespace SS.Form.Pages
         {
             if (fieldInfo.Id == 0)
             {
-                if (Main.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
+                if (FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
                 {
                     LtlMessage.Text = Utils.GetMessageHtml($@"操作失败，字段名""{TbTitle.Text}""已存在", false);
                     return false;
@@ -198,7 +199,7 @@ namespace SS.Form.Pages
             else
             {
                 if (fieldInfo.Title != TbTitle.Text &&
-                Main.FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
+                FieldDao.IsTitleExists(FormInfo.Id, TbTitle.Text))
                 {
                     LtlMessage.Text = Utils.GetMessageHtml($@"操作失败，字段名""{TbTitle.Text}""已存在", false);
                     return false;
@@ -265,15 +266,15 @@ namespace SS.Form.Pages
             {
                 if (fieldInfo.Id > 0)
                 {
-                    Main.FieldDao.Update(fieldInfo);
-                    Main.FieldItemDao.DeleteByFieldId(fieldInfo.Id);
+                    FieldDao.Update(fieldInfo);
+                    FieldItemDao.DeleteByFieldId(fieldInfo.Id);
                 }
                 else
                 {
-                    fieldInfo.Id = Main.FieldDao.Insert(fieldInfo);
+                    fieldInfo.Id = FieldDao.Insert(fieldInfo);
                 }
 
-                Main.FieldItemDao.InsertItems(FormInfo.Id, fieldInfo.Id, fieldItems);
+                FieldItemDao.InsertItems(FormInfo.Id, fieldInfo.Id, fieldItems);
 
                 return true;
             }

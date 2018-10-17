@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using SS.Form.Core;
 using SS.Form.Model;
+using SS.Form.Provider;
 
 namespace SS.Form.Pages
 {
@@ -19,7 +20,7 @@ namespace SS.Form.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _fieldInfoList = Main.FieldDao.GetFieldInfoList(FormInfo.Id, false);
+            _fieldInfoList = FieldDao.GetFieldInfoList(FormInfo.Id, false);
 
             if (IsPostBack) return;
 
@@ -46,7 +47,7 @@ namespace SS.Form.Pages
                     {
                         settings.IsVisibleInList = item.Selected;
                         fieldInfo.Settings = settings.ToString();
-                        Main.FieldDao.Update(fieldInfo);
+                        FieldDao.Update(fieldInfo);
                     }
 
                     break;
