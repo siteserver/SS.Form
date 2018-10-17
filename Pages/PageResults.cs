@@ -267,9 +267,9 @@ namespace SS.Form.Pages
 
             var relatedPath = "数据统计.csv";
 
-            CsvUtils.Export(PluginContext.PluginApi.GetPluginPath(relatedPath), head, rows);
+            CsvUtils.Export(SiteServer.Plugin.Context.PluginApi.GetPluginPath(relatedPath), head, rows);
 
-            HttpContext.Current.Response.Redirect(PluginContext.PluginApi.GetPluginUrl(relatedPath));
+            HttpContext.Current.Response.Redirect(SiteServer.Plugin.Context.PluginApi.GetPluginUrl(relatedPath));
         }
 
         //        private void RptItems_ItemDataBound(object sender, RepeaterItemEventArgs e)

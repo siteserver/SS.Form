@@ -21,8 +21,8 @@ namespace SS.Form
 
         static Main()
         {
-            var connectionString = PluginContext.ConnectionString;
-            var databaseApi = PluginContext.DatabaseApi;
+            var connectionString = Context.ConnectionString;
+            var databaseApi = Context.DatabaseApi;
 
             Dao = new Dao(connectionString, databaseApi);
             FormDao = new FormDao(connectionString, databaseApi);

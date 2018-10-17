@@ -30,7 +30,7 @@ namespace SS.Form.Pages
             _formId = Utils.ToInt(Request.QueryString["formId"]);
             _returnUrl = GetRedirectUrl(_siteId);
 
-            if (!PluginContext.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
+            if (!SiteServer.Plugin.Context.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
             {
                 Response.Write("<h1>未授权访问</h1>");
                 Response.End();
@@ -60,9 +60,9 @@ namespace SS.Form.Pages
                 {
                     var formInfo = Main.FormDao.GetFormInfo(_formId);
                     CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview",
-                        PluginContext.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(formInfo)),
+                        SiteServer.Plugin.Context.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(formInfo)),
                         5);
-                    Response.Redirect(PluginContext.UtilsApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={PluginContext.UtilsApi.Encrypt(PluginContext.PluginApi.GetPluginUrl(_returnUrl))}"));
+                    Response.Redirect(SiteServer.Plugin.Context.UtilsApi.GetAdminDirectoryUrl($"cms/pageTemplatePreview.aspx?siteId={_siteId}&fromCache={true}&returnUrl={SiteServer.Plugin.Context.UtilsApi.Encrypt(SiteServer.Plugin.Context.PluginApi.GetPluginUrl(_returnUrl))}"));
                     return;
                 }
             }

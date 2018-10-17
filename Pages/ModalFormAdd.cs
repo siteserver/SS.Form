@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Model;
 
@@ -25,7 +24,7 @@ namespace SS.Form.Pages
         {
             _siteId = Utils.ToInt(Request.QueryString["siteId"]);
 
-            if (!PluginContext.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
+            if (!SiteServer.Plugin.Context.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
             {
                 Response.Write("<h1>未授权访问</h1>");
                 Response.End();

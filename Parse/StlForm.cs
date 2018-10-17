@@ -23,7 +23,7 @@ namespace SS.Form.Parse
 
                 if (Utils.EqualsIgnoreCase(name, AttributeTitle))
                 {
-                    title = PluginContext.ParseApi.ParseAttributeValue(value, context);
+                    title = Context.ParseApi.ParseAttributeValue(value, context);
                 }
                 else if (Utils.EqualsIgnoreCase(name, AttributeTheme))
                 {
@@ -51,7 +51,7 @@ namespace SS.Form.Parse
             }
             else
             {
-                var stlElements = PluginContext.ParseApi.GetStlElements(templateHtml, new List<string>
+                var stlElements = Context.ParseApi.GetStlElements(templateHtml, new List<string>
                 {
                     "stl:template",
                     "stl:yes",

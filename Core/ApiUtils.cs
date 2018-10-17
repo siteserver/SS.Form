@@ -111,7 +111,7 @@ namespace SS.Form.Core
 
             if (settings.IsAdministratorSmsNotify && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(settings.AdministratorSmsNotifyMobile))
             {
-                var smsPlugin = PluginContext.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
+                var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>(SmsPlugin.PluginId);
                 if (smsPlugin != null && smsPlugin.IsReady)
                 {
                     string errorMessage;

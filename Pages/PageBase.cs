@@ -40,7 +40,7 @@ namespace SS.Form.Pages
             PageFieldsUrl = $"{nameof(PageFields)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
             PageSettingsUrl = $"{nameof(PageSettings)}.aspx?siteId={SiteId}&formId={FormInfo.Id}&returnUrl={HttpUtility.UrlEncode(ReturnUrl)}";
 
-            if (!PluginContext.Request.AdminPermissions.HasSitePermissions(SiteId, Main.PluginId))
+            if (!SiteServer.Plugin.Context.Request.AdminPermissions.HasSitePermissions(SiteId, Main.PluginId))
             {
                 HttpContext.Current.Response.Write("<h1>未授权访问</h1>");
                 HttpContext.Current.Response.End();
@@ -49,12 +49,12 @@ namespace SS.Form.Pages
 
         public void LbTemplate_Click(object sender, EventArgs e)
         {
-            CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview", PluginContext.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(FormInfo)), 5);
+            CacheUtils.InsertMinutes("SiteServer.BackgroundPages.Cms.PageTemplatePreview", SiteServer.Plugin.Context.UtilsApi.Encrypt(ParseUtils.GetFormStlElement(FormInfo)), 5);
             var url =
-                PluginContext.UtilsApi.GetAdminDirectoryUrl(
-                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={PluginContext.UtilsApi.Encrypt(PluginContext.PluginApi.GetPluginUrl(PageLogsUrl))}");
+                SiteServer.Plugin.Context.UtilsApi.GetAdminDirectoryUrl(
+                    $"cms/pageTemplatePreview.aspx?siteId={SiteId}&fromCache={true}&returnUrl={SiteServer.Plugin.Context.UtilsApi.Encrypt(SiteServer.Plugin.Context.PluginApi.GetPluginUrl(PageLogsUrl))}");
 
-            Response.Redirect(PluginContext.UtilsApi.GetAdminDirectoryUrl($"loading.aspx?redirectUrl={PluginContext.UtilsApi.Encrypt(url)}"));
+            Response.Redirect(SiteServer.Plugin.Context.UtilsApi.GetAdminDirectoryUrl($"loading.aspx?redirectUrl={SiteServer.Plugin.Context.UtilsApi.Encrypt(url)}"));
         }
     }
 }
