@@ -99,6 +99,11 @@
     <None Include="assets\fonts\fontawesome-webfont.woff" />
     <None Include="assets\fonts\fontawesome-webfont.woff2" />
     <None Include="assets\fonts\FontAwesome.otf" />
+    <None Include="docs\background.md" />
+    <None Include="docs\foreground.md" />
+    <None Include="docs\install.md" />
+    <None Include="docs\README.md" />
+    <None Include="docs\_sidebar.md" />
     <None Include="NuGet.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -149,6 +154,15 @@
     <Content Include="assets\lib\web-uploader\js\spark-md5.js" />
     <Content Include="assets\lib\web-uploader\Q.Uploader.file.all.js" />
     <Content Include="assets\lib\web-uploader\Q.Uploader.image.all.js" />
+    <Content Include="docs\assets\background\01.png" />
+    <Content Include="docs\assets\background\02.png" />
+    <Content Include="docs\assets\background\03.png" />
+    <Content Include="docs\assets\install\01.png" />
+    <Content Include="docs\assets\install\02.png" />
+    <Content Include="docs\assets\install\03.png" />
+    <Content Include="docs\assets\install\04.png" />
+    <Content Include="docs\index.html" />
+    <Content Include="docs\logo.svg" />
     <Content Include="logo.svg" />
     <Content Include="pages\fields.html" />
     <Content Include="pages\fields.js" />
