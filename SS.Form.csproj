@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SS.Form</RootNamespace>
     <AssemblyName>SS.Form</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -34,18 +34,24 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SiteServer.Plugin, Version=2.0.17.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SiteServer.Plugin.2.0.17\lib\net45\SiteServer.Plugin.dll</HintPath>
+    <Reference Include="SiteServer.Plugin, Version=2.0.24.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SiteServer.Plugin.2.0.24\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
-    <Reference Include="SS.SMS, Version=1.1.30.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SS.SMS.1.1.30-beta\lib\net452\SS.SMS.dll</HintPath>
+    <Reference Include="SS.SMS, Version=1.1.31.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SS.SMS.1.1.31-beta\lib\net452\SS.SMS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Client.5.2.6\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Core.5.2.6\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,102 +59,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\AlertUtils.cs" />
-    <Compile Include="Core\ApiUtils.cs" />
-    <Compile Include="Core\CacheUtils.cs" />
-    <Compile Include="Core\CsvUtils.cs" />
-    <Compile Include="Controls\DateTimeTextBox.cs" />
+    <Compile Include="Controllers\MainController.cs" />
+    <Compile Include="Controllers\LogsReplyController.cs" />
+    <Compile Include="Controllers\FormsController.cs" />
+    <Compile Include="Controllers\TemplatesController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\LogsAddController.cs" />
+    <Compile Include="Controllers\LogsController.cs" />
+    <Compile Include="Controllers\FieldsController.cs" />
+    <Compile Include="Controllers\FieldsStyleController.cs" />
+    <Compile Include="Controllers\FieldsValidateController.cs" />
+    <Compile Include="Core\Utils\CacheUtils.cs" />
+    <Compile Include="Core\Utils\CsvUtils.cs" />
+    <Compile Include="Core\Utils\Extensions.cs" />
+    <Compile Include="Core\FormManager.cs" />
     <Compile Include="Core\FieldManager.cs" />
-    <Compile Include="Core\FieldTypeParser.cs" />
-    <Compile Include="Core\LayerUtils.cs" />
-    <Compile Include="Core\StringUtils.cs" />
-    <Compile Include="Core\TranslateUtils.cs" />
-    <Compile Include="Core\Utils.cs" />
-    <Compile Include="Core\ValidateTypeUtils.cs" />
-    <Compile Include="Model\AttributesImpl.cs" />
-    <Compile Include="Model\FieldSettings.cs" />
-    <Compile Include="Model\FieldInfo.cs" />
-    <Compile Include="Model\FieldItemInfo.cs" />
-    <Compile Include="Model\FormSettings.cs" />
-    <Compile Include="Pages\ModalFieldValidate.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\ModalView.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\ModalSelectColumns.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\ModalFieldAdd.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\ModalFormAdd.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\ModalFormImport.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\PageManagement.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\PageBase.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\PageResults.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\PageSettings.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\PageLogs.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\PageFields.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Parse\ParseUtils.cs" />
-    <Compile Include="Parse\StlForm.cs" />
+    <Compile Include="Core\Utils\FieldTypeParser.cs" />
+    <Compile Include="Core\Utils\FormUtils.cs" />
+    <Compile Include="Core\Model\AttributesImpl.cs" />
+    <Compile Include="Core\Model\FieldSettings.cs" />
+    <Compile Include="Core\Model\FieldInfo.cs" />
+    <Compile Include="Core\Model\FieldItemInfo.cs" />
+    <Compile Include="Core\Model\FormSettings.cs" />
+    <Compile Include="Core\Parse\StlForm.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Model\FormInfo.cs" />
-    <Compile Include="Model\LogInfo.cs" />
+    <Compile Include="Core\Model\FormInfo.cs" />
+    <Compile Include="Core\Model\LogInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Provider\Dao.cs" />
-    <Compile Include="Provider\FieldDao.cs" />
-    <Compile Include="Provider\FieldItemDao.cs" />
-    <Compile Include="Provider\FormDao.cs" />
-    <Compile Include="Provider\LogDao.cs" />
+    <Compile Include="Core\Provider\FieldDao.cs" />
+    <Compile Include="Core\Provider\FieldItemDao.cs" />
+    <Compile Include="Core\Provider\FormDao.cs" />
+    <Compile Include="Core\Provider\LogDao.cs" />
+    <Compile Include="Controllers\PingController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\fonts\ionicons.eot" />
-    <None Include="assets\fonts\ionicons.ttf" />
-    <None Include="assets\fonts\ionicons.woff" />
-    <None Include="assets\plugin-utils\fonts\fontawesome-webfont.eot" />
-    <None Include="assets\plugin-utils\fonts\fontawesome-webfont.ttf" />
-    <None Include="assets\plugin-utils\fonts\fontawesome-webfont.woff" />
-    <None Include="assets\plugin-utils\fonts\fontawesome-webfont.woff2" />
-    <None Include="assets\plugin-utils\fonts\FontAwesome.otf" />
-    <None Include="assets\plugin-utils\fonts\ionicons.eot" />
-    <None Include="assets\plugin-utils\fonts\ionicons.ttf" />
-    <None Include="assets\plugin-utils\fonts\ionicons.woff" />
-    <None Include="docs\.nojekyll" />
-    <None Include="docs\additional-settings.md" />
-    <None Include="docs\admin-screen.md" />
-    <None Include="docs\captcha.md" />
-    <None Include="docs\customizing-validation-error-messages.md" />
-    <None Include="docs\dom-events.md" />
-    <None Include="docs\editing-form-template.md" />
-    <None Include="docs\editing-messages.md" />
-    <None Include="docs\README.md" />
-    <None Include="docs\redirecting-to-another-url-after-submissions.md" />
-    <None Include="docs\setting-placeholder-text.md" />
-    <None Include="docs\setting-up-sms.md" />
-    <None Include="docs\styling-form.md" />
-    <None Include="docs\submit-button.md" />
-    <None Include="docs\tag-syntax.md" />
-    <None Include="docs\text-fields.md" />
-    <None Include="docs\text-options.md" />
-    <None Include="docs\why-isnt-my-form-working-correctly.md" />
-    <None Include="docs\_sidebar.md" />
+    <None Include="app.config" />
+    <None Include="assets\fonts\fontawesome-webfont.eot" />
+    <None Include="assets\fonts\fontawesome-webfont.ttf" />
+    <None Include="assets\fonts\fontawesome-webfont.woff" />
+    <None Include="assets\fonts\fontawesome-webfont.woff2" />
+    <None Include="assets\fonts\FontAwesome.otf" />
     <None Include="NuGet.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -157,103 +107,126 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\css\bootstrap.min.css" />
-    <Content Include="assets\css\ionicons.min.css" />
+    <Content Include="assets\css\font-awesome-4.7.0.min.css" />
     <Content Include="assets\css\siteserver.min.css" />
-    <Content Include="assets\datePicker\calendar.js" />
-    <Content Include="assets\datePicker\lang\en.js" />
-    <Content Include="assets\datePicker\lang\zh-cn.js" />
-    <Content Include="assets\datePicker\lang\zh-tw.js" />
-    <Content Include="assets\datePicker\skin\datePicker.gif" />
-    <Content Include="assets\datePicker\skin\default\datepicker.css" />
-    <Content Include="assets\datePicker\skin\default\img.gif" />
-    <Content Include="assets\datePicker\skin\WdatePicker.css" />
-    <Content Include="assets\datePicker\skin\whyGreen\bg.jpg" />
-    <Content Include="assets\datePicker\skin\whyGreen\datepicker.css" />
-    <Content Include="assets\datePicker\skin\whyGreen\img.gif" />
-    <Content Include="assets\datePicker\WdatePicker.js" />
-    <Content Include="assets\fonts\ionicons.svg" />
-    <Content Include="assets\formbase\formbase.min.css" />
-    <Content Include="assets\js\jquery.min.js" />
-    <Content Include="assets\js\vee-validate.js" />
-    <Content Include="assets\js\vue-2.1.10.min.js" />
-    <Content Include="assets\layer\extend\layer.ext.js" />
-    <Content Include="assets\layer\layer.min.js" />
-    <Content Include="assets\layer\skin\default\icon_ext.png" />
-    <Content Include="assets\layer\skin\default\textbg.png" />
-    <Content Include="assets\layer\skin\default\xubox_ico0.png" />
-    <Content Include="assets\layer\skin\default\xubox_loading0.gif" />
-    <Content Include="assets\layer\skin\default\xubox_loading1.gif" />
-    <Content Include="assets\layer\skin\default\xubox_loading2.gif" />
-    <Content Include="assets\layer\skin\default\xubox_loading3.gif" />
-    <Content Include="assets\layer\skin\default\xubox_title0.png" />
-    <Content Include="assets\layer\skin\layer.css" />
-    <Content Include="assets\layer\skin\layer.ext.css" />
-    <Content Include="assets\plugin-utils\css\bootstrap.min.css" />
-    <Content Include="assets\plugin-utils\css\font-awesome.min.css" />
-    <Content Include="assets\plugin-utils\css\ionicons.min.css" />
-    <Content Include="assets\plugin-utils\css\plugin-utils.css" />
-    <Content Include="assets\plugin-utils\fonts\fontawesome-webfont.svg" />
-    <Content Include="assets\plugin-utils\fonts\ionicons.svg" />
-    <Content Include="assets\plugin-utils\js\bootstrap.min.js" />
-    <Content Include="assets\plugin-utils\js\jquery.min.js" />
-    <Content Include="assets\plugin-utils\js\plugin-utils.js" />
-    <Content Include="assets\readme\001.jpg" />
-    <Content Include="assets\readme\002.jpg" />
-    <Content Include="assets\readme\003.jpg" />
-    <Content Include="assets\readme\import05.png" />
-    <Content Include="assets\sweetalert\sweetalert.min.js" />
-    <Content Include="docs\assets\admin-screen\01.png" />
-    <Content Include="docs\assets\admin-screen\02.png" />
-    <Content Include="docs\assets\admin-screen\03.png" />
-    <Content Include="docs\assets\admin-screen\04.png" />
-    <Content Include="docs\assets\admin-screen\05.png" />
-    <Content Include="docs\assets\captcha\01.png" />
-    <Content Include="docs\assets\editing-form-template\01.png" />
-    <Content Include="docs\assets\editing-messages\01.png" />
-    <Content Include="docs\assets\readme\01.png" />
-    <Content Include="docs\assets\readme\02.png" />
-    <Content Include="docs\assets\readme\03.png" />
-    <Content Include="docs\assets\setting-up-sms\01.png" />
-    <Content Include="docs\assets\tag-syntax\01.png" />
-    <Content Include="docs\assets\tag-syntax\02.png" />
-    <Content Include="docs\assets\text-fields\01.png" />
-    <Content Include="docs\favicon.png" />
-    <Content Include="docs\index.html" />
+    <Content Include="assets\fonts\fontawesome-webfont.svg" />
+    <Content Include="assets\images\favicon.ico" />
+    <Content Include="assets\images\loading.gif" />
+    <Content Include="assets\js\list.js" />
+    <Content Include="assets\js\submit.js" />
+    <Content Include="assets\js\utils.js" />
+    <Content Include="assets\lib\axios-0.18.0.min.js" />
+    <Content Include="assets\lib\bootstrap.min.js" />
+    <Content Include="assets\lib\jquery-1.9.1.min.js" />
+    <Content Include="assets\lib\js.cookie-2.2.0.js" />
+    <Content Include="assets\lib\layer-3.1.1\layer.js" />
+    <Content Include="assets\lib\layer-3.1.1\mobile\layer.js" />
+    <Content Include="assets\lib\layer-3.1.1\mobile\need\layer.css" />
+    <Content Include="assets\lib\layer-3.1.1\theme\default\icon-ext.png" />
+    <Content Include="assets\lib\layer-3.1.1\theme\default\icon.png" />
+    <Content Include="assets\lib\layer-3.1.1\theme\default\layer.css" />
+    <Content Include="assets\lib\layer-3.1.1\theme\default\loading-0.gif" />
+    <Content Include="assets\lib\layer-3.1.1\theme\default\loading-1.gif" />
+    <Content Include="assets\lib\layer-3.1.1\theme\default\loading-2.gif" />
+    <Content Include="assets\lib\lodash-4.17.10.min.js" />
+    <Content Include="assets\lib\md5-2.10.0.min.js" />
+    <Content Include="assets\lib\modernizr.min.js" />
+    <Content Include="assets\lib\popper.min.js" />
+    <Content Include="assets\lib\sweetalert2-7.28.4.all.min.js" />
+    <Content Include="assets\lib\vee-validate-2.1.0.js" />
+    <Content Include="assets\lib\vee-validate-locale-zh_CN-2.1.0.js" />
+    <Content Include="assets\lib\vue-2.5.16.min.js" />
+    <Content Include="assets\lib\vue-multiselect-2.1.0\script.min.js" />
+    <Content Include="assets\lib\vue-multiselect-2.1.0\style.min.css" />
+    <Content Include="assets\lib\vue-upload-component-2.8.14.js" />
+    <Content Include="assets\lib\vue2-datepicker-2.4.3.min.js" />
+    <Content Include="assets\lib\web-uploader\js\Q.js" />
+    <Content Include="assets\lib\web-uploader\js\Q.md5File.js" />
+    <Content Include="assets\lib\web-uploader\js\Q.Uploader.js" />
+    <Content Include="assets\lib\web-uploader\js\Q.Uploader.slice.js" />
+    <Content Include="assets\lib\web-uploader\js\Q.Uploader.UI.File.js" />
+    <Content Include="assets\lib\web-uploader\js\Q.Uploader.UI.Image.js" />
+    <Content Include="assets\lib\web-uploader\js\spark-md5.js" />
+    <Content Include="assets\lib\web-uploader\Q.Uploader.file.all.js" />
+    <Content Include="assets\lib\web-uploader\Q.Uploader.image.all.js" />
     <Content Include="logo.svg" />
-    <Content Include="modalFieldAdd.aspx" />
-    <Content Include="modalFieldValidate.aspx" />
-    <Content Include="modalFormAdd.aspx" />
-    <Content Include="modalFormImport.aspx" />
-    <Content Include="modalSelectColumns.aspx" />
-    <Content Include="modalTest.aspx" />
-    <Content Include="modalView.aspx" />
-    <Content Include="pageFields.aspx" />
-    <Content Include="pageLogs.aspx" />
-    <Content Include="pageManagement.aspx" />
-    <Content Include="pageResults.aspx" />
-    <Content Include="pageSettings.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Content Include="themes\bootstrap-large\style.css" />
-    <Content Include="themes\bootstrap-large\template.html" />
-    <Content Include="themes\tech-blue\images\bg_img_large.jpg" />
-    <Content Include="themes\tech-blue\images\bg_img_small.jpg" />
-    <Content Include="themes\tech-blue\images\survey_img1.png" />
-    <Content Include="themes\tech-blue\images\survey_img2.jpg" />
-    <Content Include="themes\tech-blue\style.css" />
-    <Content Include="themes\tech-blue\template.html" />
+    <Content Include="pages\fields.html" />
+    <Content Include="pages\fields.js" />
+    <Content Include="pages\fieldsLayerStyle.html" />
+    <Content Include="pages\fieldsLayerStyle.js" />
+    <Content Include="pages\fieldsLayerValidate.html" />
+    <Content Include="pages\fieldsLayerValidate.js" />
+    <Content Include="pages\forms.html" />
+    <Content Include="pages\forms.js" />
+    <Content Include="pages\logAdd.html" />
+    <Content Include="pages\logAdd.js" />
+    <Content Include="pages\logs.html" />
+    <Content Include="pages\logs.js" />
+    <Content Include="pages\logsLayerReply.html" />
+    <Content Include="pages\logsLayerReply.js" />
+    <Content Include="pages\settings.html" />
+    <Content Include="pages\settings.js" />
+    <Content Include="pages\templates.html" />
+    <Content Include="pages\templates.js" />
+    <Content Include="templates\css\froala_blocks.min.css" />
+    <Content Include="templates\imgs\alt_wide_1.svg" />
+    <Content Include="templates\imgs\alt_wide_2.svg" />
+    <Content Include="templates\imgs\alt_wide_3.svg" />
+    <Content Include="templates\imgs\bg_0.svg" />
+    <Content Include="templates\imgs\bg_1.svg" />
+    <Content Include="templates\imgs\bg_2.svg" />
+    <Content Include="templates\imgs\bg_3.svg" />
+    <Content Include="templates\imgs\bg_4.svg" />
+    <Content Include="templates\imgs\bg_c_1.svg" />
+    <Content Include="templates\imgs\bg_c_2.svg" />
+    <Content Include="templates\imgs\bg_c_3.svg" />
+    <Content Include="templates\imgs\colors_wide_1.jpg" />
+    <Content Include="templates\imgs\colors_wide_2.jpg" />
+    <Content Include="templates\imgs\colors_wide_3.jpg" />
+    <Content Include="templates\imgs\customers\adobe.svg" />
+    <Content Include="templates\imgs\customers\amazon.svg" />
+    <Content Include="templates\imgs\customers\apple.svg" />
+    <Content Include="templates\imgs\customers\cisco.svg" />
+    <Content Include="templates\imgs\customers\discovery.svg" />
+    <Content Include="templates\imgs\customers\ebay.svg" />
+    <Content Include="templates\imgs\customers\ibm.svg" />
+    <Content Include="templates\imgs\customers\intel.svg" />
+    <Content Include="templates\imgs\customers\orange.svg" />
+    <Content Include="templates\imgs\customers\panasonic.svg" />
+    <Content Include="templates\imgs\customers\salesforce.svg" />
+    <Content Include="templates\imgs\customers\samsung.svg" />
+    <Content Include="templates\imgs\img_bg.jpg" />
+    <Content Include="templates\imgs\img_logo.png" />
+    <Content Include="templates\imgs\img_round.png" />
+    <Content Include="templates\imgs\img_round.svg" />
+    <Content Include="templates\imgs\img_square_1.svg" />
+    <Content Include="templates\imgs\img_square_2.svg" />
+    <Content Include="templates\imgs\img_square_3.svg" />
+    <Content Include="templates\imgs\img_square_4.svg" />
+    <Content Include="templates\imgs\img_tall.png" />
+    <Content Include="templates\imgs\img_very_tall.png" />
+    <Content Include="templates\imgs\img_very_wide.svg" />
+    <Content Include="templates\imgs\iphone_x.jpg" />
+    <Content Include="templates\list1\index.html" />
+    <Content Include="templates\list1\sample.png" />
+    <Content Include="templates\submit1\index.html" />
+    <Content Include="templates\submit1\sample.png" />
+    <Content Include="templates\submit2\index.html" />
+    <Content Include="templates\submit2\sample.png" />
+    <Content Include="templates\submit3\index.html" />
+    <Content Include="templates\submit3\sample.png" />
+    <Content Include="templates\submit4\index.html" />
+    <Content Include="templates\submit4\sample.png" />
+    <Content Include="templates\submit5\index.html" />
+    <Content Include="templates\submit5\sample.png" />
+    <Content Include="templates\submit6\index.html" />
+    <Content Include="templates\submit6\sample.png" />
+    <Content Include="templates\submit7\index.html" />
+    <Content Include="templates\submit7\sample.png" />
+    <Content Include="templates\submit8\index.html" />
+    <Content Include="templates\submit8\sample.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="docs\assets\additional-settings\" />
-    <Folder Include="docs\assets\customizing-validation-error-messages\" />
-    <Folder Include="docs\assets\dom-events\" />
-    <Folder Include="docs\assets\redirecting-to-another-url-after-submissions\" />
-    <Folder Include="docs\assets\setting-placeholder-text\" />
-    <Folder Include="docs\assets\styling-form\" />
-    <Folder Include="docs\assets\submit-button\" />
-    <Folder Include="docs\assets\text-options\" />
-    <Folder Include="docs\assets\why-isnt-my-form-working-correctly\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -1,36 +1,35 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using SiteServer.Plugin;
 using SS.Form.Core;
-using SS.Form.Pages;
-using SS.Form.Parse;
-using SS.Form.Provider;
+using SS.Form.Core.Parse;
+using SS.Form.Core.Provider;
 using Menu = SiteServer.Plugin.Menu;
 
 namespace SS.Form
 {
     public class Main : PluginBase
     {
-        public static string PluginId { get; private set; }
-
         public override void Startup(IService service)
         {
-            PluginId = Id;
-
             service
                 .AddSiteMenu(siteId =>
                 {
-                    var formInfoList = FormDao.GetFormInfoListNotInChannel(siteId);
-                    var menus = formInfoList.Select(formInfo => new Menu
+                    var formInfoList = FormManager.GetFormInfoList(siteId, 0);
+                    var menus = formInfoList.Where(formInfo => !string.IsNullOrEmpty(formInfo.Title)).Select(formInfo => new Menu
                     {
-                        Text = $"{formInfo.Title}",
-                        Href = $"{nameof(PageLogs)}.aspx?formId={formInfo.Id}"
+                        Text = FormManager.GetFormTitle(formInfo),
+                        Href = $"pages/logs.html?formId={formInfo.Id}"
                     }).ToList();
 
                     menus.Add(new Menu
                     {
                         Text = "表单管理",
-                        Href = $"{nameof(PageManagement)}.aspx"
+                        Href = "pages/forms.html"
+                    });
+                    menus.Add(new Menu
+                    {
+                        Text = "表单模板",
+                        Href = "pages/templates.html"
                     });
 
                     return new Menu
@@ -40,64 +39,37 @@ namespace SS.Form
                         Menus = menus
                     };
                 })
-                .AddContentMenu(new Menu
+                .AddContentMenu(contentInfo =>
                 {
-                    Text = "表单管理",
-                    Href = $"{nameof(PageLogs)}.aspx"
+                    var formInfo =
+                        FormManager.GetFormInfoByContentId(contentInfo.SiteId, contentInfo.ChannelId, contentInfo.Id);
+
+                    var menu = new Menu
+                    {
+                        Text = FormManager.GetFormTitle(formInfo),
+                        Href = "pages/logs.html"
+                    };
+                    
+                    return menu;
                 })
                 .AddDatabaseTable(FormDao.TableName, FormDao.Columns)
                 .AddDatabaseTable(LogDao.TableName, LogDao.Columns)
                 .AddDatabaseTable(FieldDao.TableName, FieldDao.Columns)
                 .AddDatabaseTable(FieldItemDao.TableName, FieldItemDao.Columns)
+                .AddContentModel(LogDao.TableName, LogDao.Columns)
                 .AddStlElementParser(StlForm.ElementName, StlForm.Parse)
                 ;
-
-            service.ContentTranslateCompleted += Service_ContentTranslateCompleted;
+            
             service.ContentDeleteCompleted += Service_ContentDeleteCompleted;
-
-            service.RestApiPost += Service_RestApiPost;
-            service.RestApiGet += Service_RestApiGet;
         }
 
-        private object Service_RestApiPost(object sender, RestApiEventArgs args)
+        private static void Service_ContentDeleteCompleted(object sender, ContentEventArgs e)
         {
-            if (Utils.EqualsIgnoreCase(args.RouteResource, nameof(ApiUtils.Submit)))
+            var formInfo = FormManager.GetFormInfoByContentId(e.SiteId, e.ChannelId, e.ContentId);
+            if (formInfo != null)
             {
-                return ApiUtils.Submit(args.Request, args.RouteId);
-            }
-
-            throw new Exception("请求的资源不在服务器上");
+                FormDao.Delete(e.SiteId, formInfo.Id);
+            }   
         }
-
-        private object Service_RestApiGet(object sender, RestApiEventArgs args)
-        {
-            if (Utils.EqualsIgnoreCase(args.RouteResource, nameof(ApiUtils.Captcha)))
-            {
-                return ApiUtils.Captcha(args.Request, args.RouteId);
-            }
-
-            throw new Exception("请求的资源不在服务器上");
-        }
-
-        private void Service_ContentTranslateCompleted(object sender, ContentTranslateEventArgs e)
-        {
-            var formInfo = FormDao.GetFormInfoOrCreateIfNotExists(e.SiteId, e.ChannelId, e.ContentId);
-
-            formInfo.SiteId = e.TargetSiteId;
-            formInfo.ChannelId = e.TargetChannelId;
-            formInfo.ContentId = e.TargetContentId;
-            formInfo.IsTimeout = false;
-            formInfo.TimeToStart = DateTime.Now;
-            formInfo.TimeToEnd = formInfo.TimeToStart.AddMonths(3);
-            FormDao.Insert(formInfo);
-        }
-
-        private void Service_ContentDeleteCompleted(object sender, ContentEventArgs e)
-        {
-            var formId = FormDao.GetFormIdByContentId(e.SiteId, e.ChannelId, e.ContentId);
-            FormDao.Delete(formId);
-        }
-
-        //public override Func<IRequestContext, string, string, HttpResponseMessage> HttpGetWithNameAndId => StlForm.HttpGetWithNameAndId;
     }
 }

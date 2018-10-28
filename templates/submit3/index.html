@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>表单</title>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+  <style>
+    * {
+      font-family: 'Microsoft YaHei', Arial, sans-serif
+    }
+  </style>
+</head>
+
+<body>
+  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="../css/froala_blocks.min.css" rel="stylesheet" type="text/css">
+
+  <section id="form_submit" class="fdb-block pt-0">
+    <div class="container">
+      <div class="row mt-5">
+        <div class="col-12 col-md-6 col-lg-5">
+          <h2>Contact Us</h2>
+          <p class="text-h3">
+            Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
+            blind
+            texts. Separated they live in Bookmarksgrove.
+          </p>
+
+          <p class="text-h3">
+            It is a paradisematic country, in which roasted parts of sentences fly into your mouth.
+          </p>
+
+
+          <p class="text-h3 mt-5">
+            <strong>Email:</strong> <a href="https://www.siteserver.cn">hello@website.com</a>
+          </p>
+          <p class="text-h3">
+            <strong>Phone:</strong> <a href="https://www.siteserver.cn">+86 123 123 1232</a>
+          </p>
+        </div>
+
+        <div class="col-12 col-md-6 ml-auto pt-5 pt-md-0">
+
+          <template v-if="pageType === 'form'">
+
+            <div v-for="fieldInfo in fieldInfoList" class="row mt-4">
+              <div class="col">
+
+                <template v-if="fieldInfo.fieldType === 'Text'">
+                  <input :placeholder="fieldInfo.title" v-model="fieldInfo.value" type="text" class="form-control"
+                    :name="fieldInfo.title" :data-vv-as="fieldInfo.displayName" v-validate="fieldInfo.validate" :class="{'is-invalid': errors.has(fieldInfo.title)}">
+                </template>
+                <template v-else-if="fieldInfo.fieldType === 'TextArea'">
+                  <textarea :placeholder="fieldInfo.title" v-model="fieldInfo.value" class="form-control" :style="'height: ' + (fieldInfo.additional.height ? fieldInfo.additional.height : 125) + 'px;'"
+                    :name="fieldInfo.title" :data-vv-as="fieldInfo.displayName" v-validate="fieldInfo.validate" :class="{'is-invalid': errors.has(fieldInfo.title)}"></textarea>
+                </template>
+                <template v-else-if="fieldInfo.fieldType === 'Radio'">
+                  <div class="m-2">
+                    <div v-for="(fieldInfoItem, index) in fieldInfo.fieldInfoItems" class="radio radio-primary form-check-inline">
+                      <input :placeholder="fieldInfo.title" v-model="fieldInfo.value" type="radio" :id="fieldInfoItem.itemValue"
+                        :value="fieldInfoItem.itemValue" :name="fieldInfo.title">
+                      <label :for="fieldInfoItem.itemValue"> {{ fieldInfoItem.itemTitle }} </label>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <input :placeholder="fieldInfo.title" v-model="fieldInfo.value" type="text" class="form-control"
+                    :name="fieldInfo.title" :data-vv-as="fieldInfo.displayName" v-validate="fieldInfo.validate" :class="{'is-invalid': errors.has(fieldInfo.title)}">
+                </template>
+
+                <small v-show="errors.has(fieldInfo.title)" class="text-danger">{{
+                  errors.first(fieldInfo.title) }}</small>
+
+              </div>
+            </div>
+
+            <div v-if="isCaptcha" class="row mt-4">
+              <div class="col">
+                <div class="clearfix">
+                  <input v-model="captcha" type="text" class="form-control float-left" style="width:180px; margin-right: 10px"
+                    name="captcha" data-vv-as="验证码" v-validate="'required'" :class="{'is-invalid':
+errors.has('captcha') || captchaInValid}">
+                  <img :src="captchaUrl" @click="loadCaptcha" class="float-left" style="width: 105px; height: 38px" />
+                </div>
+                <small v-show="errors.has('captcha')" class="text-danger">{{ errors.first('captcha') }}</small>
+                <small v-show="captchaInValid" class="text-danger">验证码不正确，请重新输入！</small>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <button @click="btnSubmitClick" type="submit" class="btn">提 交</button>
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="pageType === 'error'">
+            <div class="row mb-2 text-center justify-content-center">
+              <div class="col-12 col-md-8 col-lg-7">
+                <p class="text-h3 text-danger">{{ errorMessage }}</p>
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="pageType === 'success'">
+            <div class="row mb-2 text-center justify-content-center">
+              <div class="col-12 col-md-8 col-lg-7">
+                <p class="text-h3 text-success">表单提交成功！</p>
+              </div>
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="text-center" style="margin-top: 100px">
+              <img class="mt-3" src="../../assets/images/loading.gif" />
+              <p class="lead mt-3 text-nowrap">载入中，请稍后...</p>
+            </div>
+          </template>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="../../assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
+  <script src="../../assets/lib/vee-validate-2.1.0.js"></script>
+  <script src="../../assets/lib/vee-validate-locale-zh_CN-2.1.0.js"></script>
+  <script src="../../assets/lib/axios-0.18.0.min.js"></script>
+  <script src="../../assets/js/submit.js" type="text/javascript"></script>
+
+</body>
+
+</html>
