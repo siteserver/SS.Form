@@ -56,7 +56,6 @@ namespace SS.Form
                 .AddDatabaseTable(LogDao.TableName, LogDao.Columns)
                 .AddDatabaseTable(FieldDao.TableName, FieldDao.Columns)
                 .AddDatabaseTable(FieldItemDao.TableName, FieldItemDao.Columns)
-                .AddContentModel(LogDao.TableName, LogDao.Columns)
                 .AddStlElementParser(StlForm.ElementName, StlForm.Parse)
                 ;
             
