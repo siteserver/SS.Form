@@ -34,11 +34,11 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SiteServer.Plugin, Version=2.0.24.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SiteServer.Plugin.2.0.24\lib\net45\SiteServer.Plugin.dll</HintPath>
+    <Reference Include="SiteServer.Plugin, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SiteServer.Plugin.2.1.0\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
-    <Reference Include="SS.SMS, Version=1.1.31.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SS.SMS.1.1.31-beta\lib\net452\SS.SMS.dll</HintPath>
+    <Reference Include="SS.SMS, Version=1.1.32.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SS.SMS.1.1.32-beta\lib\net452\SS.SMS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -104,7 +104,6 @@
     <None Include="docs\install.md" />
     <None Include="docs\README.md" />
     <None Include="docs\_sidebar.md" />
-    <None Include="NuGet.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -183,6 +182,7 @@
     <Content Include="pages\templates.html" />
     <Content Include="pages\templates.js" />
     <Content Include="templates\css\froala_blocks.min.css" />
+    <Content Include="templates\css\simple.css" />
     <Content Include="templates\imgs\alt_wide_1.svg" />
     <Content Include="templates\imgs\alt_wide_2.svg" />
     <Content Include="templates\imgs\alt_wide_3.svg" />
@@ -197,18 +197,6 @@
     <Content Include="templates\imgs\colors_wide_1.jpg" />
     <Content Include="templates\imgs\colors_wide_2.jpg" />
     <Content Include="templates\imgs\colors_wide_3.jpg" />
-    <Content Include="templates\imgs\customers\adobe.svg" />
-    <Content Include="templates\imgs\customers\amazon.svg" />
-    <Content Include="templates\imgs\customers\apple.svg" />
-    <Content Include="templates\imgs\customers\cisco.svg" />
-    <Content Include="templates\imgs\customers\discovery.svg" />
-    <Content Include="templates\imgs\customers\ebay.svg" />
-    <Content Include="templates\imgs\customers\ibm.svg" />
-    <Content Include="templates\imgs\customers\intel.svg" />
-    <Content Include="templates\imgs\customers\orange.svg" />
-    <Content Include="templates\imgs\customers\panasonic.svg" />
-    <Content Include="templates\imgs\customers\salesforce.svg" />
-    <Content Include="templates\imgs\customers\samsung.svg" />
     <Content Include="templates\imgs\img_bg.jpg" />
     <Content Include="templates\imgs\img_logo.png" />
     <Content Include="templates\imgs\img_round.png" />
@@ -239,6 +227,8 @@
     <Content Include="templates\submit7\sample.png" />
     <Content Include="templates\submit8\index.html" />
     <Content Include="templates\submit8\sample.png" />
+    <Content Include="templates\submit9\index.html" />
+    <Content Include="templates\submit9\sample.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

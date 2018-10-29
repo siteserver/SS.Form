@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>表单</title>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+  <style>
+    * {
+      font-family: 'Microsoft YaHei', Arial, sans-serif
+    }
+  </style>
+</head>
+
+<body>
+  <link href="../css/simple.css" rel="stylesheet" type="text/css">
+
+  <div id="form_submit">
+
+    <template v-if="pageType === 'form'">
+      <div class="m2fmBox">
+        <ul class="m2fmul">
+          <li>
+            <span class="m2fms1">
+              <span class="m2fmsnm">您的姓名：</span>
+              <div class="m2fmIntBox">
+                <input class="m2fmint" v-model="payload['姓名']" type="text" class="form-control" name="姓名" data-vv-as="姓名"
+                  v-validate="'required'" :class="{'is-invalid': errors.has('姓名')}">
+              </div>
+            </span>
+            <span class="m2fms1">
+              <span class="m2fmsnm">您的手机：</span>
+              <div class="m2fmIntBox">
+                <input class="m2fmint" v-model="payload['手机']" type="text" class="form-control" name="手机" data-vv-as="手机"
+                  v-validate="'required|mobile'" :class="{'is-invalid': errors.has('手机')}">
+              </div>
+            </span>
+            <span class="m2fms1">
+              <span class="m2fmsnm">您的邮箱：</span>
+              <div class="m2fmIntBox">
+                <input class="m2fmint" v-model="payload['邮箱']" type="text" class="form-control" name="邮箱" data-vv-as="邮箱"
+                  v-validate="'required|email'" :class="{'is-invalid': errors.has('邮箱')}">
+              </div>
+            </span>
+          </li>
+          <li>
+            <span class="m2fmsnm">咨询内容：</span>
+            <div class="m2fmIntBox">
+              <textarea class="m2fmarea" v-model="payload['留言']" type="text" class="form-control" name="留言" data-vv-as="留言"
+                v-validate="'required'" :class="{'is-invalid': errors.has('留言')}"></textarea>
+            </div>
+          </li>
+          <li><a @click="btnSubmitClick" class="m2fmSubmit" href="javascript:;">我要咨询</a></li>
+        </ul>
+      </div>
+    </template>
+
+    <template v-else-if="pageType === 'error'">
+      <div class="row mb-2 text-center justify-content-center">
+        <div class="col-12 col-md-8 col-lg-7">
+          <p class="text-h3 text-danger">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </template>
+
+    <template v-else-if="pageType === 'success'">
+      <div class="row mb-2 text-center justify-content-center">
+        <div class="col-12 col-md-8 col-lg-7">
+          <p class="text-h3 text-success">表单提交成功！</p>
+        </div>
+      </div>
+    </template>
+
+    <template v-else>
+      <div class="text-center" style="margin-top: 100px">
+        <img class="mt-3" src="../../assets/images/loading.gif" />
+        <p class="lead mt-3 text-nowrap">载入中，请稍后...</p>
+      </div>
+    </template>
+
+  </div>
+
+  <script src="../../assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
+  <script src="../../assets/lib/vee-validate-2.1.0.js"></script>
+  <script src="../../assets/lib/vee-validate-locale-zh_CN-2.1.0.js"></script>
+  <script src="../../assets/lib/axios-0.18.0.min.js"></script>
+  <script type="text/javascript">
+    var $getParameter = function (name) {
+      var result = location.search.match(
+        new RegExp('[?&]' + name + '=([^&]+)', 'i')
+      );
+      if (!result || result.length < 1) {
+        return window.$config ? $config[name] : '';
+      }
+      return decodeURIComponent(result[1]);
+    };
+    var $api = axios.create({
+      withCredentials: true
+    });
+    VeeValidate.Validator.localize('zh_CN');
+    Vue.use(VeeValidate);
+    VeeValidate.Validator.localize({
+      zh_CN: {
+        messages: {
+          required: function (name) {
+            return name + '不能为空';
+          }
+        }
+      }
+    });
+    VeeValidate.Validator.extend('mobile', {
+      getMessage: function () {
+        return ' 请输入正确的手机号码';
+      },
+      validate: function (value, args) {
+        return (value.length == 11 &&
+          /^((13|14|15|16|17|18|19)[0-9]{1}\d{8})$/.test(value));
+      }
+    });
+    var $vue = new Vue({
+      el: "#form_submit",
+      data: {
+        apiUrl: $getParameter('apiUrl'),
+        siteId: $getParameter('siteId'),
+        formId: $getParameter('formId'),
+        pageType: 'form',
+        payload: {}
+      },
+      methods: {
+        submit: function () {
+          var $this = this;
+          this.pageType = 'loading';
+          $api.post(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId, this.payload)
+            .then(function (res) {
+              $this.pageType = 'success';
+            }).catch(function (error) {
+              $this.pageType = 'error';
+              $this.errorMessage = error.response.data.message;
+            });
+        },
+        btnSubmitClick: function () {
+          console.log(this.apiUrl);
+          var $this = this;
+          this.$validator.validate().then(function (result) {
+            if (result) {
+              $this.submit();
+            }
+          });
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>

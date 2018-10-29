@@ -52,7 +52,7 @@
 
         <hr />
 
-        <div class="row">
+        <div class="row" v-if="pages > 1">
           <div class="col-9">
             <ul class="pagination pagination-sm float-left">
               <li class="page-item" :class="{disabled : page === 1}">
