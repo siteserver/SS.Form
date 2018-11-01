@@ -81,7 +81,7 @@
     <Compile Include="Core\Model\FieldInfo.cs" />
     <Compile Include="Core\Model\FieldItemInfo.cs" />
     <Compile Include="Core\Model\FormSettings.cs" />
-    <Compile Include="Core\Parse\StlForm.cs" />
+    <Compile Include="Core\StlForm.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Core\Model\FormInfo.cs" />
     <Compile Include="Core\Model\LogInfo.cs" />

@@ -25,14 +25,7 @@ namespace SS.Form.Controllers
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
                 var fieldId = request.GetQueryInt("fieldId");
-                var fieldInfo = FieldManager.GetFieldInfo(fieldId) ?? new FieldInfo
-                {
-                    FieldType = InputType.Text.Value
-                };
-                if (fieldInfo.Items == null)
-                {
-                    fieldInfo.Items = new List<FieldItemInfo>();
-                }
+                var fieldInfo = FieldManager.GetFieldInfo(fieldId) ?? new FieldInfo();
 
                 var isRapid = true;
                 var rapidValues = string.Empty;
@@ -58,7 +51,7 @@ namespace SS.Form.Controllers
                     }
 
                     isRapid = !isSelected;
-                    rapidValues = string.Join(",", list);
+                    rapidValues = string.Join("\r\n", list);
                 }
 
                 return Ok(new
@@ -86,7 +79,17 @@ namespace SS.Form.Controllers
 
                 var fieldId = request.GetPostInt("fieldId");
                 var isRapid = request.GetPostBool("isRapid");
-                var rapidValues = FormUtils.StringCollectionToStringList(request.GetPostString("rapidValues"));
+                var rapidValues = request.GetPostString("rapidValues");
+                var rapidValueArray = rapidValues.Split('\n');
+                var rapidValueList = new List<string>();
+                foreach (var item in rapidValueArray)
+                {
+                    if (!string.IsNullOrEmpty(item))
+                    {
+                        rapidValueList.Add(item.Trim());
+                    }
+                }
+
                 var body = request.GetPostObject<FieldInfo>("fieldInfo");
 
                 var fieldInfoDatabase =
@@ -94,7 +97,7 @@ namespace SS.Form.Controllers
                     new FieldInfo();
 
                 string errorMessage;
-                var isSuccess = fieldInfoDatabase.Id == 0 ? InsertFieldInfo(formInfo.SiteId, formInfo.Id, body, isRapid, rapidValues, out errorMessage) : UpdateFieldInfo(fieldInfoDatabase, body, isRapid, rapidValues, out errorMessage);
+                var isSuccess = fieldInfoDatabase.Id == 0 ? InsertFieldInfo(formInfo.SiteId, formInfo.Id, body, isRapid, rapidValueList, out errorMessage) : UpdateFieldInfo(fieldInfoDatabase, body, isRapid, rapidValueList, out errorMessage);
 
                 if (!isSuccess)
                 {

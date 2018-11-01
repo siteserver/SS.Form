@@ -362,8 +362,12 @@ ORDER BY {nameof(FieldInfo.Taxis)} DESC, {nameof(FieldInfo.Id)} DESC"))
                     var fieldInfo = GetFieldInfo(rdr);
 
                     allItemsDict.TryGetValue(fieldInfo.Id, out var items);
-                    fieldInfo.Additional = new FieldSettings(fieldInfo.Settings);
+                    if (items == null)
+                    {
+                        items = new List<FieldItemInfo>();
+                    }
                     fieldInfo.Items = items;
+                    fieldInfo.Additional = new FieldSettings(fieldInfo.Settings);
 
                     var key = FieldManager.GetKey(fieldInfo.FormId, fieldInfo.Title);
 

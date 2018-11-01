@@ -1,9 +1,17 @@
 ﻿using System.Collections.Generic;
+using SiteServer.Plugin;
 
 namespace SS.Form.Core.Model
 {
 	public class FieldInfo
 	{
+	    public FieldInfo()
+	    {
+	        FieldType = InputType.Text.Value;
+            Items = new List<FieldItemInfo>();
+	        Additional = new FieldSettings(string.Empty);
+        }
+
 		public int Id { get; set; }
 
 	    public int FormId { get; set; }
@@ -24,10 +32,10 @@ namespace SS.Form.Core.Model
 
         // not in database
 
-        public List<FieldItemInfo> Items { get; set; } = new List<FieldItemInfo>();
+        public List<FieldItemInfo> Items { get; set; }
 
 	    public FieldSettings Additional { get; set; }
 
-	    public string Value { get; set; }
+	    public object Value { get; set; }
     }
 }

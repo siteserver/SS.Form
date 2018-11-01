@@ -1,7 +1,7 @@
 ﻿using SiteServer.Plugin;
 using SS.Form.Core.Utils;
 
-namespace SS.Form.Core.Parse
+namespace SS.Form.Core
 {
     public static class StlForm
     {

@@ -84,10 +84,10 @@ errors.has('height') }" type="text" class="form-control">
         </div>
         <div v-if="isRapid" class="form-group">
           <label class="col-form-label">
-            选项可选值（多个选项使用英文","分隔）
+            选项可选值（多个选项使用换行分隔）
             <small v-show="errors.has('rapidValues')" class="text-danger">{{ errors.first('rapidValues') }}</small>
           </label>
-          <textarea style="height: 150px" v-model="rapidValues" name="rapidValues" data-vv-as="选项可选值" v-validate="'required'"
+          <textarea style="height: 180px" v-model="rapidValues" name="rapidValues" data-vv-as="选项可选值" v-validate="'required'"
             :class="{'is-invalid':errors.has('rapidValues') }" type="text" class="form-control"></textarea>
         </div>
         <div v-if="!isRapid" v-for="(styleItem, index) in styleInfo.items" class="form-row">

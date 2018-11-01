@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
@@ -31,7 +32,36 @@ namespace SS.Form.Controllers
                     var logInfo = LogDao.GetLogInfo(logId);
                     foreach (var fieldInfo in fieldInfoList)
                     {
-                        fieldInfo.Value = logInfo.GetString(fieldInfo.Title);
+                        if (fieldInfo.FieldType == InputType.CheckBox.Value || fieldInfo.FieldType == InputType.SelectMultiple.Value)
+                        {
+                            fieldInfo.Value = FormUtils.JsonDeserialize<List<string>>(logInfo.GetString(fieldInfo.Title));
+                        }
+                        else if (fieldInfo.FieldType == InputType.Date.Value || fieldInfo.FieldType == InputType.DateTime.Value)
+                        {
+                            fieldInfo.Value = logInfo.GetDateTime(fieldInfo.Title);
+                        }
+                        else
+                        {
+                            fieldInfo.Value = logInfo.GetString(fieldInfo.Title);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var fieldInfo in fieldInfoList)
+                    {
+                        if (fieldInfo.FieldType == InputType.CheckBox.Value || fieldInfo.FieldType == InputType.SelectMultiple.Value)
+                        {
+                            fieldInfo.Value = new List<string>();
+                        }
+                        else if (fieldInfo.FieldType == InputType.Date.Value || fieldInfo.FieldType == InputType.DateTime.Value)
+                        {
+                            fieldInfo.Value = null;
+                        }
+                        else
+                        {
+                            fieldInfo.Value = string.Empty;
+                        }
                     }
                 }
 
@@ -68,7 +98,21 @@ namespace SS.Form.Controllers
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 foreach (var fieldInfo in fieldInfoList)
                 {
-                    logInfo.Set(fieldInfo.Title, request.GetPostString(fieldInfo.Title));
+                    if (request.IsPostExists(fieldInfo.Title))
+                    {
+                        var value = request.GetPostString(fieldInfo.Title);
+                        if (fieldInfo.FieldType == InputType.Date.Value || fieldInfo.FieldType == InputType.DateTime.Value)
+                        {
+                            var dt = FormUtils.ToDateTime(request.GetPostString(fieldInfo.Title));
+                            logInfo.Set(fieldInfo.Title, dt.ToLocalTime());
+                        }
+
+                        else
+                        {
+                            logInfo.Set(fieldInfo.Title, value);
+                        }
+                    }
+                    
                 }
 
                 if (logId == 0)

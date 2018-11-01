@@ -111,6 +111,12 @@ var $vue = new Vue({
     $api.post(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId + '/actions/get')
       .then(function (res) {
         $this.fieldInfoList = res.data.value;
+        for (var i = 0; i < $this.fieldInfoList.length; i++) {
+          var fieldInfo = $this.fieldInfoList[i];
+          if (fieldInfo.fieldType === 'CheckBox' || fieldInfo.fieldType === 'SelectMultiple') {
+            fieldInfo.value = [];
+          }
+        }
         $this.title = res.data.title;
         $this.description = res.data.description;
         $this.isCaptcha = res.data.isCaptcha;

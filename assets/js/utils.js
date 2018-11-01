@@ -134,8 +134,10 @@ var utils = {
 
   getApiUrl: function (path, isRoot) {
     var apiUrl = config.apiUrl;
-    if (!isRoot && apiUrl.indexOf('..') !== -1) {
-      apiUrl = '../' + apiUrl;
+    if (apiUrl.indexOf('://') === -1) {
+      if (!isRoot && apiUrl.indexOf('..') !== -1) {
+        apiUrl = '../' + apiUrl;
+      }
     }
     apiUrl += '/' + path;
     apiUrl = apiUrl.replace(/\/\//g, '/');

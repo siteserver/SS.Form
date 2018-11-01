@@ -48,6 +48,10 @@ var methods = {
     };
     for (var i = 0; i < this.fieldInfoList.length; i++) {
       var style = this.fieldInfoList[i];
+      // if (typeof style.value === 'object') {
+      //   style.value = JSON.stringify(style.value);
+      // }
+      // console.log(style.value);
       payload[style.title] = style.value;
     }
 

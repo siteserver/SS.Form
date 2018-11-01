@@ -246,6 +246,21 @@ namespace SS.Form.Core.Model
             return FormUtils.ToDateTime(value.ToString(), defaultValue);
         }
 
+        public DateTime? GetDateTime(string key)
+        {
+            var value = Get(key);
+            if (value == null) return null;
+            if (value is DateTime) return (DateTime)value;
+            try
+            {
+                return Convert.ToDateTime(value.ToString());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public void Remove(string key)
         {
             if (string.IsNullOrEmpty(key)) return;
