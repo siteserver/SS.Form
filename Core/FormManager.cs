@@ -146,6 +146,15 @@ namespace SS.Form.Core
             text = $"{(formInfo.ContentId > 0 ? "表单管理" : formInfo.Title)} ({formInfo.TotalCount})";
             if (!formInfo.IsReply) return text;
 
+            if (formInfo.TotalCount == 0)
+            {
+                formInfo.TotalCount = LogDao.GetCount(formInfo.Id);
+                if (formInfo.TotalCount > 0)
+                {
+                    FormDao.Update(formInfo);
+                }
+            }
+
             if (formInfo.TotalCount - formInfo.RepliedCount > 0)
             {
                 text = $@"<span class=""text-danger"">{text}</span>";

@@ -151,6 +151,32 @@ WHERE Id = @Id";
             FormDao.Update(formInfo);
         }
 
+        private static int GetIntResult(string sqlString)
+        {
+            var count = 0;
+
+            using (var conn = Context.DatabaseApi.GetConnection(Context.ConnectionString))
+            {
+                conn.Open();
+                using (var rdr = Context.DatabaseApi.ExecuteReader(conn, sqlString))
+                {
+                    if (rdr.Read() && !rdr.IsDBNull(0))
+                    {
+                        count = rdr.GetInt32(0);
+                    }
+                    rdr.Close();
+                }
+            }
+            return count;
+        }
+
+        public static int GetCount(int formId)
+        {
+            var sqlString =
+                $"SELECT COUNT(*) FROM {TableName} WHERE {nameof(LogInfo.FormId)} = {formId}";
+            return GetIntResult(sqlString);
+        }
+
         public static List<LogInfo> GetLogInfoList(FormInfo formInfo, bool isRepliedOnly, int page)
         {
             List<LogInfo> logInfoList;
