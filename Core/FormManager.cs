@@ -143,9 +143,6 @@ namespace SS.Form.Core
             var text = "表单管理 (0)";
             if (formInfo == null) return text;
 
-            text = $"{(formInfo.ContentId > 0 ? "表单管理" : formInfo.Title)} ({formInfo.TotalCount})";
-            if (!formInfo.IsReply) return text;
-
             if (formInfo.TotalCount == 0)
             {
                 formInfo.TotalCount = LogDao.GetCount(formInfo.Id);
@@ -154,6 +151,9 @@ namespace SS.Form.Core
                     FormDao.Update(formInfo);
                 }
             }
+
+            text = $"{(formInfo.ContentId > 0 ? "表单管理" : formInfo.Title)} ({formInfo.TotalCount})";
+            if (!formInfo.IsReply) return text;
 
             if (formInfo.TotalCount - formInfo.RepliedCount > 0)
             {
