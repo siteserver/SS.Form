@@ -24,9 +24,9 @@
             <small v-show="errors.has('title')" class="text-danger">{{ errors.first('title') }}</small>
           </label>
           <input :disabled="(config.fieldId && config.fieldId.length > 0 ? true : false)" v-model="styleInfo.title"
-            name="title" data-vv-as="字段名称" v-validate="'required|alpha_dash'" :class="{'is-invalid':
-errors.has('title') }"
-            type="text" class="form-control">
+            name="title" data-vv-as="字段名称" v-validate="'required'" :class="{'is-invalid':
+errors.has('title') }" type="text"
+            class="form-control">
         </div>
         <div class="form-group col-md-4">
           <label class="col-form-label">
