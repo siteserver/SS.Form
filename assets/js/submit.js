@@ -35,6 +35,10 @@ VeeValidate.Validator.extend('mobile', {
   }
 });
 
+if (window.DatePicker) {
+  Vue.component("date-picker", window.DatePicker.default);
+}
+
 var $vue = new Vue({
   el: "#form_submit",
   data: {

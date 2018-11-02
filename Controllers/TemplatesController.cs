@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
@@ -29,7 +30,7 @@ namespace SS.Form.Controllers
                 var formInfo = FormManager.GetFormInfoByContentId(siteId, 0, 0) ?? FormDao.CreateDefaultForm(siteId, 0, 0);
 
                 var templates = new List<object>();
-                foreach (var directoryName in FormUtils.GetDirectoryNames(directoryPath))
+                foreach (var directoryName in FormUtils.GetDirectoryNames(directoryPath).OrderBy(x => x.Length))
                 {
                     if (FormUtils.StartsWithIgnoreCase(directoryName, templateType))
                     {
