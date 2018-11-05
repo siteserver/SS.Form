@@ -62,7 +62,7 @@ var methods = {
         showConfirmButton: false,
         timer: 2000
       })
-    } catch {}
+    } catch (err) {}
   }
 };
 

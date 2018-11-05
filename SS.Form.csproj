@@ -211,6 +211,11 @@
     <Content Include="templates\imgs\iphone_x.jpg" />
     <Content Include="templates\list1\index.html" />
     <Content Include="templates\list1\sample.png" />
+    <Content Include="templates\submit10\bg_img_large.jpg" />
+    <Content Include="templates\submit10\bg_img_small.jpg" />
+    <Content Include="templates\submit10\index.html" />
+    <Content Include="templates\submit10\sample.png" />
+    <Content Include="templates\submit10\style.css" />
     <Content Include="templates\submit1\index.html" />
     <Content Include="templates\submit1\sample.png" />
     <Content Include="templates\submit2\index.html" />
