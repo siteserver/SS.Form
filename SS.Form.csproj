@@ -121,6 +121,7 @@
     <Content Include="assets\js\utils.js" />
     <Content Include="assets\lib\axios-0.18.0.min.js" />
     <Content Include="assets\lib\bootstrap.min.js" />
+    <Content Include="assets\lib\es6-promise.auto.min.js" />
     <Content Include="assets\lib\jquery-1.9.1.min.js" />
     <Content Include="assets\lib\js.cookie-2.2.0.js" />
     <Content Include="assets\lib\layer-3.1.1\layer.js" />

@@ -78,7 +78,7 @@ var $vue = new Vue({
       this.loadPage(this.pages);
     },
 
-    onPageSelect(option) {
+    onPageSelect: function (option) {
       this.loadPage(option);
     },
 
