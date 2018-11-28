@@ -51,7 +51,7 @@ namespace SS.Form.Controllers
                     AllAttributeNames = allAttributeNames,
                     ListAttributeNames = listAttributeNames,
                     formInfo.IsReply
-                });
+            });
             }
             catch (Exception ex)
             {

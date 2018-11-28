@@ -115,7 +115,7 @@ namespace SS.Form.Core
         }
 
         public static readonly string DefaultListAttributeNames =
-            $"{nameof(LogInfo.Id)},{nameof(LogInfo.AddDate)},{nameof(LogInfo.IsReplied)},{nameof(LogInfo.ReplyDate)},{nameof(LogInfo.ReplyContent)}";
+            $"{nameof(LogInfo.Id)},{nameof(LogInfo.AddDate)}";
 
         public static List<string> GetAllAttributeNames(FormInfo formInfo, List<FieldInfo> fieldInfoList)
         {
@@ -128,12 +128,6 @@ namespace SS.Form.Core
                 allAttributeNames.Add(fieldInfo.Title);
             }
             allAttributeNames.Add(nameof(LogInfo.AddDate));
-            if (formInfo.IsReply)
-            {
-                allAttributeNames.Add(nameof(LogInfo.IsReplied));
-                allAttributeNames.Add(nameof(LogInfo.ReplyDate));
-                allAttributeNames.Add(nameof(LogInfo.ReplyContent));
-            }
 
             return allAttributeNames;
         }

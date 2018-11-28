@@ -17,5 +17,6 @@
   </metadata>
   <files>
     <file src="assets\fonts\**" target="Content\assets\fonts"/>
+    <file src="docs\**" target="Content\docs"/>
   </files>
 </package>
