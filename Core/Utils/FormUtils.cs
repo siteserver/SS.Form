@@ -121,27 +121,6 @@ namespace SS.Form.Core.Utils
             }
             return list;
         }
-        
-        public static string ReadText(string filePath)
-        {
-            var sr = new StreamReader(filePath, Encoding.UTF8);
-            var text = sr.ReadToEnd();
-            sr.Close();
-            return text;
-        }
-        
-        public static string[] GetDirectoryNames(string directoryPath)
-        {
-            var directorys = Directory.GetDirectories(directoryPath);
-            var retval = new string[directorys.Length];
-            var i = 0;
-            foreach (var directory in directorys)
-            {
-                var directoryInfo = new DirectoryInfo(directory);
-                retval[i++] = directoryInfo.Name;
-            }
-            return retval;
-        }
 
         public static bool ContainsIgnoreCase(List<string> list, string target)
         {
@@ -227,6 +206,166 @@ namespace SS.Form.Core.Utils
             {
                 return default(T);
             }
+        }
+
+        public static string GetDirectoryPath(string path)
+        {
+            var ext = Path.GetExtension(path);
+            var directoryPath = !string.IsNullOrEmpty(ext) ? Path.GetDirectoryName(path) : path;
+            return directoryPath;
+        }
+
+        public static void CreateDirectoryIfNotExists(string path)
+        {
+            var directoryPath = GetDirectoryPath(path);
+
+            if (!IsDirectoryExists(directoryPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                catch
+                {
+                    //Scripting.FileSystemObject fso = new Scripting.FileSystemObjectClass();
+                    //string[] directoryNames = directoryPath.Split('\\');
+                    //string thePath = directoryNames[0];
+                    //for (int i = 1; i < directoryNames.Length; i++)
+                    //{
+                    //    thePath = thePath + "\\" + directoryNames[i];
+                    //    if (StringUtils.Contains(thePath.ToLower(), ConfigUtils.Instance.PhysicalApplicationPath.ToLower()) && !IsDirectoryExists(thePath))
+                    //    {
+                    //        fso.CreateFolder(thePath);
+                    //    }
+                    //}                    
+                }
+            }
+        }
+
+        public static void CopyDirectory(string sourcePath, string targetPath, bool isOverride)
+        {
+            if (!Directory.Exists(sourcePath)) return;
+
+            CreateDirectoryIfNotExists(targetPath);
+            var directoryInfo = new DirectoryInfo(sourcePath);
+            foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos())
+            {
+                var destPath = Path.Combine(targetPath, fileSystemInfo.Name);
+                if (fileSystemInfo is FileInfo)
+                {
+                    CopyFile(fileSystemInfo.FullName, destPath, isOverride);
+                }
+                else if (fileSystemInfo is DirectoryInfo)
+                {
+                    CopyDirectory(fileSystemInfo.FullName, destPath, isOverride);
+                }
+            }
+        }
+
+        public static bool CopyFile(string sourceFilePath, string destFilePath, bool isOverride)
+        {
+            var returnValue = true;
+            try
+            {
+                CreateDirectoryIfNotExists(destFilePath);
+
+                File.Copy(sourceFilePath, destFilePath, isOverride);
+            }
+            catch
+            {
+                returnValue = false;
+            }
+            return returnValue;
+        }
+
+        public const char UrlSeparatorChar = '/';
+        public const char PathSeparatorChar = '\\';
+
+        public static string PathCombine(params string[] paths)
+        {
+            var retval = string.Empty;
+            if (paths != null && paths.Length > 0)
+            {
+                retval = paths[0]?.Replace(UrlSeparatorChar, PathSeparatorChar).TrimEnd(PathSeparatorChar) ?? string.Empty;
+                for (var i = 1; i < paths.Length; i++)
+                {
+                    var path = paths[i] != null ? paths[i].Replace(UrlSeparatorChar, PathSeparatorChar).Trim(PathSeparatorChar) : string.Empty;
+                    retval = Path.Combine(retval, path);
+                }
+            }
+            return retval;
+        }
+
+        public static string[] GetDirectoryNames(string directoryPath)
+        {
+            var directorys = Directory.GetDirectories(directoryPath);
+            var retval = new string[directorys.Length];
+            var i = 0;
+            foreach (var directory in directorys)
+            {
+                var directoryInfo = new DirectoryInfo(directory);
+                retval[i++] = directoryInfo.Name;
+            }
+            return retval;
+        }
+
+        public static bool IsDirectoryExists(string directoryPath)
+        {
+            return Directory.Exists(directoryPath);
+        }
+
+        public static bool DeleteDirectoryIfExists(string directoryPath)
+        {
+            var retval = true;
+            try
+            {
+                if (IsDirectoryExists(directoryPath))
+                {
+                    Directory.Delete(directoryPath, true);
+                }
+            }
+            catch
+            {
+                retval = false;
+            }
+            return retval;
+        }
+
+        public static bool IsFileExists(string filePath)
+        {
+            return File.Exists(filePath);
+        }
+
+        public static string ReadText(string filePath)
+        {
+            var sr = new StreamReader(filePath, Encoding.UTF8);
+            var text = sr.ReadToEnd();
+            sr.Close();
+            return text;
+        }
+
+        public static void WriteText(string filePath, string content)
+        {
+            var file = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
+            using (var writer = new StreamWriter(file, Encoding.UTF8))
+            {
+                writer.Write(content);
+                writer.Flush();
+                writer.Close();
+
+                file.Close();
+            }
+        }
+
+        public static string GetShortGuid(bool isUppercase)
+        {
+            long i = 1;
+            foreach (var b in Guid.NewGuid().ToByteArray())
+            {
+                i *= b + 1;
+            }
+            string retval = $"{i - DateTime.Now.Ticks:x}";
+            return isUppercase ? retval.ToUpper() : retval.ToLower();
         }
     }
 }

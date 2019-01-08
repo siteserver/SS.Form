@@ -1,10 +1,9 @@
-﻿config.apiUrl = utils.getQueryString('apiUrl');
-config.siteId = utils.getQueryString('siteId');
-config.channelId = utils.getQueryString('channelId');
-config.contentId = utils.getQueryString('contentId');
-config.formId = utils.getQueryString('formId');
-config.fieldId = utils.getQueryString('fieldId');
-var $api = new utils.Api('/ss.form/fields/validate');
+﻿var $url = '/pages/fieldsLayerValidate'
+var $siteId = utils.getQueryString('siteId');
+var $channelId = utils.getQueryString('channelId');
+var $contentId = utils.getQueryString('contentId');
+var $formId = utils.getQueryString('formId');
+var $fieldId = utils.getQueryString('fieldId');
 
 var data = {
   allRules: [{
@@ -97,18 +96,20 @@ var methods = {
       return rule.value ? rule.type + ':' + rule.value : rule.type;
     }).join('|');
   },
+
   load: function () {
     var $this = this;
 
-    $api.get({
-      siteId: config.siteId,
-      channelId: config.channelId,
-      contentId: config.contentId,
-      formId: config.formId,
-      fieldId: config.fieldId
-    }, function (err, res) {
-      $this.pageLoad = true;
-      if (err || !res) return;
+    $api.get($url, {
+      params: {
+        siteId: $siteId,
+        channelId: $channelId,
+        contentId: $contentId,
+        formId: $formId,
+        fieldId: $fieldId
+      }
+    }).then(function (response) {
+      var res = response.data;
 
       var val = '';
       try {
@@ -130,43 +131,49 @@ var methods = {
           }
         }
       } catch (e) {}
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      $this.pageLoad = true;
     });
   },
+
   btnSubmitClick: function () {
     var $this = this;
     this.$validator.validate().then(function (result) {
       if (result) {
         utils.loading(true);
-        $api.post({
-          siteId: config.siteId,
-          channelId: config.channelId,
-          contentId: config.contentId,
-          formId: config.formId,
-          fieldId: config.fieldId,
+
+        $api.post($url, {
+          siteId: $siteId,
+          channelId: $channelId,
+          contentId: $contentId,
+          formId: $formId,
+          fieldId: $fieldId,
           value: $this.getValue()
-        }, function (err, res) {
-          utils.loading(false);
-          if (err || !res) {
-            $this.pageAlert = {
-              type: 'danger',
-              html: err.message
-            }
-            return;
-          }
+        }).then(function (response) {
+          var res = response.data;
 
           parent.location.reload(true);
           utils.closeLayer();
+        }).catch(function (error) {
+          $this.pageAlert = utils.getPageAlert(error);
+        }).then(function () {
+          utils.loading(false);
         });
       }
     });
   },
+
   btnRemoveClick: function (index) {
     this.validateRules.splice(index, 1);
   },
+
   btnAddClick: function () {
     this.ruleType = null;
     this.pageType = 'add';
   },
+
   btnSaveClick: function () {
     var $this = this;
     this.$validator.validate().then(function (result) {
@@ -179,15 +186,18 @@ var methods = {
       }
     });
   },
+
   btnCancelClick: function () {
     this.pageType = 'list';
   },
+
   getDescription(type) {
     var index = _.findIndex(this.allRules, function (o) {
       return o.type == type;
     });
     return index !== -1 ? this.allRules[index].text : '';
   },
+
   getRuleValue() {
     if (this.ruleType === 'between') {
       return this.betweenMin + ',' + this.betweenMax;
@@ -213,6 +223,7 @@ var methods = {
 
     return '';
   },
+
   getAvaliableRules() {
     var rules = [];
     for (var i = 0; i < this.allRules.length; i++) {

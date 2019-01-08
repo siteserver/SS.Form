@@ -1,7 +1,8 @@
-﻿config.apiUrl = utils.getQueryString('apiUrl');
-config.siteId = utils.getQueryString('siteId');
-
-var $api = new utils.Api('/ss.form/forms');
+﻿var $url = '/pages/forms';
+var $urlActionsUp = '/pages/forms/actions/up';
+var $urlActionsDown = '/pages/forms/actions/down';
+$apiUrl = utils.getQueryString('apiUrl');
+$siteId = utils.getQueryString('siteId');
 
 var data = {
   pageLoad: false,
@@ -15,12 +16,13 @@ var methods = {
   getList: function () {
     var $this = this;
 
-    $api.get({
-      siteId: config.siteId
-    }, function (err, res) {
-      if (err || !res || !res.value) return;
+    $api.get($url + '?siteId=' + $siteId).then(function (response) {
+      var res = response.data;
 
       $this.formInfoList = res.value;
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
       $this.pageLoad = true;
     });
   },
@@ -29,14 +31,10 @@ var methods = {
     var $this = this;
 
     utils.loading(true);
-    $api.delete({
-      siteId: config.siteId,
-      formId: formId
-    }, function (err, res) {
-      utils.loading(false);
-      if (err || !res || !res.value) return;
+    $api.delete($url + '?siteId=' + $siteId + '&formId=' + formId).then(function (response) {
+      var res = response.data;
 
-      alert({
+      swal2({
         toast: true,
         type: 'success',
         title: "表单删除成功",
@@ -44,25 +42,28 @@ var methods = {
         timer: 2000
       });
       $this.formInfoList = res.value;
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
     });
   },
 
   btnViewClick: function (formId) {
-    location.href = 'logs.html?siteId=' + config.siteId + '&formId=' + formId + '&apiUrl=' + encodeURIComponent(config.apiUrl) + '&returnUrl=' + encodeURIComponent(location.href);
+    location.href = 'logs.html?siteId=' + $siteId + '&formId=' + formId + '&apiUrl=' + encodeURIComponent($apiUrl) + '&returnUrl=' + encodeURIComponent(location.href);
   },
 
   btnUpClick: function (formInfo) {
     var $this = this;
 
     utils.loading(true);
-    $api.post({
-      siteId: config.siteId,
+    $api.post($urlActionsUp, {
+      siteId: $siteId,
       formId: formInfo.id
-    }, function (err, res) {
-      utils.loading(false);
-      if (err || !res || !res.value) return;
+    }).then(function (response) {
+      var res = response.data;
 
-      alert({
+      swal2({
         toast: true,
         type: 'success',
         title: "表单排序成功",
@@ -70,21 +71,24 @@ var methods = {
         timer: 2000
       });
       $this.formInfoList = res.value;
-    }, 'actions/up');
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
+    });
   },
 
   btnDownClick: function (formInfo) {
     var $this = this;
 
     utils.loading(true);
-    $api.post({
-      siteId: config.siteId,
+    $api.post($urlActionsDown, {
+      siteId: $siteId,
       formId: formInfo.id
-    }, function (err, res) {
-      utils.loading(false);
-      if (err || !res || !res.value) return;
+    }).then(function (response) {
+      var res = response.data;
 
-      alert({
+      swal2({
         toast: true,
         type: 'success',
         title: "表单排序成功",
@@ -92,7 +96,11 @@ var methods = {
         timer: 2000
       });
       $this.formInfoList = res.value;
-    }, 'actions/down');
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
+    });
   },
 
   btnEditClick: function (formInfo) {
@@ -125,16 +133,15 @@ var methods = {
 
     utils.loading(true);
     if (this.formInfo.id) {
-      $api.put({
-        siteId: config.siteId,
+      $api.put($url, {
+        siteId: $siteId,
         formId: this.formInfo.id,
         title: this.formInfo.title,
         description: this.formInfo.description
-      }, function (err, res) {
-        utils.loading(false);
-        if (err || !res || !res.value) return;
+      }).then(function (response) {
+        var res = response.data;
 
-        alert({
+        swal2({
           toast: true,
           type: 'success',
           title: "表单修改成功",
@@ -143,17 +150,20 @@ var methods = {
         });
         $this.formInfoList = res.value;
         $this.pageType = 'list';
+      }).catch(function (error) {
+        $this.pageAlert = utils.getPageAlert(error);
+      }).then(function () {
+        utils.loading(false);
       });
     } else {
-      $api.post({
-        siteId: config.siteId,
+      $api.post($url, {
+        siteId: $siteId,
         title: this.formInfo.title,
         description: this.formInfo.description
-      }, function (err, res) {
-        utils.loading(false);
-        if (err || !res || !res.value) return;
+      }).then(function (response) {
+        var res = response.data;
 
-        alert({
+        swal2({
           toast: true,
           type: 'success',
           title: "表单添加成功",
@@ -162,6 +172,10 @@ var methods = {
         });
         $this.formInfoList = res.value;
         $this.pageType = 'list';
+      }).catch(function (error) {
+        $this.pageAlert = utils.getPageAlert(error);
+      }).then(function () {
+        utils.loading(false);
       });
     }
   }

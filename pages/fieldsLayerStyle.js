@@ -1,74 +1,78 @@
-﻿config.apiUrl = utils.getQueryString('apiUrl');
-config.siteId = utils.getQueryString('siteId');
-config.channelId = utils.getQueryString('channelId');
-config.contentId = utils.getQueryString('contentId');
-config.formId = utils.getQueryString('formId');
-config.fieldId = utils.getQueryString('fieldId');
-var $api = new utils.Api('/ss.form/fields/style');
+﻿var $url = '/pages/fieldsLayerStyle'
+var $siteId = utils.getQueryString('siteId');
+var $channelId = utils.getQueryString('channelId');
+var $contentId = utils.getQueryString('contentId');
+var $formId = utils.getQueryString('formId');
+var $fieldId = utils.getQueryString('fieldId');
 
 var data = {
   pageLoad: false,
   pageAlert: null,
   styleInfo: null,
   isRapid: null,
-  rapidValues: null,
+  rapidValues: null
 };
 
 var methods = {
   getStyle: function () {
     var $this = this;
 
-    $api.get({
-      siteId: config.siteId,
-      channelId: config.channelId,
-      contentId: config.contentId,
-      formId: config.formId,
-      fieldId: config.fieldId
-    }, function (err, res) {
-      $this.pageLoad = true;
-      if (err || !res) return;
+    $api.get($url, {
+      params: {
+        siteId: $siteId,
+        channelId: $channelId,
+        contentId: $contentId,
+        formId: $formId,
+        fieldId: $fieldId
+      }
+    }).then(function (response) {
+      var res = response.data;
 
       $this.styleInfo = res.value;
       $this.isRapid = res.isRapid;
       $this.rapidValues = res.rapidValues;
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      $this.pageLoad = true;
     });
   },
+
   btnSubmitClick: function () {
     var $this = this;
     this.$validator.validate().then(function (result) {
       if (result) {
         utils.loading(true);
-        $api.post({
-          siteId: config.siteId,
-          channelId: config.channelId,
-          contentId: config.contentId,
-          formId: config.formId,
-          fieldId: config.fieldId,
+        $api.post($url, {
+          siteId: $siteId,
+          channelId: $channelId,
+          contentId: $contentId,
+          formId: $formId,
+          fieldId: $fieldId,
           fieldInfo: $this.styleInfo,
           isRapid: $this.isRapid,
-          rapidValues: $this.rapidValues,
-        }, function (err, res) {
-          utils.loading(false);
-          if (err || !res) {
-            $this.pageAlert = {
-              type: 'danger',
-              html: err.message
-            }
-            return;
-          }
+          rapidValues: $this.rapidValues
+        }).then(function (response) {
+          var res = response.data;
 
           parent.location.reload(true);
           utils.closeLayer();
+        }).catch(function (error) {
+          $this.pageAlert = utils.getPageAlert(error);
+        }).then(function () {
+          utils.loading(false);
         });
       }
     });
   },
+
   btnStyleItemRemoveClick: function (index) {
     this.styleInfo.items.splice(index, 1);
     if (this.styleInfo.items.length === 0) {
       this.btnStyleItemAddClick();
     }
   },
+
   btnStyleItemAddClick: function () {
     this.styleInfo.items.push({
       itemTitle: '',
@@ -76,6 +80,7 @@ var methods = {
       isSelected: false
     })
   },
+
   btnRadioClick: function (index) {
     for (var i = 0; i < this.styleInfo.items.length; i++) {
       var element = this.styleInfo.items[i];

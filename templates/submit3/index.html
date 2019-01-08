@@ -5,33 +5,21 @@
   <meta charset="utf-8" />
   <title>表单</title>
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
-  <style>
-    * {
-      font-family: 'Microsoft YaHei', Arial, sans-serif
-    }
-  </style>
+  <script type="text/javascript" src="../../assets/lib/iframe-resizer-3.6.3/iframeResizer.contentWindow.min.js"></script>
+  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="../../assets/css/froala_blocks.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  <link href="../css/froala_blocks.min.css" rel="stylesheet" type="text/css">
-
   <section id="form_submit" class="fdb-block pt-0">
     <div class="container">
       <div class="row mt-5">
         <div class="col-12 col-md-6 col-lg-5">
           <h2>Contact Us</h2>
-          <p class="text-h3">
-            Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
-            blind
-            texts. Separated they live in Bookmarksgrove.
+          <p class="text-h3"> Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
+            there live the blind texts. Separated they live in Bookmarksgrove. </p>
+          <p class="text-h3"> It is a paradisematic country, in which roasted parts of sentences fly into your mouth.
           </p>
-
-          <p class="text-h3">
-            It is a paradisematic country, in which roasted parts of sentences fly into your mouth.
-          </p>
-
-
           <p class="text-h3 mt-5">
             <strong>Email:</strong> <a href="https://www.siteserver.cn">hello@website.com</a>
           </p>
@@ -39,19 +27,14 @@
             <strong>Phone:</strong> <a href="https://www.siteserver.cn">+86 123 123 1232</a>
           </p>
         </div>
-
         <div class="col-12 col-md-6 ml-auto pt-5 pt-md-0">
-
           <template v-if="pageType === 'form'">
-
             <div v-for="fieldInfo in fieldInfoList" class="row mt-4">
               <div class="col">
-
                 <template v-if="fieldInfo.fieldType === 'TextArea'">
                   <textarea :placeholder="fieldInfo.title" v-model="fieldInfo.value" class="form-control" :style="'height: ' + (fieldInfo.additional.height ? fieldInfo.additional.height : 125) + 'px;'"
                     :name="fieldInfo.title" v-validate="fieldInfo.validate" :class="{'is-invalid': errors.has(fieldInfo.title)}"></textarea>
                 </template>
-
                 <template v-else-if="fieldInfo.fieldType === 'CheckBox'">
                   <div class="m-2">
                     <div v-for="(item, index) in fieldInfo.items" class="checkbox checkbox-primary">
@@ -61,7 +44,6 @@
                     </div>
                   </div>
                 </template>
-
                 <template v-else-if="fieldInfo.fieldType === 'Radio'">
                   <div class="m-2">
                     <div v-for="(item, index) in fieldInfo.items" class="radio radio-primary">
@@ -71,43 +53,34 @@
                     </div>
                   </div>
                 </template>
-
                 <template v-else-if="fieldInfo.fieldType === 'SelectOne'">
                   <select :name="fieldInfo.title" v-model="fieldInfo.value" class="form-control" :class="{'is-invalid': errors.has(fieldInfo.title) }"
                     v-validate="fieldInfo.validate">
                     <option v-for="item in fieldInfo.items" :value="item.value">{{ item.value }}</option>
                   </select>
                 </template>
-
                 <template v-else-if="fieldInfo.fieldType === 'SelectMultiple'">
                   <select multiple style="height: 130px" :name="fieldInfo.title" v-model="fieldInfo.value" class="form-control"
                     :class="{'is-invalid': errors.has(fieldInfo.title) }" v-validate="fieldInfo.validate">
                     <option v-for="item in fieldInfo.items" :value="item.value">{{ item.value }}</option>
                   </select>
                 </template>
-
                 <template v-else-if="fieldInfo.fieldType === 'Date'">
                   <date-picker :placeholder="fieldInfo.title" style="width: 100%" :name="fieldInfo.title" v-model="fieldInfo.value"
                     type="date" format="YYYY年MM月DD日" :minute-step="1" :clearable="false" :editable="false" v-validate="fieldInfo.validate"></date-picker>
                 </template>
-
                 <template v-else-if="fieldInfo.fieldType === 'DateTime'">
                   <date-picker :placeholder="fieldInfo.title" style="width: 100%" :name="fieldInfo.title" v-model="fieldInfo.value"
                     type="datetime" format="YYYY年MM月DD日 HH:mm" :minute-step="1" :clearable="false" :editable="false"
                     v-validate="fieldInfo.validate"></date-picker>
                 </template>
-
                 <template v-else>
                   <input :placeholder="fieldInfo.title" v-model="fieldInfo.value" type="text" class="form-control"
                     :name="fieldInfo.title" v-validate="fieldInfo.validate" :class="{'is-invalid': errors.has(fieldInfo.title)}">
                 </template>
-
-                <small v-show="errors.has(fieldInfo.title)" class="text-danger">{{
-                  errors.first(fieldInfo.title) }}</small>
-
+                <small v-show="errors.has(fieldInfo.title)" class="text-danger">{{ errors.first(fieldInfo.title) }}</small>
               </div>
             </div>
-
             <div v-if="isCaptcha" class="row mt-4">
               <div class="col">
                 <div class="clearfix">
@@ -120,14 +93,12 @@ errors.has('captcha') || captchaInValid}">
                 <small v-show="captchaInValid" class="text-danger">验证码不正确，请重新输入！</small>
               </div>
             </div>
-
             <div class="row mt-4">
               <div class="col">
                 <button @click="btnSubmitClick" type="submit" class="btn">提 交</button>
               </div>
             </div>
           </template>
-
           <template v-else-if="pageType === 'error'">
             <div class="row mb-2 text-center justify-content-center">
               <div class="col-12 col-md-8 col-lg-7">
@@ -135,7 +106,6 @@ errors.has('captcha') || captchaInValid}">
               </div>
             </div>
           </template>
-
           <template v-else-if="pageType === 'success'">
             <div class="row mb-2 text-center justify-content-center">
               <div class="col-12 col-md-8 col-lg-7">
@@ -143,27 +113,23 @@ errors.has('captcha') || captchaInValid}">
               </div>
             </div>
           </template>
-
           <template v-else>
             <div class="text-center" style="margin-top: 100px">
               <img class="mt-3" src="../../assets/images/loading.gif" />
               <p class="lead mt-3 text-nowrap">载入中，请稍后...</p>
             </div>
           </template>
-
         </div>
       </div>
     </div>
   </section>
-
-  <script src="../../assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
-  <script src="../../assets/lib/vee-validate-2.1.0.js"></script>
-  <script src="../../assets/lib/vee-validate-locale-zh_CN-2.1.0.js"></script>
-  <script src="../../assets/lib/es6-promise.auto.min.js" type="text/javascript"></script>
-  <script src="../../assets/lib/axios-0.18.0.min.js"></script>
-  <script src="../../assets/lib/vue2-datepicker-2.4.3.min.js"></script>
-  <script src="../../assets/js/submit.js" type="text/javascript"></script>
-
 </body>
 
 </html>
+<script src="../../assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
+<script src="../../assets/lib/vee-validate-2.1.0.js"></script>
+<script src="../../assets/lib/vee-validate-locale-zh_CN-2.1.0.js"></script>
+<script src="../../assets/lib/es6-promise.auto.min.js" type="text/javascript"></script>
+<script src="../../assets/lib/axios-0.18.0.min.js"></script>
+<script src="../../assets/lib/vue2-datepicker-2.4.3.min.js"></script>
+<script src="../../assets/js/submit.js" type="text/javascript"></script>

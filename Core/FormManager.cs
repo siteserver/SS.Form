@@ -177,8 +177,8 @@ namespace SS.Form.Core
 //                $@"<script type=""text/javascript"">
 //{javascript}
 //</script>");
-            html = html.Replace("../../", "{stl.siteUrl}/sitefiles/plugins/ss.form/");
-            html = html.Replace("../", "{stl.siteUrl}/sitefiles/plugins/ss.form/templates/");
+            html = html.Replace("../../", "{stl.rootUrl}/SiteFiles/plugins/SS.Form/");
+            html = html.Replace("../", "{stl.rootUrl}/SiteFiles/plugins/SS.Form/templates/");
 
             CacheUtils.InsertHours(htmlPath, html, 1);
             return html;

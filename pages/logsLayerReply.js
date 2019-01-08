@@ -1,10 +1,10 @@
-﻿config.apiUrl = utils.getQueryString('apiUrl');
-config.siteId = utils.getQueryString('siteId');
-config.channelId = utils.getQueryString('channelId');
-config.contentId = utils.getQueryString('contentId');
-config.formId = utils.getQueryString('formId');
-config.logId = utils.getQueryString('logId');
-var $api = new utils.Api('/ss.form/logs/reply');
+﻿var $url = '/pages/logsLayerReply';
+var $apiUrl = utils.getQueryString('apiUrl');
+var $siteId = utils.getQueryString('siteId');
+var $channelId = utils.getQueryString('channelId');
+var $contentId = utils.getQueryString('contentId');
+var $formId = utils.getQueryString('formId');
+var $logId = utils.getQueryString('logId');
 
 var data = {
   pageLoad: false,
@@ -17,18 +17,23 @@ var methods = {
   load: function () {
     var $this = this;
 
-    $api.get({
-      siteId: config.siteId,
-      channelId: config.channelId,
-      contentId: config.contentId,
-      formId: config.formId,
-      logId: config.logId
-    }, function (err, res) {
-      $this.pageLoad = true;
-      if (err || !res) return;
+    $api.get($url, {
+      params: {
+        siteId: $siteId,
+        channelId: $channelId,
+        contentId: $contentId,
+        formId: $formId,
+        logId: $logId
+      }
+    }).then(function (response) {
+      var res = response.data;
 
       $this.logInfo = res.value;
       $this.attributeNames = res.attributeNames;
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      $this.pageLoad = true;
     });
   },
 
@@ -37,24 +42,18 @@ var methods = {
     this.$validator.validate().then(function (result) {
       if (result) {
         utils.loading(true);
-        $api.post({
-          siteId: config.siteId,
-          channelId: config.channelId,
-          contentId: config.contentId,
-          formId: config.formId,
-          logId: config.logId,
-          replyContent: $this.logInfo.replyContent,
-        }, function (err, res) {
-          utils.loading(false);
-          if (err || !res) {
-            $this.pageAlert = {
-              type: 'danger',
-              html: err.message
-            }
-            return;
-          }
 
-          alert({
+        $api.post($url, {
+          siteId: $siteId,
+          channelId: $channelId,
+          contentId: $contentId,
+          formId: $formId,
+          logId: $logId,
+          replyContent: $this.logInfo.replyContent
+        }).then(function (response) {
+          var res = response.data;
+
+          swal2({
             toast: true,
             type: 'success',
             title: "回复成功",
@@ -64,6 +63,10 @@ var methods = {
             parent.location.reload(true);
             utils.closeLayer();
           });
+        }).catch(function (error) {
+          $this.pageAlert = utils.getPageAlert(error);
+        }).then(function () {
+          utils.loading(false);
         });
       }
     });
@@ -77,7 +80,6 @@ var methods = {
     } else if (attributeName === 'ReplyDate') {
       return '回复时间';
     }
-
     return attributeName;
   },
 
@@ -87,7 +89,6 @@ var methods = {
     } else if (attributeName === 'ReplyDate') {
       return this.logInfo.isReplied ? this.logInfo.replyDate : '';
     }
-
     return this.logInfo[_.camelCase(attributeName)];
   }
 };

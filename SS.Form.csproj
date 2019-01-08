@@ -34,8 +34,8 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SiteServer.Plugin, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SiteServer.Plugin.2.1.0\lib\net45\SiteServer.Plugin.dll</HintPath>
+    <Reference Include="SiteServer.Plugin, Version=2.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SiteServer.Plugin.2.1.3\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
     <Reference Include="SS.SMS, Version=1.1.33.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\SS.SMS.1.1.33\lib\net452\SS.SMS.dll</HintPath>
@@ -59,16 +59,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\MainController.cs" />
-    <Compile Include="Controllers\LogsReplyController.cs" />
-    <Compile Include="Controllers\FormsController.cs" />
-    <Compile Include="Controllers\TemplatesController.cs" />
-    <Compile Include="Controllers\SettingsController.cs" />
-    <Compile Include="Controllers\LogsAddController.cs" />
-    <Compile Include="Controllers\LogsController.cs" />
-    <Compile Include="Controllers\FieldsController.cs" />
-    <Compile Include="Controllers\FieldsStyleController.cs" />
-    <Compile Include="Controllers\FieldsValidateController.cs" />
+    <Compile Include="Controllers\FormController.cs" />
+    <Compile Include="Controllers\Pages\PagesLogsLayerReplyController.cs" />
+    <Compile Include="Controllers\Pages\PagesFormsController.cs" />
+    <Compile Include="Controllers\Pages\PagesTemplatesController.cs" />
+    <Compile Include="Controllers\Pages\PagesSettingsController.cs" />
+    <Compile Include="Controllers\Pages\PagesLogAddController.cs" />
+    <Compile Include="Controllers\Pages\PagesLogsController.cs" />
+    <Compile Include="Controllers\Pages\PagesFieldsController.cs" />
+    <Compile Include="Controllers\Pages\PagesFieldsLayerStyleController.cs" />
+    <Compile Include="Controllers\Pages\PagesFieldsLayerValidateController.cs" />
+    <Compile Include="Controllers\Pages\PagesTemplatesLayerPreviewController.cs" />
+    <Compile Include="Controllers\Pages\PagesTemplatesLayerEditController.cs" />
+    <Compile Include="Core\Model\TemplateInfo.cs" />
+    <Compile Include="Core\TemplateManager.cs" />
     <Compile Include="Core\Utils\CacheUtils.cs" />
     <Compile Include="Core\Utils\CsvUtils.cs" />
     <Compile Include="Core\Utils\Extensions.cs" />
@@ -99,19 +103,32 @@
     <None Include="assets\fonts\fontawesome-webfont.woff" />
     <None Include="assets\fonts\fontawesome-webfont.woff2" />
     <None Include="assets\fonts\FontAwesome.otf" />
-    <None Include="docs\background.md" />
-    <None Include="docs\foreground.md" />
+    <None Include="docs\contentForm.md" />
+    <None Include="docs\individualForm.md" />
     <None Include="docs\install.md" />
     <None Include="docs\README.md" />
+    <None Include="docs\reply.md" />
     <None Include="docs\_sidebar.md" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="SS.Form.nuspec" />
+    <None Include="templates\list1\config.json" />
+    <None Include="templates\submit10\config.json" />
+    <None Include="templates\submit1\config.json" />
+    <None Include="templates\submit2\config.json" />
+    <None Include="templates\submit3\config.json" />
+    <None Include="templates\submit4\config.json" />
+    <None Include="templates\submit5\config.json" />
+    <None Include="templates\submit6\config.json" />
+    <None Include="templates\submit7\config.json" />
+    <None Include="templates\submit8\config.json" />
+    <None Include="templates\submit9\config.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\css\bootstrap.min.css" />
     <Content Include="assets\css\font-awesome-4.7.0.min.css" />
+    <Content Include="assets\css\froala_blocks.min.css" />
     <Content Include="assets\css\siteserver.min.css" />
     <Content Include="assets\fonts\fontawesome-webfont.svg" />
     <Content Include="assets\images\favicon.ico" />
@@ -119,9 +136,12 @@
     <Content Include="assets\js\list.js" />
     <Content Include="assets\js\submit.js" />
     <Content Include="assets\js\utils.js" />
+    <Content Include="assets\lib\axios-0.17.1.min.js" />
     <Content Include="assets\lib\axios-0.18.0.min.js" />
     <Content Include="assets\lib\bootstrap.min.js" />
     <Content Include="assets\lib\es6-promise.auto.min.js" />
+    <Content Include="assets\lib\iframe-resizer-3.6.3\iframeResizer.contentWindow.min.js" />
+    <Content Include="assets\lib\iframe-resizer-3.6.3\iframeResizer.min.js" />
     <Content Include="assets\lib\jquery-1.9.1.min.js" />
     <Content Include="assets\lib\js.cookie-2.2.0.js" />
     <Content Include="assets\lib\layer-3.1.1\layer.js" />
@@ -154,15 +174,26 @@
     <Content Include="assets\lib\web-uploader\js\spark-md5.js" />
     <Content Include="assets\lib\web-uploader\Q.Uploader.file.all.js" />
     <Content Include="assets\lib\web-uploader\Q.Uploader.image.all.js" />
-    <Content Include="docs\assets\background\01.png" />
-    <Content Include="docs\assets\background\02.png" />
-    <Content Include="docs\assets\background\03.png" />
-    <Content Include="docs\assets\install\01.png" />
-    <Content Include="docs\assets\install\02.png" />
-    <Content Include="docs\assets\install\03.png" />
-    <Content Include="docs\assets\install\04.png" />
+    <Content Include="docs\assets\contentForm\01.png" />
+    <Content Include="docs\assets\contentForm\02.png" />
+    <Content Include="docs\assets\contentForm\03.png" />
+    <Content Include="docs\assets\contentForm\04.png" />
+    <Content Include="docs\assets\css\vue.css" />
+    <Content Include="docs\assets\individualForm\01.png" />
+    <Content Include="docs\assets\individualForm\02.png" />
+    <Content Include="docs\assets\individualForm\03.png" />
+    <Content Include="docs\assets\individualForm\04.png" />
+    <Content Include="docs\assets\individualForm\05.png" />
+    <Content Include="docs\assets\js\docsify-4.8.6.min.js" />
+    <Content Include="docs\assets\js\search-4.8.6.min.js" />
+    <Content Include="docs\assets\readme\00.png" />
+    <Content Include="docs\assets\readme\01.png" />
+    <Content Include="docs\assets\readme\02.png" />
+    <Content Include="docs\assets\readme\03.png" />
+    <Content Include="docs\assets\reply\01.png" />
+    <Content Include="docs\assets\reply\02.png" />
+    <Content Include="docs\assets\reply\03.png" />
     <Content Include="docs\index.html" />
-    <Content Include="docs\logo.svg" />
     <Content Include="logo.svg" />
     <Content Include="pages\fields.html" />
     <Content Include="pages\fields.js" />
@@ -180,63 +211,51 @@
     <Content Include="pages\logsLayerReply.js" />
     <Content Include="pages\settings.html" />
     <Content Include="pages\settings.js" />
+    <Content Include="pages\templates.1.html" />
+    <Content Include="pages\templates.1.js" />
     <Content Include="pages\templates.html" />
     <Content Include="pages\templates.js" />
-    <Content Include="templates\css\froala_blocks.min.css" />
-    <Content Include="templates\css\simple.css" />
-    <Content Include="templates\imgs\alt_wide_1.svg" />
-    <Content Include="templates\imgs\alt_wide_2.svg" />
-    <Content Include="templates\imgs\alt_wide_3.svg" />
-    <Content Include="templates\imgs\bg_0.svg" />
-    <Content Include="templates\imgs\bg_1.svg" />
-    <Content Include="templates\imgs\bg_2.svg" />
-    <Content Include="templates\imgs\bg_3.svg" />
-    <Content Include="templates\imgs\bg_4.svg" />
-    <Content Include="templates\imgs\bg_c_1.svg" />
-    <Content Include="templates\imgs\bg_c_2.svg" />
-    <Content Include="templates\imgs\bg_c_3.svg" />
-    <Content Include="templates\imgs\colors_wide_1.jpg" />
-    <Content Include="templates\imgs\colors_wide_2.jpg" />
-    <Content Include="templates\imgs\colors_wide_3.jpg" />
-    <Content Include="templates\imgs\img_bg.jpg" />
-    <Content Include="templates\imgs\img_logo.png" />
-    <Content Include="templates\imgs\img_round.png" />
-    <Content Include="templates\imgs\img_round.svg" />
-    <Content Include="templates\imgs\img_square_1.svg" />
-    <Content Include="templates\imgs\img_square_2.svg" />
-    <Content Include="templates\imgs\img_square_3.svg" />
-    <Content Include="templates\imgs\img_square_4.svg" />
-    <Content Include="templates\imgs\img_tall.png" />
-    <Content Include="templates\imgs\img_very_tall.png" />
-    <Content Include="templates\imgs\img_very_wide.svg" />
-    <Content Include="templates\imgs\iphone_x.jpg" />
+    <Content Include="pages\templatesLayerEdit.html" />
+    <Content Include="pages\templatesLayerEdit.js" />
+    <Content Include="pages\templatesLayerPreview.html" />
+    <Content Include="pages\templatesLayerPreview.js" />
+    <Content Include="templates\list1\images\icon.png" />
     <Content Include="templates\list1\index.html" />
-    <Content Include="templates\list1\sample.png" />
-    <Content Include="templates\submit10\bg_img_large.jpg" />
-    <Content Include="templates\submit10\bg_img_small.jpg" />
+    <Content Include="templates\submit10\css\style.css" />
+    <Content Include="templates\submit10\images\bg_img_large.jpg" />
+    <Content Include="templates\submit10\images\bg_img_small.jpg" />
+    <Content Include="templates\submit10\images\icon.png" />
     <Content Include="templates\submit10\index.html" />
-    <Content Include="templates\submit10\sample.png" />
-    <Content Include="templates\submit10\style.css" />
+    <Content Include="templates\submit1\images\icon.png" />
     <Content Include="templates\submit1\index.html" />
-    <Content Include="templates\submit1\sample.png" />
+    <Content Include="templates\submit2\images\bg_3.svg" />
+    <Content Include="templates\submit2\images\icon.png" />
     <Content Include="templates\submit2\index.html" />
-    <Content Include="templates\submit2\sample.png" />
+    <Content Include="templates\submit3\images\icon.png" />
     <Content Include="templates\submit3\index.html" />
-    <Content Include="templates\submit3\sample.png" />
+    <Content Include="templates\submit4\images\bg_0.svg" />
+    <Content Include="templates\submit4\images\icon.png" />
     <Content Include="templates\submit4\index.html" />
-    <Content Include="templates\submit4\sample.png" />
+    <Content Include="templates\submit5\images\bg_0.svg" />
+    <Content Include="templates\submit5\images\icon.png" />
     <Content Include="templates\submit5\index.html" />
-    <Content Include="templates\submit5\sample.png" />
+    <Content Include="templates\submit6\images\bg_c_2.svg" />
+    <Content Include="templates\submit6\images\icon.png" />
     <Content Include="templates\submit6\index.html" />
-    <Content Include="templates\submit6\sample.png" />
+    <Content Include="templates\submit7\images\colors_wide_1.jpg" />
+    <Content Include="templates\submit7\images\icon.png" />
     <Content Include="templates\submit7\index.html" />
-    <Content Include="templates\submit7\sample.png" />
+    <Content Include="templates\submit8\images\alt_wide_1.svg" />
+    <Content Include="templates\submit8\images\icon.png" />
     <Content Include="templates\submit8\index.html" />
-    <Content Include="templates\submit8\sample.png" />
+    <Content Include="templates\submit9\css\simple.css" />
+    <Content Include="templates\submit9\images\icon.png" />
     <Content Include="templates\submit9\index.html" />
-    <Content Include="templates\submit9\sample.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="docs\assets\background\" />
+    <Folder Include="docs\assets\install\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

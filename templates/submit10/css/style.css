@@ -1,0 +1,287 @@
+﻿@charset "UTF-8";
+
+.ss_form_wrapper {
+  font-family: '微软雅黑', 'Open Sans', Arial, 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 22px;
+  font-weight: normal;
+  font-variant: normal;
+  color: #333333;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  min-width: 1060px;
+  width: 1350px;
+  margin: 0 auto;
+  background: url(../images/bg_img_large.jpg);
+  margin-top: -5px;
+  overflow: hidden;
+}
+
+.ss_form_main {
+  margin: 0;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.8);
+  width: 1039px;
+  margin: 30px auto 100px;
+  color: #4b4b4b;
+  overflow: hidden;
+  padding-bottom: 110px;
+}
+
+.ss_form_main .ss_form_head_title {
+  margin: 0;
+  padding: 0;
+  padding: 40px 0;
+  text-align: center;
+  font-size: 40px;
+  color: #156ec0;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.ss_form_main .ss_form_head_desc {
+  margin: 0;
+  padding: 0;
+  padding: 0 90px 40px;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.ss_form_main .ss_form_bg {
+  margin: 0;
+  padding: 0;
+  opacity: .6;
+}
+
+.ss_form_ul li {
+  margin: 0;
+  padding: 0;
+  margin: 0 90px;
+  border-bottom: 1px solid #eaedf0;
+  padding: 40px 0;
+  list-style-type: none;
+  vertical-align: 0;
+}
+
+.ss_form_title {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.ss_form_title i {
+  margin: 0;
+  padding: 0;
+  color: #d00749;
+  font-style: normal;
+}
+
+.ss_form_title div {
+  margin: 0;
+  padding: 0;
+  color: #156ec0;
+  font-size: 14px;
+}
+
+.ss_form_body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+.ss_form_body dd,
+.ss_form_ul {
+  margin: 0;
+  padding: 0;
+}
+
+.ss_form_body label {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  display: inline-block;
+  line-height: 2.3;
+}
+
+.ss_form_body input[type=text] {
+  margin: 0;
+  margin-right: 5px;
+  border: 1px solid #c1c1c1;
+  padding: 0 5px;
+  height: 35px;
+  width: 500px;
+}
+
+.ss_form_body textarea {
+  margin: 0;
+  margin-right: 5px;
+  border: 1px solid #c1c1c1;
+  padding: 5px;
+  height: 80px;
+  width: 500px;
+}
+
+.ss_form_body select {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  height: 35px;
+}
+
+.error {
+  border-color: #d00749 !important;
+  color: #d00749 !important;
+}
+
+.ss_form_code {
+  margin: 0;
+  padding: 0;
+  margin: 60px auto;
+  width: 500px;
+  overflow: hidden;
+}
+
+.ss_form_code input {
+  margin: 0;
+  padding: 0 5px;
+  width: 120px;
+  height: 35px;
+  border: 1px solid #156ec0;
+  float: left;
+}
+
+.ss_form_code_img {
+  margin: 0;
+  padding: 0;
+  float: left;
+  margin: 1px 15px;
+}
+
+.ss_form_code span {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  float: left;
+  line-height: 35px;
+}
+
+.ss_form_btn {
+  padding: 0;
+  width: 180px;
+  height: 47px;
+  display: block;
+  background: #156ec0 !important;
+  border-radius: 5px;
+  line-height: 47px;
+  margin: 0 auto;
+  margin-top: 30px;
+  color: #fff;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.ss_form_btn:hover {
+  color: #fff !important;
+}
+
+.ss_form_success,
+.ss_form_failure {
+  margin: 0px auto;
+  text-align: center;
+  font-weight: 400;
+}
+
+.ss_form_failure {
+  margin-top: 40px;
+  font-size: 18px;
+  color: #d00749 !important;
+}
+
+.ss_form_success {
+  margin-top: 100px;
+  font-size: 25px;
+}
+
+@media (max-width: 640px) and (min-width: 320px) {
+  .ss_form_wrapper {
+    margin: 0;
+    padding: 0;
+    min-width: 100%;
+    width: 100%;
+    background: #83bdf6 url(../images/bg_img_small.jpg);
+    background-size: 100% auto;
+  }
+
+  .ss_form_wrapper img {
+    margin: 0;
+    padding: 0;
+  }
+
+  .ss_form_main {
+    margin: 20px 3%;
+    width: 94%;
+    padding-bottom: 30px;
+  }
+
+  .ss_form_head_title {
+    font-size: 30px;
+    padding: 15px 0;
+  }
+
+  .ss_form_head_desc {
+    padding: 0 15px !important;
+    line-height: 1.5;
+  }
+
+  .ss_form_ul li {
+    margin: 0 15px;
+    padding: 20px 0;
+  }
+
+  .ss_form_body {
+    padding-right: 0;
+    padding-left: 0;
+    font-size: 16px;
+  }
+
+  .ss_form_body dd,
+  .ss_form_ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  .ss_form_body input[type=text] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ss_form_body textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ss_form_code input {
+    width: 80px;
+  }
+
+  .ss_form_code_img {
+    float: left;
+    margin: 1px 5px;
+  }
+
+  .ss_form_code {
+    margin: 30px auto;
+    width: 94%;
+  }
+
+  .ss_form_btn {
+    width: 94%;
+  }
+}

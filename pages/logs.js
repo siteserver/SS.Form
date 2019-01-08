@@ -1,11 +1,12 @@
-﻿config.apiUrl = utils.getQueryString('apiUrl');
-config.siteId = utils.getQueryString('siteId');
-config.channelId = utils.getQueryString('channelId');
-config.contentId = utils.getQueryString('contentId');
-config.formId = utils.getQueryString('formId');
-config.returnUrl = utils.getQueryString('returnUrl');
-
-var $api = new utils.Api('/ss.form/logs');
+﻿var $url = '/pages/logs';
+var $urlActionsExport = '/pages/logs/actions/export';
+var $urlActionsVisible = '/pages/logs/actions/visible';
+var $apiUrl = utils.getQueryString('apiUrl');
+var $siteId = utils.getQueryString('siteId');
+var $channelId = utils.getQueryString('channelId');
+var $contentId = utils.getQueryString('contentId');
+var $formId = utils.getQueryString('formId');
+var $returnUrl = utils.getQueryString('returnUrl');
 
 var data = {
   pageLoad: false,
@@ -15,12 +16,11 @@ var data = {
   allAttributeNames: [],
   listAttributeNames: [],
   isReply: false,
-
   page: 1,
   items: [],
   count: null,
   pages: null,
-  pageOptions: null,
+  pageOptions: null
 };
 
 var methods = {
@@ -28,15 +28,16 @@ var methods = {
     var $this = this;
 
     utils.loading(true);
-    $api.delete({
-      siteId: config.siteId,
-      channelId: config.channelId,
-      contentId: config.contentId,
-      formId: config.formId,
-      logId: logId
-    }, function (err, res) {
-      utils.loading(false);
-      if (err || !res || !res.value) return;
+    $api.delete($url, {
+      params: {
+        siteId: $siteId,
+        channelId: $channelId,
+        contentId: $contentId,
+        formId: $formId,
+        logId: logId
+      }
+    }).then(function (response) {
+      var res = response.data;
 
       $this.items = res.value;
       $this.count = res.count;
@@ -46,17 +47,21 @@ var methods = {
       for (var i = 1; i <= $this.pages; i++) {
         $this.pageOptions.push(i);
       }
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
     });
   },
 
   btnEditClick: function (logId) {
-    location.href = 'logAdd.html?siteId=' + config.siteId + '&channelId=' + config.channelId + '&contentId=' + config.contentId + '&formId=' + config.formId + '&logId=' + logId + '&apiUrl=' + encodeURIComponent(config.apiUrl) + '&returnUrl=' + encodeURIComponent(config.returnUrl);
+    location.href = 'logAdd.html?siteId=' + $siteId + '&channelId=' + $channelId + '&contentId=' + $contentId + '&formId=' + $formId + '&logId=' + logId + '&apiUrl=' + encodeURIComponent($apiUrl) + '&returnUrl=' + encodeURIComponent($returnUrl);
   },
 
   btnReplyClick: function (logId) {
     utils.openLayer({
       title: '回复',
-      url: 'logsLayerReply.html?siteId=' + config.siteId + '&channelId=' + config.channelId + '&contentId=' + config.contentId + '&formId=' + config.formId + '&logId=' + logId + '&apiUrl=' + encodeURIComponent(config.apiUrl)
+      url: 'logsLayerReply.html?siteId=' + $siteId + '&channelId=' + $channelId + '&contentId=' + $contentId + '&formId=' + $formId + '&logId=' + logId + '&apiUrl=' + encodeURIComponent($apiUrl)
     });
   },
 
@@ -74,16 +79,16 @@ var methods = {
 
   btnExportClick: function () {
     utils.loading(true);
-    $api.post({
-      siteId: config.siteId,
-      channelId: config.channelId,
-      contentId: config.contentId,
-      formId: config.formId
-    }, function (err, res) {
-      utils.loading(false);
-      if (err || !res || !res.value) return;
 
-      alert({
+    $api.post($urlActionsExport, {
+      siteId: $siteId,
+      channelId: $channelId,
+      contentId: $contentId,
+      formId: $formId
+    }).then(function (response) {
+      var res = response.data;
+
+      swal2({
         toast: true,
         type: 'success',
         title: "数据导出成功",
@@ -92,7 +97,11 @@ var methods = {
       }).then(function () {
         window.open(res.value);
       });
-    }, 'actions/export');
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
+    });
   },
 
   btnVisibleClick: function (attributeName) {
@@ -101,22 +110,25 @@ var methods = {
     event.preventDefault();
 
     utils.loading(true);
-    $api.post({
-      siteId: config.siteId,
-      channelId: config.channelId,
-      contentId: config.contentId,
-      formId: config.formId,
+    $api.post($urlActionsVisible, {
+      siteId: $siteId,
+      channelId: $channelId,
+      contentId: $contentId,
+      formId: $formId,
       attributeName: attributeName
-    }, function (err, res) {
-      utils.loading(false);
-      if (err || !res || !res.value) return;
+    }).then(function (response) {
+      var res = response.data;
 
       $this.listAttributeNames = res.value;
-    }, 'actions/visible');
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
+    });
   },
 
   btnNavClick: function (pageName) {
-    location.href = pageName + '?siteId=' + config.siteId + '&channelId=' + config.channelId + '&contentId=' + config.contentId + '&formId=' + config.formId + '&apiUrl=' + encodeURIComponent(config.apiUrl) + '&returnUrl=' + encodeURIComponent(config.returnUrl);
+    location.href = pageName + '?siteId=' + $siteId + '&channelId=' + $channelId + '&contentId=' + $contentId + '&formId=' + $formId + '&apiUrl=' + encodeURIComponent($apiUrl) + '&returnUrl=' + encodeURIComponent($returnUrl);
   },
 
   getAttributeText: function (attributeName) {
@@ -129,7 +141,6 @@ var methods = {
     } else if (attributeName === 'ReplyContent') {
       return '回复内容';
     }
-
     return attributeName;
   },
 
@@ -141,7 +152,6 @@ var methods = {
     } else if (attributeName === 'ReplyContent') {
       return item.isReplied ? item.replyContent : '';
     }
-
     return item[_.camelCase(attributeName)];
   },
 
@@ -176,26 +186,22 @@ var methods = {
       utils.loading(true);
     }
 
-    $api.get({
-      siteId: config.siteId,
-      channelId: config.channelId,
-      contentId: config.contentId,
-      formId: config.formId,
-      page: page
-    }, function (err, res) {
+    $api.get($url, {
+      params: {
+        siteId: $siteId,
+        channelId: $channelId,
+        contentId: $contentId,
+        formId: $formId,
+        page: page
+      }
+    }).then(function (response) {
+      var res = response.data;
+
       if ($this.pageLoad) {
         utils.loading(false);
         utils.scrollToTop();
       } else {
         $this.pageLoad = true;
-      }
-
-      if (err) {
-        $this.pageAlert = {
-          type: 'danger',
-          html: err.message
-        };
-        return;
       }
 
       $this.fieldInfoList = res.fieldInfoList;
@@ -211,6 +217,10 @@ var methods = {
       for (var i = 1; i <= $this.pages; i++) {
         $this.pageOptions.push(i);
       }
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
     });
   }
 };

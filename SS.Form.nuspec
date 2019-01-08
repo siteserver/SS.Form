@@ -6,7 +6,7 @@
     <title>自定义表单插件</title>
     <authors>SiteServer CMS</authors>
     <owners>siteserver</owners>
-    <licenseUrl>https://github.com/siteserver/SS.Form/blob/master/LICENSE</licenseUrl>
+    <license type="expression">GPL-3.0</license>
     <projectUrl>http://plugins.siteserver.cn/ss.form/</projectUrl>
     <iconUrl>https://plugins.siteserver.cn/ss.form/logo.svg</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
