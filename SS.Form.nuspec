@@ -18,5 +18,6 @@
   <files>
     <file src="assets\fonts\**" target="Content\assets\fonts"/>
     <file src="docs\**" target="Content\docs"/>
+    <file src="templates\**" target="Content\templates"/>
   </files>
 </package>

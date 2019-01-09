@@ -19,10 +19,13 @@ namespace SS.Form.Core
 
             var directoryPath = GetTemplatesDirectoryPath();
             var directoryNames = FormUtils.GetDirectoryNames(directoryPath);
-            var orderedEnumerable = directoryNames.OrderBy(str => str);
-            foreach (var directoryName in orderedEnumerable)
+            foreach (var directoryName in directoryNames)
             {
-                templateInfoList.Add(GetTemplateInfo(directoryPath, directoryName));
+                var templateInfo = GetTemplateInfo(directoryPath, directoryName);
+                if (templateInfo != null)
+                {
+                    templateInfoList.Add(templateInfo);
+                }
             }
 
             return templateInfoList;
@@ -36,20 +39,13 @@ namespace SS.Form.Core
 
         private static TemplateInfo GetTemplateInfo(string templatesDirectoryPath, string name)
         {
-            TemplateInfo templateInfo;
+            TemplateInfo templateInfo = null;
 
             var configPath = FormUtils.PathCombine(templatesDirectoryPath, name, "config.json");
             if (FormUtils.IsFileExists(configPath))
             {
                 templateInfo = FormUtils.JsonDeserialize<TemplateInfo>(FormUtils.ReadText(configPath));
                 templateInfo.Name = name;
-            }
-            else
-            {
-                templateInfo = new TemplateInfo
-                {
-                    Name = name
-                };
             }
 
             return templateInfo;
