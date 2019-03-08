@@ -27,7 +27,7 @@ namespace SS.Form.Controllers.Pages
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.Additional.ListAttributeNames);
-                var allAttributeNames = FormManager.GetAllAttributeNames(formInfo, fieldInfoList);
+                var allAttributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
 
                 var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
                 if (pages == 0) pages = 1;
@@ -114,7 +114,7 @@ namespace SS.Form.Controllers.Pages
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var logs = LogDao.GetLogInfoList(formInfo.Id, false, 0, formInfo.TotalCount);
 
-                var head = new List<string> { "序号" };
+                var head = new List<string> { "编号" };
                 foreach (var fieldInfo in fieldInfoList)
                 {
                     head.Add(fieldInfo.Title);
@@ -122,13 +122,12 @@ namespace SS.Form.Controllers.Pages
                 head.Add("添加时间");
 
                 var rows = new List<List<string>>();
-
-                var index = 1;
+                
                 foreach (var log in logs)
                 {
                     var row = new List<string>
                     {
-                        index++.ToString()
+                        log.Id.ToString()
                     };
                     foreach (var fieldInfo in fieldInfoList)
                     {
@@ -139,7 +138,7 @@ namespace SS.Form.Controllers.Pages
                     rows.Add(row);
                 }
 
-                var relatedPath = "表单数据.csv";
+                const string relatedPath = "表单数据.csv";
 
                 CsvUtils.Export(Context.PluginApi.GetPluginPath(FormUtils.PluginId, relatedPath), head, rows);
                 var downloadUrl = Context.PluginApi.GetPluginUrl(FormUtils.PluginId, relatedPath);

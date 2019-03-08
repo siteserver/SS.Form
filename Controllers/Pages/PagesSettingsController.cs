@@ -25,32 +25,22 @@ namespace SS.Form.Controllers.Pages
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
 
-                var administratorSmsAttributeNames = FormManager.GetAllAttributeNames(formInfo, fieldInfoList);
-                administratorSmsAttributeNames.Remove(nameof(LogInfo.IsReplied));
-                administratorSmsAttributeNames.Remove(nameof(LogInfo.ReplyDate));
-                administratorSmsAttributeNames.Remove(nameof(LogInfo.ReplyContent));
+                var attributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
+                attributeNames.Remove(nameof(LogInfo.IsReplied));
+                attributeNames.Remove(nameof(LogInfo.ReplyDate));
+                attributeNames.Remove(nameof(LogInfo.ReplyContent));
                 var administratorSmsNotifyKeys =
                     FormUtils.StringCollectionToStringList(formInfo.Additional.AdministratorSmsNotifyKeys);
-
-                //try
-                //{
-                //    var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>();
-                //    if (smsPlugin != null)
-                //    {
-                //        isSmsAvaliable = true;
-                //    }
-                //}
-                //catch
-                //{
-                //    // ignored
-                //}
+                var userSmsNotifyKeys =
+                    FormUtils.StringCollectionToStringList(formInfo.Additional.UserSmsNotifyKeys);
 
                 return Ok(new
                 {
                     Value = formInfo,
                     FieldInfoList = fieldInfoList,
-                    AdministratorSmsAttributeNames = administratorSmsAttributeNames,
-                    AdministratorSmsNotifyKeys = administratorSmsNotifyKeys
+                    AttributeNames = attributeNames,
+                    AdministratorSmsNotifyKeys = administratorSmsNotifyKeys,
+                    UserSmsNotifyKeys = userSmsNotifyKeys
                 });
             }
             catch (Exception ex)
@@ -72,49 +62,58 @@ namespace SS.Form.Controllers.Pages
                 var type = request.GetPostString("type");
                 if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsClosed)))
                 {
-                    formInfo.Additional.IsClosed = request.GetPostBool(nameof(FormSettings.IsClosed).ToCamelCase());
+                    formInfo.Additional.IsClosed = request.GetPostBool(nameof(FormSettings.IsClosed));
                     FormDao.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.Title)))
                 {
-                    formInfo.Title = request.GetPostString(nameof(FormInfo.Title).ToCamelCase());
+                    formInfo.Title = request.GetPostString(nameof(FormInfo.Title));
                     FormDao.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.Description)))
                 {
-                    formInfo.Description = request.GetPostString(nameof(FormInfo.Description).ToCamelCase());
+                    formInfo.Description = request.GetPostString(nameof(FormInfo.Description));
                     FormDao.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsReply)))
                 {
-                    formInfo.IsReply = request.GetPostBool(nameof(FormInfo.IsReply).ToCamelCase());
+                    formInfo.IsReply = request.GetPostBool(nameof(FormInfo.IsReply));
                     FormDao.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsTimeout)))
                 {
-                    formInfo.Additional.IsTimeout = request.GetPostBool(nameof(FormSettings.IsTimeout).ToCamelCase());
-                    formInfo.Additional.TimeToStart = FormUtils.ToDateTime(request.GetPostString(nameof(FormSettings.TimeToStart).ToCamelCase()));
-                    formInfo.Additional.TimeToEnd = FormUtils.ToDateTime(request.GetPostString(nameof(FormSettings.TimeToEnd).ToCamelCase()));
+                    formInfo.Additional.IsTimeout = request.GetPostBool(nameof(FormSettings.IsTimeout));
+                    formInfo.Additional.TimeToStart = FormUtils.ToDateTime(request.GetPostString(nameof(FormSettings.TimeToStart)));
+                    formInfo.Additional.TimeToEnd = FormUtils.ToDateTime(request.GetPostString(nameof(FormSettings.TimeToEnd)));
                     FormDao.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsCaptcha)))
                 {
-                    formInfo.Additional.IsCaptcha = request.GetPostBool(nameof(FormSettings.IsCaptcha).ToCamelCase());
+                    formInfo.Additional.IsCaptcha = request.GetPostBool(nameof(FormSettings.IsCaptcha));
                     FormDao.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsAdministratorSmsNotify)))
                 {
-                    formInfo.Additional.IsAdministratorSmsNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorSmsNotify).ToCamelCase());
-                    formInfo.Additional.AdministratorSmsNotifyTplId = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyTplId).ToCamelCase());
-                    formInfo.Additional.AdministratorSmsNotifyKeys = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyKeys).ToCamelCase());
-                    formInfo.Additional.AdministratorSmsNotifyMobile = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyMobile).ToCamelCase());
+                    formInfo.Additional.IsAdministratorSmsNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorSmsNotify));
+                    formInfo.Additional.AdministratorSmsNotifyTplId = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyTplId));
+                    formInfo.Additional.AdministratorSmsNotifyKeys = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyKeys));
+                    formInfo.Additional.AdministratorSmsNotifyMobile = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyMobile));
 
                     FormDao.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsAdministratorMailNotify)))
                 {
-                    formInfo.Additional.IsAdministratorMailNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorMailNotify).ToCamelCase());
-                    formInfo.Additional.AdministratorMailNotifyAddress = request.GetPostString(nameof(FormSettings.AdministratorMailNotifyAddress).ToCamelCase());
+                    formInfo.Additional.IsAdministratorMailNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorMailNotify));
+                    formInfo.Additional.AdministratorMailNotifyAddress = request.GetPostString(nameof(FormSettings.AdministratorMailNotifyAddress));
+
+                    FormDao.Update(formInfo);
+                }
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsUserSmsNotify)))
+                {
+                    formInfo.Additional.IsUserSmsNotify = request.GetPostBool(nameof(FormSettings.IsUserSmsNotify));
+                    formInfo.Additional.UserSmsNotifyTplId = request.GetPostString(nameof(FormSettings.UserSmsNotifyTplId));
+                    formInfo.Additional.UserSmsNotifyKeys = request.GetPostString(nameof(FormSettings.UserSmsNotifyKeys));
+                    formInfo.Additional.UserSmsNotifyMobileName = request.GetPostString(nameof(FormSettings.UserSmsNotifyMobileName));
 
                     FormDao.Update(formInfo);
                 }

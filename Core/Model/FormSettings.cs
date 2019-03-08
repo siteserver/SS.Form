@@ -82,5 +82,30 @@ namespace SS.Form.Core.Model
             get => GetString(nameof(AdministratorMailNotifyAddress));
             set => Set(nameof(AdministratorMailNotifyAddress), value);
         }
+
+        //向用户发送短信通知
+        public bool IsUserSmsNotify
+        {
+            get => GetBool(nameof(IsUserSmsNotify));
+            set => Set(nameof(IsUserSmsNotify), value.ToString());
+        }
+
+        public string UserSmsNotifyTplId
+        {
+            get => GetString(nameof(UserSmsNotifyTplId));
+            set => Set(nameof(UserSmsNotifyTplId), value);
+        }
+
+        public string UserSmsNotifyKeys
+        {
+            get => GetString(nameof(UserSmsNotifyKeys));
+            set => Set(nameof(UserSmsNotifyKeys), value);
+        }
+
+        public string UserSmsNotifyMobileName
+        {
+            get => GetString(nameof(UserSmsNotifyMobileName));
+            set => Set(nameof(UserSmsNotifyMobileName), value);
+        }
     }
 }

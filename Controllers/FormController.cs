@@ -6,7 +6,6 @@ using SS.Form.Core;
 using SS.Form.Core.Model;
 using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
-using SS.SMS;
 
 namespace SS.Form.Controllers
 {
@@ -90,7 +89,7 @@ namespace SS.Form.Controllers
                 }
 
                 logInfo.Id = LogDao.Insert(formInfo, logInfo);
-                FormManager.Notify(formInfo, logInfo);
+                NotifyManager.SendNotify(formInfo, fieldInfoList, logInfo);
 
                 return Ok(logInfo);
             }
@@ -112,7 +111,7 @@ namespace SS.Form.Controllers
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.Additional.ListAttributeNames);
-                var allAttributeNames = FormManager.GetAllAttributeNames(formInfo, fieldInfoList);
+                var allAttributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
 
                 var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
                 if (pages == 0) pages = 1;

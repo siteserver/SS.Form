@@ -132,14 +132,16 @@ var methods = {
   },
 
   getAttributeText: function (attributeName) {
-    if (attributeName === 'AddDate') {
+    if (attributeName === 'Id') {
+      return '编号';
+    } else if (attributeName === 'AddDate') {
       return '添加时间';
     }
     return attributeName;
   },
 
   getAttributeValue: function (item, attributeName) {
-    return item[_.camelCase(attributeName)];
+    return item[_.lowerFirst(attributeName)];
   },
 
   loadFirstPage: function () {
@@ -214,7 +216,7 @@ var methods = {
 
 Vue.component("multiselect", window.VueMultiselect.default);
 
-new Vue({
+var $vue = new Vue({
   el: '#main',
   data: data,
   methods: methods,

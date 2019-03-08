@@ -27,7 +27,7 @@ namespace SS.Form.Controllers.Pages
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var logInfo = LogDao.GetLogInfo(logId);
 
-                var attributeNames = FormManager.GetAllAttributeNames(formInfo, fieldInfoList);
+                var attributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
                 if (!logInfo.IsReplied)
                 {
                     attributeNames.Remove(nameof(LogInfo.ReplyDate));

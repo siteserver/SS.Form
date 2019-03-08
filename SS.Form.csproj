@@ -77,6 +77,7 @@
     <Compile Include="Core\LogManager.cs" />
     <Compile Include="Core\Model\TemplateInfo.cs" />
     <Compile Include="Core\MailTemplateManager.cs" />
+    <Compile Include="Core\NotifyManager.cs" />
     <Compile Include="Core\TemplateManager.cs" />
     <Compile Include="Core\Utils\CacheUtils.cs" />
     <Compile Include="Core\Utils\CsvUtils.cs" />

@@ -111,6 +111,13 @@
                     formInfo.additional.isAdministratorMailNotify ? '发送邮件通知' : '不发送' }} </a>
                 </td>
               </tr>
+              <tr>
+                <td>向用户发送短信通知</td>
+                <td>
+                  <a href="javascript:;" v-on:click="pageType = 'isUserSmsNotify'" class="editable"> {{
+                    formInfo.additional.isUserSmsNotify ? '发送短信通知' : '不发送' }} </a>
+                </td>
+              </tr>
             </tbody>
           </table>
         </template>
@@ -200,7 +207,7 @@
           <div v-if="formInfo.additional.isAdministratorSmsNotify" class="form-group">
             <label> 短信模板包含变量 </label>
             <div class="m-2">
-              <div v-for="attributeName in administratorSmsAttributeNames" class="checkbox checkbox-primary form-check-inline">
+              <div v-for="attributeName in attributeNames" class="checkbox checkbox-primary form-check-inline">
                 <input v-model="administratorSmsNotifyKeys" type="checkbox" :id="attributeName" :value="attributeName">
                 <label :for="attributeName"> {{ getAttributeText(attributeName) }} </label>
               </div>
@@ -234,6 +241,45 @@ errors.has('administratorSmsNotifyMobile') }"
               data-vv-as="管理员接受邮件通知邮箱" v-validate="'required|email'" :class="{'is-invalid':
 errors.has('administratorMailNotifyAddress') }"
               type="text" class="form-control" />
+          </div>
+        </template>
+        <template v-else-if="pageType === 'isUserSmsNotify'">
+          <div class="form-group">
+            <label>向用户发送短信通知</label>
+            <select v-model="formInfo.additional.isUserSmsNotify" class="form-control">
+              <option :value="true">发送短信通知</option>
+              <option :value="false">不发送</option>
+            </select>
+            <small class="form-text text-muted">启用短信发送后将自动向信息提交人发送提交成功短信</small>
+          </div>
+          <div v-if="formInfo.additional.isUserSmsNotify" class="form-group">
+            <label> 发送通知短信模板Id <small v-if="errors.has('userSmsNotifyTplId')" class="text-danger">{{
+                errors.first('userSmsNotifyTplId') }}</small>
+            </label>
+            <input v-model="formInfo.additional.userSmsNotifyTplId" name="userSmsNotifyTplId"
+              data-vv-as="发送通知短信模板Id" v-validate="'required'" :class="{'is-invalid': errors.has('userSmsNotifyTplId') }"
+              type="text" class="form-control" />
+            <small class="form-text text-muted">需进入短信供应商模板管理界面，添加通知类短信模板并获取模板Id</small>
+          </div>
+          <div v-if="formInfo.additional.isUserSmsNotify" class="form-group">
+            <label> 短信模板包含变量 </label>
+            <div class="m-2">
+              <div v-for="attributeName in attributeNames" class="checkbox checkbox-primary form-check-inline">
+                <input v-model="userSmsNotifyKeys" type="checkbox" :id="attributeName" :value="attributeName">
+                <label :for="attributeName"> {{ getAttributeText(attributeName) }} </label>
+              </div>
+            </div>
+            <small class="form-text text-muted">请勾选短信模板文字中包含的变量，请确保变量名大小写一致</small>
+          </div>
+          <div v-if="formInfo.additional.isUserSmsNotify" class="form-group">
+            <label> 手机号码字段 <small v-if="errors.has('userSmsNotifyMobileName')" class="text-danger">{{
+                errors.first('userSmsNotifyMobileName') }}</small>
+            </label>
+            <select v-model="formInfo.additional.userSmsNotifyMobileName" name="userSmsNotifyMobileName"
+              data-vv-as="手机号码字段" v-validate="'required'" :class="{'is-invalid': errors.has('userSmsNotifyMobileName') }" class="form-control">
+              <option v-for="fieldInfo in fieldInfoList" :value="fieldInfo.title">{{fieldInfo.title}}</option>
+            </select>
+            <small class="form-text text-muted">请选择表单字段中设置的手机号码字段，信息提交后将向此发送短信</small>
           </div>
         </template>
         <div v-if="pageType !== 'list'">

@@ -13,8 +13,9 @@ var data = {
   pageType: 'list',
   formInfo: null,
   fieldInfoList: [],
-  administratorSmsAttributeNames: null,
-  administratorSmsNotifyKeys: null
+  attributeNames: null,
+  administratorSmsNotifyKeys: null,
+  userSmsNotifyKeys: null
 };
 
 var methods = {
@@ -33,8 +34,9 @@ var methods = {
 
       $this.formInfo = res.value;
       $this.fieldInfoList = res.fieldInfoList;
-      $this.administratorSmsAttributeNames = res.administratorSmsAttributeNames;
+      $this.attributeNames = res.attributeNames;
       $this.administratorSmsNotifyKeys = res.administratorSmsNotifyKeys;
+      $this.userSmsNotifyKeys = res.userSmsNotifyKeys;
     }).catch(function (error) {
       $this.pageAlert = utils.getPageAlert(error);
     }).then(function () {
@@ -74,6 +76,11 @@ var methods = {
     } else if (this.pageType === 'isAdministratorMailNotify') {
       payload.isAdministratorMailNotify = this.formInfo.additional.isAdministratorMailNotify;
       payload.administratorMailNotifyAddress = this.formInfo.additional.administratorMailNotifyAddress;
+    } else if (this.pageType === 'isUserSmsNotify') {
+      payload.isUserSmsNotify = this.formInfo.additional.isUserSmsNotify;
+      payload.userSmsNotifyTplId = this.formInfo.additional.userSmsNotifyTplId;
+      payload.userSmsNotifyKeys = this.userSmsNotifyKeys.join(',');
+      payload.userSmsNotifyMobileName = this.formInfo.additional.userSmsNotifyMobileName;
     }
 
     utils.loading(true);
