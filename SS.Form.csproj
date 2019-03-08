@@ -37,6 +37,9 @@
     <Reference Include="SiteServer.Plugin, Version=2.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\SiteServer.Plugin.2.1.3\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
+    <Reference Include="SS.Mail, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SS.Mail.1.0.4\lib\net452\SS.Mail.dll</HintPath>
+    </Reference>
     <Reference Include="SS.SMS, Version=1.1.33.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\SS.SMS.1.1.33\lib\net452\SS.SMS.dll</HintPath>
     </Reference>
@@ -71,7 +74,9 @@
     <Compile Include="Controllers\Pages\PagesFieldsLayerValidateController.cs" />
     <Compile Include="Controllers\Pages\PagesTemplatesLayerPreviewController.cs" />
     <Compile Include="Controllers\Pages\PagesTemplatesLayerEditController.cs" />
+    <Compile Include="Core\LogManager.cs" />
     <Compile Include="Core\Model\TemplateInfo.cs" />
+    <Compile Include="Core\MailTemplateManager.cs" />
     <Compile Include="Core\TemplateManager.cs" />
     <Compile Include="Core\Utils\CacheUtils.cs" />
     <Compile Include="Core\Utils\CsvUtils.cs" />
@@ -174,6 +179,8 @@
     <Content Include="assets\lib\web-uploader\js\spark-md5.js" />
     <Content Include="assets\lib\web-uploader\Q.Uploader.file.all.js" />
     <Content Include="assets\lib\web-uploader\Q.Uploader.image.all.js" />
+    <Content Include="assets\mail\list.html" />
+    <Content Include="assets\mail\template.html" />
     <Content Include="docs\assets\contentForm\01.png" />
     <Content Include="docs\assets\contentForm\02.png" />
     <Content Include="docs\assets\contentForm\03.png" />
@@ -219,6 +226,8 @@
     <Content Include="pages\templatesLayerEdit.js" />
     <Content Include="pages\templatesLayerPreview.html" />
     <Content Include="pages\templatesLayerPreview.js" />
+    <Content Include="pages\test.html" />
+    <Content Include="pages\test.js" />
     <Content Include="templates\List1\images\icon.png" />
     <Content Include="templates\List1\index.html" />
     <Content Include="templates\Submit10\css\style.css" />

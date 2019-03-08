@@ -104,6 +104,13 @@
                     formInfo.additional.isAdministratorSmsNotify ? '发送短信通知' : '不发送' }} </a>
                 </td>
               </tr>
+              <tr>
+                <td>向管理员发送邮件通知</td>
+                <td>
+                  <a href="javascript:;" v-on:click="pageType = 'isAdministratorMailNotify'" class="editable"> {{
+                    formInfo.additional.isAdministratorMailNotify ? '发送邮件通知' : '不发送' }} </a>
+                </td>
+              </tr>
             </tbody>
           </table>
         </template>
@@ -207,6 +214,25 @@
             <input v-model="formInfo.additional.administratorSmsNotifyMobile" name="administratorSmsNotifyMobile"
               data-vv-as="管理员接受短信通知手机号" v-validate="'required|mobile'" :class="{'is-invalid':
 errors.has('administratorSmsNotifyMobile') }"
+              type="text" class="form-control" />
+          </div>
+        </template>
+        <template v-else-if="pageType === 'isAdministratorMailNotify'">
+          <div class="form-group">
+            <label>向管理员发送邮件通知</label>
+            <select v-model="formInfo.additional.isAdministratorMailNotify" class="form-control">
+              <option :value="true">发送邮件通知</option>
+              <option :value="false">不发送</option>
+            </select>
+            <small class="form-text text-muted">启用邮件发送后将自动为每一条新增提交发送邮件给指定邮箱</small>
+          </div>
+          <div v-if="formInfo.additional.isAdministratorMailNotify" class="form-group">
+            <label> 管理员接受邮件通知邮箱 <small v-if="errors.has('administratorMailNotifyAddress')" class="text-danger">{{
+                errors.first('administratorMailNotifyAddress') }}</small>
+            </label>
+            <input v-model="formInfo.additional.administratorMailNotifyAddress" name="administratorMailNotifyAddress"
+              data-vv-as="管理员接受邮件通知邮箱" v-validate="'required|email'" :class="{'is-invalid':
+errors.has('administratorMailNotifyAddress') }"
               type="text" class="form-control" />
           </div>
         </template>

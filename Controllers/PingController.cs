@@ -6,7 +6,7 @@ using System.Web.Http;
 namespace SS.Form.Controllers
 {
     [RoutePrefix("ping")]
-    public class V1PingController : ApiController
+    public class PingController : ApiController
     {
         private const string Route = "";
 

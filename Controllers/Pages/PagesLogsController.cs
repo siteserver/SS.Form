@@ -38,7 +38,7 @@ namespace SS.Form.Controllers.Pages
                 var logs = new List<Dictionary<string, object>>();
                 foreach (var logInfo in logInfoList)
                 {
-                    logs.Add(logInfo.ToDictionary());
+                    logs.Add(LogManager.GetDict(fieldInfoList, logInfo));
                 }
 
                 return Ok(new
@@ -132,7 +132,7 @@ namespace SS.Form.Controllers.Pages
                     };
                     foreach (var fieldInfo in fieldInfoList)
                     {
-                        row.Add(log.GetString(fieldInfo.Title));
+                        row.Add(LogManager.GetValue(fieldInfo, log));
                     }
                     row.Add(log.AddDate.ToString("yyyy-MM-dd HH:mm"));
 

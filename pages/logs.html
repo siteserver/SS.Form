@@ -62,8 +62,8 @@
           <table class="table tablesaw table-hover m-0">
             <thead>
               <tr>
-                <th v-for="attributeName in allAttributeNames" v-if="listAttributeNames.indexOf(attributeName) !== -1">{{
-                  getAttributeText(attributeName) }}</th>
+                <th v-for="attributeName in allAttributeNames" v-if="listAttributeNames.indexOf(attributeName) !== -1">
+                  {{ getAttributeText(attributeName) }}</th>
                 <th v-if="isReply">是否回复</th>
                 <th v-if="isReply">回复时间</th>
                 <th v-if="isReply">回复内容</th>
@@ -78,8 +78,8 @@
                   <strong v-if="item.isReplied" class="text-primary">已回复</strong>
                   <strong v-else class="text-danger">未回复</strong>
                 </td>
-                <td v-if="isReply">{{ item.isReplied && item.replyDate }}</td>
-                <td v-if="isReply">{{ item.isReplied && item.replyContent }}</td>
+                <td v-if="isReply">{{ (item.isReplied ? item.replyDate : "") }}</td>
+                <td v-if="isReply">{{ (item.isReplied ? item.replyContent : "") }}</td>
                 <td class="text-center text-nowrap">
                   <a v-if="isReply" href="javascript:;" @click="btnReplyClick(item.id)">回复</a>
                   <a href="javascript:;" class="ml-2" @click="btnEditClick(item.id)">编辑</a>

@@ -117,7 +117,8 @@ namespace SS.Form.Controllers.Pages
 
                 if (logId == 0)
                 {
-                    LogDao.Insert(formInfo, logInfo);
+                    logInfo.Id = LogDao.Insert(formInfo, logInfo);
+                    FormManager.Notify(formInfo, logInfo);
                 }
                 else
                 {

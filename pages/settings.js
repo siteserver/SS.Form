@@ -71,6 +71,9 @@ var methods = {
       payload.administratorSmsNotifyTplId = this.formInfo.additional.administratorSmsNotifyTplId;
       payload.administratorSmsNotifyKeys = this.administratorSmsNotifyKeys.join(',');
       payload.administratorSmsNotifyMobile = this.formInfo.additional.administratorSmsNotifyMobile;
+    } else if (this.pageType === 'isAdministratorMailNotify') {
+      payload.isAdministratorMailNotify = this.formInfo.additional.isAdministratorMailNotify;
+      payload.administratorMailNotifyAddress = this.formInfo.additional.administratorMailNotifyAddress;
     }
 
     utils.loading(true);

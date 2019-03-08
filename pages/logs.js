@@ -134,24 +134,11 @@ var methods = {
   getAttributeText: function (attributeName) {
     if (attributeName === 'AddDate') {
       return '添加时间';
-    } else if (attributeName === 'IsReplied') {
-      return '是否回复';
-    } else if (attributeName === 'ReplyDate') {
-      return '回复时间';
-    } else if (attributeName === 'ReplyContent') {
-      return '回复内容';
     }
     return attributeName;
   },
 
   getAttributeValue: function (item, attributeName) {
-    if (attributeName === 'IsReplied') {
-      return item.isReplied ? '<strong class="text-primary">已回复</strong>' : '<strong class="text-danger">未回复</strong>';
-    } else if (attributeName === 'ReplyDate') {
-      return item.isReplied ? item.replyDate : '';
-    } else if (attributeName === 'ReplyContent') {
-      return item.isReplied ? item.replyContent : '';
-    }
     return item[_.camelCase(attributeName)];
   },
 

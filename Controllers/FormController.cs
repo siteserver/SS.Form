@@ -90,32 +90,7 @@ namespace SS.Form.Controllers
                 }
 
                 logInfo.Id = LogDao.Insert(formInfo, logInfo);
-
-                if (formInfo.Additional.IsAdministratorSmsNotify && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyMobile))
-                {
-                    var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>();
-                    if (smsPlugin != null && smsPlugin.IsReady)
-                    {
-                        var parameters = new Dictionary<string, string>();
-                        var keys = formInfo.Additional.AdministratorSmsNotifyKeys.Split(',');
-                        foreach (var key in keys)
-                        {
-                            if (key == nameof(LogInfo.Id))
-                            {
-                                parameters.Add(key, logInfo.Id.ToString());
-                            }
-                            else if (key == nameof(LogInfo.AddDate))
-                            {
-                                parameters.Add(key, logInfo.AddDate.ToString("yyyy-MM-dd HH:mm"));
-                            }
-                            else
-                            {
-                                parameters.Add(key, logInfo.GetString(key));
-                            }
-                        }
-                        smsPlugin.Send(formInfo.Additional.AdministratorSmsNotifyMobile, formInfo.Additional.AdministratorSmsNotifyTplId, parameters, out _);
-                    }
-                }
+                FormManager.Notify(formInfo, logInfo);
 
                 return Ok(logInfo);
             }

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using SiteServer.Plugin;
 using SS.Form.Core.Model;
 using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
+using SS.Mail;
+using SS.SMS;
 
 namespace SS.Form.Core
 {
@@ -192,6 +195,65 @@ namespace SS.Form.Core
         public static void ClearCache(int siteId)
         {
             FormManagerCache.Clear(siteId);
+        }
+
+        public static void Notify(FormInfo formInfo, LogInfo logInfo)
+        {
+            if (formInfo.Additional.IsAdministratorSmsNotify && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyMobile))
+            {
+                var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>();
+                if (smsPlugin != null && smsPlugin.IsReady)
+                {
+                    var parameters = new Dictionary<string, string>();
+                    var keys = formInfo.Additional.AdministratorSmsNotifyKeys.Split(',');
+                    foreach (var key in keys)
+                    {
+                        if (key == nameof(LogInfo.Id))
+                        {
+                            parameters.Add(key, logInfo.Id.ToString());
+                        }
+                        else if (key == nameof(LogInfo.AddDate))
+                        {
+                            parameters.Add(key, logInfo.AddDate.ToString("yyyy-MM-dd HH:mm"));
+                        }
+                        else
+                        {
+                            parameters.Add(key, logInfo.GetString(key));
+                        }
+                    }
+                    smsPlugin.Send(formInfo.Additional.AdministratorSmsNotifyMobile, formInfo.Additional.AdministratorSmsNotifyTplId, parameters, out _);
+                }
+            }
+
+            if (formInfo.Additional.IsAdministratorMailNotify && !string.IsNullOrEmpty(formInfo.Additional.AdministratorMailNotifyAddress))
+            {
+                var mailPlugin = Context.PluginApi.GetPlugin<MailPlugin>();
+                if (mailPlugin != null && mailPlugin.IsReady)
+                {
+                    var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
+
+                    var templateHtml = MailTemplateManager.GetTemplateHtml();
+                    var listHtml = MailTemplateManager.GetListHtml();
+
+                    var keyValueList = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("编号", logInfo.Id.ToString()),
+                        new KeyValuePair<string, string>("提交时间", logInfo.AddDate.ToString("yyyy-MM-dd HH:mm"))
+                    };
+                    foreach (var fieldInfo in fieldInfoList)
+                    {
+                        keyValueList.Add(new KeyValuePair<string, string>(fieldInfo.Title, LogManager.GetValue(fieldInfo, logInfo)));
+                    }
+
+                    var list = new StringBuilder();
+                    foreach (var kv in keyValueList)
+                    {
+                        list.Append(listHtml.Replace("{{key}}", kv.Key).Replace("{{value}}", kv.Value));
+                    }
+
+                    mailPlugin.Send(formInfo.Additional.AdministratorMailNotifyAddress, string.Empty, "[SiteServer CMS] 通知邮件", templateHtml.Replace("{{title}}", formInfo.Title).Replace("{{list}}", list.ToString()), out _);
+                }
+            }
         }
     }
 }

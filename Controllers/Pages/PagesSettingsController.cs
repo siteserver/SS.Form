@@ -111,6 +111,13 @@ namespace SS.Form.Controllers.Pages
 
                     FormDao.Update(formInfo);
                 }
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsAdministratorMailNotify)))
+                {
+                    formInfo.Additional.IsAdministratorMailNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorMailNotify).ToCamelCase());
+                    formInfo.Additional.AdministratorMailNotifyAddress = request.GetPostString(nameof(FormSettings.AdministratorMailNotifyAddress).ToCamelCase());
+
+                    FormDao.Update(formInfo);
+                }
 
                 return Ok(new{});
             }
