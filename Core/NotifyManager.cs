@@ -80,9 +80,11 @@ namespace SS.Form.Core
                         list.Append(listHtml.Replace("{{key}}", kv.Key).Replace("{{value}}", kv.Value));
                     }
 
+                    var siteInfo = Context.SiteApi.GetSiteInfo(formInfo.SiteId);
+
                     mailPlugin.Send(formInfo.Additional.AdministratorMailNotifyAddress, string.Empty,
                         "[SiteServer CMS] 通知邮件",
-                        templateHtml.Replace("{{title}}", formInfo.Title).Replace("{{list}}", list.ToString()), out _);
+                        templateHtml.Replace("{{title}}", $"{formInfo.Title} - {siteInfo.SiteName}").Replace("{{list}}", list.ToString()), out _);
                 }
             }
 

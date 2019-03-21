@@ -39,97 +39,99 @@ if (window.DatePicker) {
   Vue.component("date-picker", window.DatePicker.default);
 }
 
-var $vue = new Vue({
-  el: "#form_submit",
-  data: {
-    apiUrl: $getParameter('apiUrl'),
-    siteId: $getParameter('siteId'),
-    formId: $getParameter('formId'),
-    pageType: 'loading',
-    fieldInfoList: [],
-    title: '',
-    description: '',
-    isCaptcha: false,
-    captcha: '',
-    captchaUrl: null,
-    captchaInValid: false,
-    errorMessage: ''
-  },
-  methods: {
-    loadCaptcha: function () {
-      this.captchaUrl = this.apiUrl + '/v1/captcha/FORM-CAPTCHA' + '?r=' + new Date().getTime();
+(function() {
+  var $vue = new Vue({
+    el: "#form_submit",
+    data: {
+      apiUrl: $getParameter('apiUrl'),
+      siteId: $getParameter('siteId'),
+      formId: $getParameter('formId'),
+      pageType: 'loading',
+      fieldInfoList: [],
+      title: '',
+      description: '',
+      isCaptcha: false,
+      captcha: '',
+      captchaUrl: null,
+      captchaInValid: false,
+      errorMessage: ''
     },
+    methods: {
+      loadCaptcha: function () {
+        this.captchaUrl = this.apiUrl + '/v1/captcha/FORM-CAPTCHA' + '?r=' + new Date().getTime();
+      },
 
-    submit: function () {
+      submit: function () {
+        var $this = this;
+
+        var payload = {};
+        for (var i = 0; i < this.fieldInfoList.length; i++) {
+          var fieldInfo = this.fieldInfoList[i];
+          payload[fieldInfo.title] = fieldInfo.value;
+        }
+
+        $this.pageType = 'loading';
+        $api.post(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId, payload)
+          .then(function (res) {
+            $this.pageType = 'success';
+          })
+          .catch(function (error) {
+            $this.pageType = 'error';
+            $this.errorMessage = error.response.data.message;
+          });
+      },
+
+      checkCaptcha: function () {
+        var $this = this;
+
+        $api.post(this.apiUrl + '/v1/captcha/FORM-CAPTCHA/actions/check', {
+            captcha: $this.captcha
+          }).then(function (res) {
+            $this.submit();
+          })
+          .catch(function (error) {
+            $this.pageType = 'form';
+            $this.captchaInValid = true;
+          });
+      },
+
+      btnSubmitClick: function () {
+        var $this = this;
+
+        $this.captchaInValid = false;
+        this.$validator.validate().then(function (result) {
+          if (result) {
+            if ($this.isCaptcha) {
+              $this.checkCaptcha();
+            } else {
+              $this.submit();
+            }
+          }
+        });
+      }
+    },
+    created: function () {
       var $this = this;
 
-      var payload = {};
-      for (var i = 0; i < this.fieldInfoList.length; i++) {
-        var fieldInfo = this.fieldInfoList[i];
-        payload[fieldInfo.title] = fieldInfo.value;
-      }
-
-      $this.pageType = 'loading';
-      $api.post(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId, payload)
+      $api.post(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId + '/actions/get')
         .then(function (res) {
-          $this.pageType = 'success';
+          $this.fieldInfoList = res.data.value;
+          for (var i = 0; i < $this.fieldInfoList.length; i++) {
+            var fieldInfo = $this.fieldInfoList[i];
+            if (fieldInfo.fieldType === 'CheckBox' || fieldInfo.fieldType === 'SelectMultiple') {
+              fieldInfo.value = [];
+            }
+          }
+          $this.title = res.data.title;
+          $this.description = res.data.description;
+          $this.isCaptcha = res.data.isCaptcha;
+          $this.loadCaptcha();
+          $this.pageType = 'form';
         })
         .catch(function (error) {
           $this.pageType = 'error';
           $this.errorMessage = error.response.data.message;
         });
-    },
-
-    checkCaptcha: function () {
-      var $this = this;
-
-      $api.post(this.apiUrl + '/v1/captcha/FORM-CAPTCHA/actions/check', {
-          captcha: $this.captcha
-        }).then(function (res) {
-          $this.submit();
-        })
-        .catch(function (error) {
-          $this.pageType = 'form';
-          $this.captchaInValid = true;
-        });
-    },
-
-    btnSubmitClick: function () {
-      var $this = this;
-
-      $this.captchaInValid = false;
-      this.$validator.validate().then(function (result) {
-        if (result) {
-          if ($this.isCaptcha) {
-            $this.checkCaptcha();
-          } else {
-            $this.submit();
-          }
-        }
-      });
     }
-  },
-  created: function () {
-    var $this = this;
-
-    $api.post(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId + '/actions/get')
-      .then(function (res) {
-        $this.fieldInfoList = res.data.value;
-        for (var i = 0; i < $this.fieldInfoList.length; i++) {
-          var fieldInfo = $this.fieldInfoList[i];
-          if (fieldInfo.fieldType === 'CheckBox' || fieldInfo.fieldType === 'SelectMultiple') {
-            fieldInfo.value = [];
-          }
-        }
-        $this.title = res.data.title;
-        $this.description = res.data.description;
-        $this.isCaptcha = res.data.isCaptcha;
-        $this.loadCaptcha();
-        $this.pageType = 'form';
-      })
-      .catch(function (error) {
-        $this.pageType = 'error';
-        $this.errorMessage = error.response.data.message;
-      });
-  }
-});
+  });
+})();

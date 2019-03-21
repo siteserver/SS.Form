@@ -227,8 +227,7 @@ namespace SS.Form.Core.Provider
                 Title = "姓名",
                 PlaceHolder = "请输入您的姓名",
                 FieldType = InputType.Text.Value,
-                Validate = "required",
-                Settings = string.Empty
+                Validate = "required"
             });
             FieldDao.Insert(siteId, new FieldInfo
             {
@@ -236,8 +235,7 @@ namespace SS.Form.Core.Provider
                 Title = "手机",
                 PlaceHolder = "请输入您的手机号码",
                 FieldType = InputType.Text.Value,
-                Validate = "mobile",
-                Settings = string.Empty
+                Validate = "mobile"
             });
             FieldDao.Insert(siteId, new FieldInfo
             {
@@ -245,8 +243,7 @@ namespace SS.Form.Core.Provider
                 Title = "邮箱",
                 PlaceHolder = "请输入您的电子邮箱",
                 FieldType = InputType.Text.Value,
-                Validate = "email",
-                Settings = string.Empty
+                Validate = "email"
             });
 
             FieldDao.Insert(siteId, new FieldInfo

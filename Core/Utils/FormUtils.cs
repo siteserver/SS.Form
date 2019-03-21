@@ -17,6 +17,9 @@ namespace SS.Form.Core.Utils
 
         public const int PageSize = 30;
 
+        private const char UrlSeparatorChar = '/';
+        private const char PathSeparatorChar = '\\';
+
         public static string GetFieldTypeText(string fieldType)
         {
             if (fieldType == InputType.Text.Value)
@@ -97,12 +100,6 @@ namespace SS.Form.Core.Utils
             return datetime;
         }
 
-        public static bool StartsWithIgnoreCase(string text, string startString)
-        {
-            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(startString)) return false;
-            return text.Trim().ToLower().StartsWith(startString.Trim().ToLower()) || string.Equals(text.Trim(), startString.Trim(), StringComparison.OrdinalIgnoreCase);
-        }
-
         public static List<string> StringCollectionToStringList(string collection)
         {
             return StringCollectionToStringList(collection, ',');
@@ -129,20 +126,18 @@ namespace SS.Form.Core.Utils
             return list.Any(element => EqualsIgnoreCase(element, target));
         }
 
-        public static int ToIntWithNagetive(string intStr, int defaultValue)
+        public static int ToIntWithNegative(string intStr, int defaultValue)
         {
-            int i;
-            if (!int.TryParse(intStr?.Trim(), out i))
+            if (!int.TryParse(intStr?.Trim(), out var i))
             {
                 i = defaultValue;
             }
             return i;
         }
 
-        public static decimal ToDecimalWithNagetive(string intStr, decimal defaultValue)
+        public static decimal ToDecimalWithNegative(string intStr, decimal defaultValue)
         {
-            decimal i;
-            if (!decimal.TryParse(intStr?.Trim(), out i))
+            if (!decimal.TryParse(intStr?.Trim(), out var i))
             {
                 i = defaultValue;
             }
@@ -151,8 +146,7 @@ namespace SS.Form.Core.Utils
 
         public static bool ToBool(string boolStr, bool defaultValue)
         {
-            bool boolean;
-            if (!bool.TryParse(boolStr?.Trim(), out boolean))
+            if (!bool.TryParse(boolStr?.Trim(), out var boolean))
             {
                 boolean = defaultValue;
             }
@@ -162,14 +156,13 @@ namespace SS.Form.Core.Utils
         public static string ObjectCollectionToString(ICollection collection)
         {
             var builder = new StringBuilder();
-            if (collection != null)
+            if (collection == null) return builder.ToString();
+
+            foreach (var obj in collection)
             {
-                foreach (var obj in collection)
-                {
-                    builder.Append(obj.ToString().Trim()).Append(",");
-                }
-                if (builder.Length != 0) builder.Remove(builder.Length - 1, 1);
+                builder.Append(obj.ToString().Trim()).Append(",");
             }
+            if (builder.Length != 0) builder.Remove(builder.Length - 1, 1);
             return builder.ToString();
         }
 
@@ -208,37 +201,36 @@ namespace SS.Form.Core.Utils
             }
         }
 
-        public static string GetDirectoryPath(string path)
+        private static string GetDirectoryPath(string path)
         {
             var ext = Path.GetExtension(path);
             var directoryPath = !string.IsNullOrEmpty(ext) ? Path.GetDirectoryName(path) : path;
             return directoryPath;
         }
 
-        public static void CreateDirectoryIfNotExists(string path)
+        private static void CreateDirectoryIfNotExists(string path)
         {
             var directoryPath = GetDirectoryPath(path);
 
-            if (!IsDirectoryExists(directoryPath))
+            if (IsDirectoryExists(directoryPath)) return;
+
+            try
             {
-                try
-                {
-                    Directory.CreateDirectory(directoryPath);
-                }
-                catch
-                {
-                    //Scripting.FileSystemObject fso = new Scripting.FileSystemObjectClass();
-                    //string[] directoryNames = directoryPath.Split('\\');
-                    //string thePath = directoryNames[0];
-                    //for (int i = 1; i < directoryNames.Length; i++)
-                    //{
-                    //    thePath = thePath + "\\" + directoryNames[i];
-                    //    if (StringUtils.Contains(thePath.ToLower(), ConfigUtils.Instance.PhysicalApplicationPath.ToLower()) && !IsDirectoryExists(thePath))
-                    //    {
-                    //        fso.CreateFolder(thePath);
-                    //    }
-                    //}                    
-                }
+                Directory.CreateDirectory(directoryPath);
+            }
+            catch
+            {
+                //Scripting.FileSystemObject fso = new Scripting.FileSystemObjectClass();
+                //string[] directoryNames = directoryPath.Split('\\');
+                //string thePath = directoryNames[0];
+                //for (int i = 1; i < directoryNames.Length; i++)
+                //{
+                //    thePath = thePath + "\\" + directoryNames[i];
+                //    if (StringUtils.Contains(thePath.ToLower(), ConfigUtils.Instance.PhysicalApplicationPath.ToLower()) && !IsDirectoryExists(thePath))
+                //    {
+                //        fso.CreateFolder(thePath);
+                //    }
+                //}                    
             }
         }
 
@@ -262,9 +254,8 @@ namespace SS.Form.Core.Utils
             }
         }
 
-        public static bool CopyFile(string sourceFilePath, string destFilePath, bool isOverride)
+        private static void CopyFile(string sourceFilePath, string destFilePath, bool isOverride)
         {
-            var returnValue = true;
             try
             {
                 CreateDirectoryIfNotExists(destFilePath);
@@ -273,50 +264,45 @@ namespace SS.Form.Core.Utils
             }
             catch
             {
-                returnValue = false;
+                // ignored
             }
-            return returnValue;
         }
-
-        public const char UrlSeparatorChar = '/';
-        public const char PathSeparatorChar = '\\';
 
         public static string PathCombine(params string[] paths)
         {
-            var retval = string.Empty;
+            var retVal = string.Empty;
             if (paths != null && paths.Length > 0)
             {
-                retval = paths[0]?.Replace(UrlSeparatorChar, PathSeparatorChar).TrimEnd(PathSeparatorChar) ?? string.Empty;
+                retVal = paths[0]?.Replace(UrlSeparatorChar, PathSeparatorChar).TrimEnd(PathSeparatorChar) ?? string.Empty;
                 for (var i = 1; i < paths.Length; i++)
                 {
                     var path = paths[i] != null ? paths[i].Replace(UrlSeparatorChar, PathSeparatorChar).Trim(PathSeparatorChar) : string.Empty;
-                    retval = Path.Combine(retval, path);
+                    retVal = Path.Combine(retVal, path);
                 }
             }
-            return retval;
+            return retVal;
         }
 
-        public static string[] GetDirectoryNames(string directoryPath)
+        public static IEnumerable<string> GetDirectoryNames(string directoryPath)
         {
-            var directorys = Directory.GetDirectories(directoryPath);
-            var retval = new string[directorys.Length];
+            var directories = Directory.GetDirectories(directoryPath);
+            var retVal = new string[directories.Length];
             var i = 0;
-            foreach (var directory in directorys)
+            foreach (var directory in directories)
             {
                 var directoryInfo = new DirectoryInfo(directory);
-                retval[i++] = directoryInfo.Name;
+                retVal[i++] = directoryInfo.Name;
             }
-            return retval;
+            return retVal;
         }
 
-        public static bool IsDirectoryExists(string directoryPath)
+        private static bool IsDirectoryExists(string directoryPath)
         {
             return Directory.Exists(directoryPath);
         }
 
-        public static bool DeleteDirectoryIfExists(string directoryPath)
+        public static void DeleteDirectoryIfExists(string directoryPath)
         {
-            var retval = true;
             try
             {
                 if (IsDirectoryExists(directoryPath))
@@ -326,9 +312,8 @@ namespace SS.Form.Core.Utils
             }
             catch
             {
-                retval = false;
+                // ignored
             }
-            return retval;
         }
 
         public static bool IsFileExists(string filePath)
@@ -359,13 +344,9 @@ namespace SS.Form.Core.Utils
 
         public static string GetShortGuid(bool isUppercase)
         {
-            long i = 1;
-            foreach (var b in Guid.NewGuid().ToByteArray())
-            {
-                i *= b + 1;
-            }
-            string retval = $"{i - DateTime.Now.Ticks:x}";
-            return isUppercase ? retval.ToUpper() : retval.ToLower();
+            var i = Guid.NewGuid().ToByteArray().Aggregate<byte, long>(1, (current, b) => current * (b + 1));
+            var retVal = $"{i - DateTime.Now.Ticks:x}";
+            return isUppercase ? retVal.ToUpper() : retVal.ToLower();
         }
     }
 }

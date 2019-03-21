@@ -24,26 +24,44 @@
             </div>
             <template v-if="fieldInfo.fieldType === 'TextArea'">
               <div class="ss_form_body">
-                <textarea v-model="fieldInfo.value" :style="'height: ' + (fieldInfo.additional.height ? fieldInfo.additional.height : 125) + 'px;'"
+                <textarea v-model="fieldInfo.value" :style="'height: ' + (fieldInfo.height ? fieldInfo.height : 125) + 'px;'"
                   :name="fieldInfo.title" v-validate="fieldInfo.validate" class="form-control" :class="{'error': errors.has(fieldInfo.title)}"></textarea>
               </div>
             </template>
-            <template v-else-if="fieldInfo.fieldType === 'CheckBox'">
+            <template v-else-if="fieldInfo.fieldType === 'CheckBox' && fieldInfo.columns === 0">
+              <div class="ss_form_body">
+                <span v-for="(item, index) in fieldInfo.items">
+                  <input type="checkbox" v-model="fieldInfo.value" :id="fieldInfo.title + '_' + item.id" :value="item.value"
+                    :name="fieldInfo.title" v-validate="fieldInfo.validate">
+                  <label :for="fieldInfo.title + '_' + item.id" class="mr-2">{{ item.value }}</label>
+                </span>
+              </div>
+            </template>
+            <template v-else-if="fieldInfo.fieldType === 'CheckBox' && fieldInfo.columns === 1">
               <div class="ss_form_body">
                 <div v-for="(item, index) in fieldInfo.items">
                   <input type="checkbox" v-model="fieldInfo.value" :id="fieldInfo.title + '_' + item.id" :value="item.value"
                     :name="fieldInfo.title" v-validate="fieldInfo.validate">
-                  <label :for="fieldInfo.title + '_' + item.id">{{ item.value }}</label>
+                  <label :for="fieldInfo.title + '_' + item.id" class="mr-2">{{ item.value }}</label>
                   <br />
                 </div>
               </div>
             </template>
-            <template v-else-if="fieldInfo.fieldType === 'Radio'">
+            <template v-else-if="fieldInfo.fieldType === 'Radio' && fieldInfo.columns === 0">
+              <div class="ss_form_body">
+                <span v-for="(item, index) in fieldInfo.items">
+                  <input type="radio" v-model="fieldInfo.value" :id="item.value" :value="item.value" :name="fieldInfo.title"
+                    v-validate="fieldInfo.validate">
+                  <label :for="fieldInfo.title + '_' + item.id" class="mr-2">{{ item.value }}</label>
+                </span>
+              </div>
+            </template>
+            <template v-else-if="fieldInfo.fieldType === 'Radio' && fieldInfo.columns === 1">
               <div class="ss_form_body">
                 <div v-for="(item, index) in fieldInfo.items">
                   <input type="radio" v-model="fieldInfo.value" :id="item.value" :value="item.value" :name="fieldInfo.title"
                     v-validate="fieldInfo.validate">
-                  <label :for="fieldInfo.title + '_' + item.id">{{ item.value }}</label>
+                  <label :for="fieldInfo.title + '_' + item.id" class="mr-2">{{ item.value }}</label>
                   <br />
                 </div>
               </div>

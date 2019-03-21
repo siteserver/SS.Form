@@ -112,7 +112,7 @@ namespace SS.Form.Controllers.Pages
             }
         }
 
-        private bool InsertFieldInfo(int siteId, int formId, FieldInfo body, bool isRapid, List<string> rapidValues, out string errorMessage)
+        private static bool InsertFieldInfo(int siteId, int formId, FieldInfo body, bool isRapid, List<string> rapidValues, out string errorMessage)
         {
             errorMessage = string.Empty;
 
@@ -134,6 +134,8 @@ namespace SS.Form.Controllers.Pages
                 Title = body.Title,
                 Taxis = body.Taxis,
                 FieldType = body.FieldType,
+                Columns = body.Columns,
+                Height = body.Height,
                 Items = new List<FieldItemInfo>()
             };
 
@@ -178,13 +180,15 @@ namespace SS.Form.Controllers.Pages
             return true;
         }
 
-        private bool UpdateFieldInfo(FieldInfo fieldInfo, FieldInfo body, bool isRapid, List<string> rapidValues, out string errorMessage)
+        private static bool UpdateFieldInfo(FieldInfo fieldInfo, FieldInfo body, bool isRapid, List<string> rapidValues, out string errorMessage)
         {
             errorMessage = string.Empty;
 
             fieldInfo.Title = body.Title;
             fieldInfo.Taxis = body.Taxis;
             fieldInfo.FieldType = body.FieldType;
+            fieldInfo.Columns = body.Columns;
+            fieldInfo.Height = body.Height;
             fieldInfo.Items = new List<FieldItemInfo>();
 
             if (body.FieldType == InputType.CheckBox.Value || body.FieldType == InputType.Radio.Value || body.FieldType == InputType.SelectMultiple.Value || body.FieldType == InputType.SelectOne.Value)

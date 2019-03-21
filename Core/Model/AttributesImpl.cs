@@ -227,7 +227,7 @@ namespace SS.Form.Core.Model
             var value = Get(key);
             if (value == null) return defaultValue;
             if (value is int) return (int)value;
-            return FormUtils.ToIntWithNagetive(value.ToString(), defaultValue);
+            return FormUtils.ToIntWithNegative(value.ToString(), defaultValue);
         }
 
         public decimal GetDecimal(string key, decimal defaultValue = 0)
@@ -235,7 +235,7 @@ namespace SS.Form.Core.Model
             var value = Get(key);
             if (value == null) return defaultValue;
             if (value is decimal) return (decimal)value;
-            return FormUtils.ToDecimalWithNagetive(value.ToString(), defaultValue);
+            return FormUtils.ToDecimalWithNegative(value.ToString(), defaultValue);
         }
 
         public DateTime GetDateTime(string key, DateTime defaultValue)

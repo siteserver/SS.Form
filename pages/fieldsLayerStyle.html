@@ -48,32 +48,36 @@ errors.has('taxis') }"
           </select>
         </div>
       </div>
-      <template v-if="styleInfo.fieldType === 'TextArea' || styleInfo.fieldType === 'TextEditor'">
-        <div class="form-group">
-          <label class="col-form-label"> 高度（单位：px，0代表默认高度） <small v-show="errors.has('height')" class="text-danger">{{
-              errors.first('height') }}</small>
-          </label>
-          <input v-model="styleInfo.additional.height" name="height" data-vv-as="高度" v-validate="'required|numeric'"
-            :class="{'is-invalid':
-errors.has('height') }" type="text" class="form-control">
+      <template v-if="styleInfo.fieldType === 'TextArea'">
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label class="col-form-label"> 文本框高度（0代表默认高度） <small v-show="errors.has('height')" class="text-danger">{{
+                errors.first('height') }}</small>
+            </label>
+            <input v-model="styleInfo.height" name="height" data-vv-as="文本框高度" v-validate="'required|numeric'" :class="{'is-invalid':
+          errors.has('height') }"
+              type="text" class="form-control">
+          </div>
         </div>
       </template>
       <template v-else-if="styleInfo.fieldType === 'CheckBox' || styleInfo.fieldType === 'Radio' || styleInfo.fieldType === 'SelectOne' || styleInfo.fieldType === 'SelectMultiple'">
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label class="col-form-label">设置选项</label>
+            <label class="col-form-label"> 设置选项 </label>
             <select v-model="isRapid" class="form-control">
               <option :value="true">快速设置</option>
               <option :value="false">详细设置</option>
             </select>
           </div>
-          <div v-show="styleInfo.fieldType==='CheckBox' || styleInfo.fieldType==='Radio'" class="form-group col-md-6">
-            <label class="col-form-label"> 列数（0代表水平方向显示） <small v-show="errors.has('columns')" class="text-danger">{{
-                errors.first('columns') }}</small>
-            </label>
-            <input v-model="styleInfo.additional.columns" name="columns" data-vv-as="列数" v-validate="'required|numeric'"
-              :class="{'is-invalid':errors.has('columns') }" type="text" class="form-control">
-          </div>
+          <template v-if="styleInfo.fieldType==='CheckBox' || styleInfo.fieldType==='Radio'">
+            <div class="form-group col-md-6">
+              <label class="col-form-label"> 选项排列方式 </label>
+              <select v-model="styleInfo.columns" class="form-control">
+                <option :value="0">水平方向排列</option>
+                <option :value="1">垂直方向排列</option>
+              </select>
+            </div>
+          </template>
         </div>
         <div v-if="isRapid" class="form-group">
           <label class="col-form-label"> 选项可选值（多个选项使用换行分隔） <small v-show="errors.has('rapidValues')" class="text-danger">{{

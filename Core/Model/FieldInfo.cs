@@ -9,7 +9,6 @@ namespace SS.Form.Core.Model
 	    {
 	        FieldType = InputType.Text.Value;
             Items = new List<FieldItemInfo>();
-	        Additional = new FieldSettings(string.Empty);
         }
 
 		public int Id { get; set; }
@@ -28,13 +27,13 @@ namespace SS.Form.Core.Model
 
 	    public string Validate { get; set; }
 
-        public string Settings { get; set; }
+	    public int Columns { get; set; }
+
+	    public int Height { get; set; }
 
         // not in database
 
         public List<FieldItemInfo> Items { get; set; }
-
-	    public FieldSettings Additional { get; set; }
 
 	    public object Value { get; set; }
     }

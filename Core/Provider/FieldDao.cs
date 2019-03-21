@@ -62,12 +62,17 @@ namespace SS.Form.Core.Provider
             },
             new TableColumn
             {
-                AttributeName = nameof(FieldInfo.Settings),
-                DataType = DataType.Text
+                AttributeName = nameof(FieldInfo.Columns),
+                DataType = DataType.Integer
+            },
+            new TableColumn
+            {
+                AttributeName = nameof(FieldInfo.Height),
+                DataType = DataType.Integer
             }
         };
 
-        public static int Insert(int siteId, FieldInfo fieldInfo)
+        public static void Insert(int siteId, FieldInfo fieldInfo)
         {
             fieldInfo.Taxis = GetMaxTaxis(fieldInfo.FormId) + 1;
 
@@ -80,7 +85,8 @@ namespace SS.Form.Core.Provider
     {nameof(FieldInfo.PlaceHolder)},
     {nameof(FieldInfo.FieldType)},
     {nameof(FieldInfo.Validate)},
-    {nameof(FieldInfo.Settings)}
+    {nameof(FieldInfo.Columns)},
+    {nameof(FieldInfo.Height)}
 ) VALUES (
     @{nameof(FieldInfo.FormId)}, 
     @{nameof(FieldInfo.Taxis)},
@@ -89,7 +95,8 @@ namespace SS.Form.Core.Provider
     @{nameof(FieldInfo.PlaceHolder)},
     @{nameof(FieldInfo.FieldType)},
     @{nameof(FieldInfo.Validate)},
-    @{nameof(FieldInfo.Settings)}
+    @{nameof(FieldInfo.Columns)},
+    @{nameof(FieldInfo.Height)}
 )";
 
             var parameters = new []
@@ -101,7 +108,8 @@ namespace SS.Form.Core.Provider
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.PlaceHolder), fieldInfo.PlaceHolder),
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.FieldType), fieldInfo.FieldType),
 			    Context.DatabaseApi.GetParameter(nameof(FieldInfo.Validate), fieldInfo.Validate),
-                Context.DatabaseApi.GetParameter(nameof(FieldInfo.Settings), fieldInfo.Settings)
+                Context.DatabaseApi.GetParameter(nameof(FieldInfo.Columns), fieldInfo.Columns),
+			    Context.DatabaseApi.GetParameter(nameof(FieldInfo.Height), fieldInfo.Height)
             };
 
             var id = Context.DatabaseApi.ExecuteNonQueryAndReturnId(TableName, nameof(FieldInfo.Id), Context.ConnectionString, sqlString, parameters);
@@ -115,7 +123,6 @@ namespace SS.Form.Core.Provider
             FormDao.Update(formInfo);
 
             FieldManager.ClearCache();
-            return id;
         }
 
         public static void Update(FieldInfo info, bool updateItems)
@@ -128,10 +135,11 @@ namespace SS.Form.Core.Provider
                 {nameof(FieldInfo.PlaceHolder)} = @{nameof(FieldInfo.PlaceHolder)},
                 {nameof(FieldInfo.FieldType)} = @{nameof(FieldInfo.FieldType)},
                 {nameof(FieldInfo.Validate)} = @{nameof(FieldInfo.Validate)},
-                {nameof(FieldInfo.Settings)} = @{nameof(FieldInfo.Settings)}
+                {nameof(FieldInfo.Columns)} = @{nameof(FieldInfo.Columns)},
+                {nameof(FieldInfo.Height)} = @{nameof(FieldInfo.Height)}
             WHERE {nameof(FieldInfo.Id)} = @{nameof(FieldInfo.Id)}";
 
-            var updateParms = new []
+            var parameters = new []
 			{
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.FormId), info.FormId),
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.Taxis), info.Taxis),
@@ -140,11 +148,12 @@ namespace SS.Form.Core.Provider
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.PlaceHolder), info.PlaceHolder),
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.FieldType), info.FieldType),
 			    Context.DatabaseApi.GetParameter(nameof(FieldInfo.Validate), info.Validate),
-                Context.DatabaseApi.GetParameter(nameof(FieldInfo.Settings), info.Additional.ToString()),
+                Context.DatabaseApi.GetParameter(nameof(FieldInfo.Columns), info.Columns),
+			    Context.DatabaseApi.GetParameter(nameof(FieldInfo.Height), info.Height),
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.Id), info.Id)
             };
 
-            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, updateParms);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parameters);
 
             if (updateItems)
             {
@@ -157,14 +166,14 @@ namespace SS.Form.Core.Provider
 
         public static void Delete(int fieldId)
         {
-            string sqlString = $"DELETE FROM {TableName} WHERE {nameof(FieldInfo.Id)} = @{nameof(FieldInfo.Id)}";
+            var sqlString = $"DELETE FROM {TableName} WHERE {nameof(FieldInfo.Id)} = @{nameof(FieldInfo.Id)}";
 
-            var parms = new []
+            var parameters = new []
             {
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.Id), fieldId)
             };
 
-            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parms);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parameters);
 
             FieldItemDao.DeleteByFieldId(fieldId);
 
@@ -173,14 +182,14 @@ namespace SS.Form.Core.Provider
 
         public static void DeleteByFormId(int formId)
         {
-            string sqlString = $"DELETE FROM {TableName} WHERE {nameof(FieldInfo.FormId)} = @{nameof(FieldInfo.FormId)}";
+            var sqlString = $"DELETE FROM {TableName} WHERE {nameof(FieldInfo.FormId)} = @{nameof(FieldInfo.FormId)}";
 
-            var parms = new[]
+            var parameters = new[]
             {
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.FormId), formId)
             };
 
-            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parms);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parameters);
 
             FieldItemDao.DeleteByFormId(formId);
 
@@ -191,17 +200,17 @@ namespace SS.Form.Core.Provider
         {
             var exists = false;
 
-            string sqlString = $@"SELECT Id FROM {TableName} WHERE 
+            var sqlString = $@"SELECT Id FROM {TableName} WHERE 
     {nameof(FieldInfo.FormId)} = @{nameof(FieldInfo.FormId)} AND 
     {nameof(FieldInfo.Title)} = @{nameof(FieldInfo.Title)}";
 
-            var parms = new []
+            var parameters = new []
 			{
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.FormId), formId),
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.Title), title)
             };
 
-            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parms))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parameters))
             {
                 if (rdr.Read() && !rdr.IsDBNull(0))
                 {
@@ -215,7 +224,7 @@ namespace SS.Form.Core.Provider
 
         private static int GetMaxTaxis(int formId)
         {
-            string sqlString =
+            var sqlString =
                 $"SELECT MAX(Taxis) AS MaxTaxis FROM {TableName} WHERE {nameof(FieldInfo.FormId)} = {formId}";
             var maxTaxis = 0;
 
@@ -240,13 +249,13 @@ namespace SS.Form.Core.Provider
             var higherId = 0;
             var higherTaxis = 0;
 
-            var parms = new []
+            var parameters = new []
             {
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.FormId), fieldInfo.FormId),
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.Id), id)
             };
 
-            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parms))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parameters))
             {
                 if (rdr.Read() && !rdr.IsDBNull(0))
                 {
@@ -272,13 +281,13 @@ namespace SS.Form.Core.Provider
             var lowerId = 0;
             var lowerTaxis = 0;
 
-            var parms = new []
+            var parameters = new []
             {
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.FormId), fieldInfo.FormId),
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.Id), id)
             };
 
-            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parms))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString, parameters))
             {
                 if (rdr.Read() && !rdr.IsDBNull(0))
                 {
@@ -299,13 +308,13 @@ namespace SS.Form.Core.Provider
         {
             var sqlString = $"UPDATE {TableName} SET Taxis = @Taxis WHERE Id = @Id";
 
-            var parms = new []
+            var parameters = new []
 			{
 				Context.DatabaseApi.GetParameter(nameof(FieldInfo.Taxis), taxis),
                 Context.DatabaseApi.GetParameter(nameof(FieldInfo.Id), id)
 			};
 
-            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parms);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parameters);
 
             FieldManager.ClearCache();
         }
@@ -333,7 +342,9 @@ namespace SS.Form.Core.Provider
             i++;
             fieldInfo.Validate = rdr.IsDBNull(i) ? string.Empty : rdr.GetString(i);
             i++;
-            fieldInfo.Settings = rdr.IsDBNull(i) ? string.Empty : rdr.GetString(i);
+            fieldInfo.Columns = rdr.IsDBNull(i) ? 0 : rdr.GetInt32(i);
+            i++;
+            fieldInfo.Height = rdr.IsDBNull(i) ? 0 : rdr.GetInt32(i);
 
             return fieldInfo;
         }
@@ -344,7 +355,7 @@ namespace SS.Form.Core.Provider
 
             var allItemsDict = FieldItemDao.GetAllItems();
 
-            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, $@"SELECT
+            var sqlString = $@"SELECT
     {nameof(FieldInfo.Id)}, 
     {nameof(FieldInfo.FormId)}, 
     {nameof(FieldInfo.Taxis)},
@@ -353,9 +364,12 @@ namespace SS.Form.Core.Provider
     {nameof(FieldInfo.PlaceHolder)},
     {nameof(FieldInfo.FieldType)},
     {nameof(FieldInfo.Validate)},
-    {nameof(FieldInfo.Settings)}
+    {nameof(FieldInfo.Columns)},
+    {nameof(FieldInfo.Height)}
 FROM {TableName} 
-ORDER BY {nameof(FieldInfo.Taxis)} DESC, {nameof(FieldInfo.Id)} DESC"))
+ORDER BY {nameof(FieldInfo.Taxis)} DESC, {nameof(FieldInfo.Id)} DESC";
+
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 while (rdr.Read())
                 {
@@ -367,7 +381,6 @@ ORDER BY {nameof(FieldInfo.Taxis)} DESC, {nameof(FieldInfo.Id)} DESC"))
                         items = new List<FieldItemInfo>();
                     }
                     fieldInfo.Items = items;
-                    fieldInfo.Additional = new FieldSettings(fieldInfo.Settings);
 
                     var key = FieldManager.GetKey(fieldInfo.FormId, fieldInfo.Title);
 

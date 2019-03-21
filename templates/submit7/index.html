@@ -32,24 +32,42 @@
                   <small v-show="errors.has(fieldInfo.title)" class="text-danger">{{ errors.first(fieldInfo.title) }}</small>
                 </label>
                 <template v-if="fieldInfo.fieldType === 'TextArea'">
-                  <textarea v-model="fieldInfo.value" class="form-control" :style="'height: ' + (fieldInfo.additional.height ? fieldInfo.additional.height : 125) + 'px;'"
+                  <textarea v-model="fieldInfo.value" class="form-control" :style="'height: ' + (fieldInfo.height ? fieldInfo.height : 125) + 'px;'"
                     :name="fieldInfo.title" v-validate="fieldInfo.validate" :class="{'is-invalid': errors.has(fieldInfo.title)}"></textarea>
                 </template>
-                <template v-else-if="fieldInfo.fieldType === 'CheckBox'">
+                <template v-else-if="fieldInfo.fieldType === 'CheckBox' && fieldInfo.columns === 0">
+                  <div class="m-2">
+                    <span v-for="(item, index) in fieldInfo.items" class="checkbox checkbox-primary">
+                      <input type="checkbox" v-model="fieldInfo.value" :id="fieldInfo.title + '_' + item.id" :value="item.value"
+                        :name="fieldInfo.title" v-validate="fieldInfo.validate">
+                      <label :for="fieldInfo.title + '_' + item.id" class="mr-2"> {{ item.value }} </label>
+                    </span>
+                  </div>
+                </template>
+                <template v-else-if="fieldInfo.fieldType === 'CheckBox' && fieldInfo.columns === 1">
                   <div class="m-2">
                     <div v-for="(item, index) in fieldInfo.items" class="checkbox checkbox-primary">
                       <input type="checkbox" v-model="fieldInfo.value" :id="fieldInfo.title + '_' + item.id" :value="item.value"
                         :name="fieldInfo.title" v-validate="fieldInfo.validate">
-                      <label :for="fieldInfo.title + '_' + item.id"> {{ item.value }} </label>
+                      <label :for="fieldInfo.title + '_' + item.id" class="mr-2"> {{ item.value }} </label>
                     </div>
                   </div>
                 </template>
-                <template v-else-if="fieldInfo.fieldType === 'Radio'">
+                <template v-else-if="fieldInfo.fieldType === 'Radio' && fieldInfo.columns === 0">
+                  <div class="m-2">
+                    <span v-for="(item, index) in fieldInfo.items" class="radio radio-primary">
+                      <input type="radio" v-model="fieldInfo.value" :id="item.value" :value="item.value" :name="fieldInfo.title"
+                        v-validate="fieldInfo.validate">
+                      <label :for="item.value" class="mr-2"> {{ item.value }} </label>
+                    </span>
+                  </div>
+                </template>
+                <template v-else-if="fieldInfo.fieldType === 'Radio' && fieldInfo.columns === 1">
                   <div class="m-2">
                     <div v-for="(item, index) in fieldInfo.items" class="radio radio-primary">
                       <input type="radio" v-model="fieldInfo.value" :id="item.value" :value="item.value" :name="fieldInfo.title"
                         v-validate="fieldInfo.validate">
-                      <label :for="item.value"> {{ item.value }} </label>
+                      <label :for="item.value" class="mr-2"> {{ item.value }} </label>
                     </div>
                   </div>
                 </template>
