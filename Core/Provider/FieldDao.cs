@@ -346,6 +346,19 @@ namespace SS.Form.Core.Provider
             i++;
             fieldInfo.Height = rdr.IsDBNull(i) ? 0 : rdr.GetInt32(i);
 
+            if (fieldInfo.FieldType == InputType.CheckBox.Value || fieldInfo.FieldType == InputType.SelectMultiple.Value)
+            {
+                fieldInfo.Value = new List<string>();
+            }
+            else if (fieldInfo.FieldType == InputType.Date.Value || fieldInfo.FieldType == InputType.DateTime.Value)
+            {
+                fieldInfo.Value = null;
+            }
+            else
+            {
+                fieldInfo.Value = string.Empty;
+            }
+
             return fieldInfo;
         }
 

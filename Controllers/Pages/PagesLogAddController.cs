@@ -46,24 +46,6 @@ namespace SS.Form.Controllers.Pages
                         }
                     }
                 }
-                else
-                {
-                    foreach (var fieldInfo in fieldInfoList)
-                    {
-                        if (fieldInfo.FieldType == InputType.CheckBox.Value || fieldInfo.FieldType == InputType.SelectMultiple.Value)
-                        {
-                            fieldInfo.Value = new List<string>();
-                        }
-                        else if (fieldInfo.FieldType == InputType.Date.Value || fieldInfo.FieldType == InputType.DateTime.Value)
-                        {
-                            fieldInfo.Value = null;
-                        }
-                        else
-                        {
-                            fieldInfo.Value = string.Empty;
-                        }
-                    }
-                }
 
                 return Ok(new
                 {

@@ -13,23 +13,22 @@ namespace SS.Form.Core
             private static readonly object LockObject = new object();
             private const string CacheKey = "SS.Form.Core.FieldManager";
 
-            public static List<KeyValuePair<string, FieldInfo>> GetAllTableStyles()
+            public static IEnumerable<KeyValuePair<string, FieldInfo>> GetAllFieldInfoList()
             {
-                var retval = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(CacheKey);
-                if (retval != null) return retval;
+                var retVal = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(CacheKey);
+                if (retVal != null) return retVal;
 
                 lock (LockObject)
                 {
-                    retval = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(CacheKey);
-                    if (retval == null)
-                    {
-                        retval = FieldDao.GetAllFieldInfoList();
+                    retVal = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(CacheKey);
+                    if (retVal != null) return retVal;
 
-                        CacheUtils.InsertHours(CacheKey, retval, 12);
-                    }
+                    retVal = FieldDao.GetAllFieldInfoList();
+
+                    CacheUtils.InsertHours(CacheKey, retVal, 12);
                 }
 
-                return retval;
+                return retVal;
             }
 
             public static void Clear()
@@ -42,7 +41,7 @@ namespace SS.Form.Core
         {
             var fieldInfoList = new List<FieldInfo>();
 
-            var entries = FieldManagerCache.GetAllTableStyles();
+            var entries = FieldManagerCache.GetAllFieldInfoList();
             var startKey = GetKeyPrefix(formId);
             var list = entries.Where(tuple => tuple.Key.StartsWith(startKey)).ToList();
             foreach (var pair in list)
@@ -57,7 +56,7 @@ namespace SS.Form.Core
 
         public static FieldInfo GetFieldInfo(int id)
         {
-            var entries = FieldManagerCache.GetAllTableStyles();
+            var entries = FieldManagerCache.GetAllFieldInfoList();
 
             var entry = entries.FirstOrDefault(x => x.Value != null && x.Value.Id == id);
             return entry.IsDefault() ? null : entry.Value;
@@ -68,7 +67,7 @@ namespace SS.Form.Core
             FieldManagerCache.Clear();
         }
 
-        public static string GetKeyPrefix(int formId)
+        private static string GetKeyPrefix(int formId)
         {
             return $"{formId}$";
         }
@@ -76,11 +75,6 @@ namespace SS.Form.Core
         public static string GetKey(int formId, string title)
         {
             return $"{GetKeyPrefix(formId)}{title}";
-        }
-
-        public static string GetAttributeId(int fieldId)
-        {
-            return $"attr_{fieldId}";
         }
 
         public static string GetExtrasId(int fieldId, int itemId)
