@@ -208,7 +208,7 @@ namespace SS.Form.Core.Utils
             return directoryPath;
         }
 
-        private static void CreateDirectoryIfNotExists(string path)
+        public static void CreateDirectoryIfNotExists(string path)
         {
             var directoryPath = GetDirectoryPath(path);
 
@@ -314,6 +314,32 @@ namespace SS.Form.Core.Utils
             {
                 // ignored
             }
+        }
+
+        public static bool DeleteFileIfExists(string filePath)
+        {
+            var retVal = true;
+            try
+            {
+                if (IsFileExists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            catch
+            {
+                //try
+                //{
+                //    Scripting.FileSystemObject fso = new Scripting.FileSystemObjectClass();
+                //    fso.DeleteFile(filePath, true);
+                //}
+                //catch
+                //{
+                //    retval = false;
+                //}
+                retVal = false;
+            }
+            return retVal;
         }
 
         public static bool IsFileExists(string filePath)

@@ -1,4 +1,6 @@
 ﻿var $url = '/pages/fields';
+var $urlExport = '/pages/fields/actions/export';
+var $urlImport = '/pages/fields/actions/import';
 
 var $apiUrl = utils.getQueryString('apiUrl');
 var $siteId = utils.getQueryString('siteId');
@@ -12,8 +14,8 @@ var data = {
   pageAlert: null,
   pageType: null,
   items: null,
-  tableName: null,
-  relatedIdentities: null
+  uploadUrl: null,
+  files: []
 };
 
 var methods = {
@@ -31,8 +33,7 @@ var methods = {
       var res = response.data;
 
       $this.items = res.value;
-      $this.tableName = res.tableName;
-      $this.relatedIdentities = res.relatedIdentities;
+      $this.uploadUrl = $api.defaults.baseURL + $urlImport + '?adminToken=' + res.adminToken + '&siteId=' + $siteId + '&formId=' + $formId;
     }).catch(function (error) {
       $this.pageAlert = utils.getPageAlert(error);
     }).then(function () {
@@ -63,6 +64,43 @@ var methods = {
     });
   },
 
+  inputFile(newFile, oldFile) {
+    if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
+      if (!this.$refs.import.active) {
+        this.$refs.import.active = true
+      }
+    }
+
+    if (newFile && oldFile && newFile.xhr && newFile.success !== oldFile.success) {
+      swal2({
+        title: '字段导入成功',
+        type: 'success',
+        confirmButtonText: '确 定',
+        confirmButtonClass: 'btn btn-primary',
+      }).then(function (result) {
+        if (result.value) {
+          location.reload(true);
+        }
+      });
+
+    }
+  },
+
+  inputFilter: function (newFile, oldFile, prevent) {
+    if (newFile && !oldFile) {
+      if (!/\.(zip)$/i.test(newFile.name)) {
+        swal2({
+          title: '上传格式错误！',
+          text: '请上传zip压缩包',
+          type: 'error',
+          confirmButtonText: '确 定',
+          confirmButtonClass: 'btn btn-primary',
+        });
+        return prevent()
+      }
+    }
+  },
+
   btnEditClick: function (fieldId) {
     utils.openLayer({
       title: '编辑字段',
@@ -81,6 +119,26 @@ var methods = {
     utils.openLayer({
       title: '新增字段',
       url: 'fieldsLayerStyle.html?siteId=' + $siteId + '&channelId=' + $channelId + '&contentId=' + $contentId + '&formId=' + $formId + '&apiUrl=' + encodeURIComponent($apiUrl)
+    });
+  },
+
+  btnExportClick: function () {
+    var $this = this;
+
+    utils.loading(true);
+    $api.post($urlExport, {
+      siteId: $siteId,
+      channelId: $channelId,
+      contentId: $contentId,
+      formId: $formId
+    }).then(function (response) {
+      var res = response.data;
+
+      window.open(res.value);
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
     });
   },
 
@@ -104,6 +162,9 @@ var methods = {
 new Vue({
   el: '#main',
   data: data,
+  components: {
+    FileUpload: VueUploadComponent
+  },
   methods: methods,
   created: function () {
     this.getList();

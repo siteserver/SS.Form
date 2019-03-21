@@ -70,8 +70,17 @@
           </table>
         </div>
         <hr />
+
         <a href="javascript:;" v-on:click="btnAddClick" class="btn btn-sm btn-outline-primary pl-3 pr-3">
-          <i class="ion-plus"></i> 新增字段 </a>
+          新增字段
+        </a>
+        <a href="javascript:;" v-on:click="btnExportClick" class="btn btn-sm btn-outline-primary pl-3 pr-3">
+          导出字段
+        </a>
+        <file-upload class="btn btn-sm btn-outline-primary pl-3 pr-3" :post-action="uploadUrl" extensions="zip" :multiple="false" v-model="files" v-on:input-file="inputFile" @input-filter="inputFilter" ref="import">
+          导入字段
+        </file-upload>
+
       </div>
     </template>
     <template v-else>
@@ -94,5 +103,6 @@
 <script src="../assets/lib/js.cookie-2.2.0.js"></script>
 <script src="../assets/lib/es6-promise.auto.min.js"></script>
 <script src="../assets/lib/axios-0.18.0.min.js"></script>
+<script src="../assets/lib/vue-upload-component-2.8.14.js" type="text/javascript"></script>
 <script src="../assets/js/utils.js" type="text/javascript"></script>
 <script src="fields.js" type="text/javascript"></script>

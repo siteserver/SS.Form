@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using SiteServer.Plugin;
 using SS.Form.Core.Model;
 using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
@@ -93,6 +95,57 @@ namespace SS.Form.Core
                 }
             }
             return false;
+        }
+
+        public static string Export(int formId)
+        {
+            var filePath = Context.UtilsApi.GetTemporaryFilesPath("表单字段.zip");
+            var directoryPath = Context.UtilsApi.GetTemporaryFilesPath("FormFields");
+
+            FormUtils.DeleteDirectoryIfExists(directoryPath);
+            FormUtils.CreateDirectoryIfNotExists(directoryPath);
+
+            var fieldInfoList = GetFieldInfoList(formId);
+
+            var fieldIdList = fieldInfoList.Select(x => x.Id).ToList();
+            FormUtils.WriteText(Path.Combine(directoryPath, "fieldIdList.json"), FormUtils.JsonSerialize(fieldIdList));
+
+            foreach (var fieldInfo in fieldInfoList)
+            {
+                FormUtils.WriteText(Path.Combine(directoryPath, fieldInfo.Id + ".json"), FormUtils.JsonSerialize(fieldInfo));
+            }
+
+            Context.UtilsApi.CreateZip(filePath, directoryPath);
+
+            return "表单字段.zip";
+        }
+
+        public static void Import(int siteId, int formId, string filePath)
+        {
+            var directoryPath = Context.UtilsApi.GetTemporaryFilesPath("FormFields");
+
+            FormUtils.DeleteDirectoryIfExists(directoryPath);
+            FormUtils.CreateDirectoryIfNotExists(directoryPath);
+
+            Context.UtilsApi.ExtractZip(filePath, directoryPath);
+
+            var fieldIdList =
+                FormUtils.JsonDeserialize<List<int>>(
+                    FormUtils.ReadText(Path.Combine(directoryPath, "fieldIdList.json")));
+
+            foreach (var fieldId in fieldIdList)
+            {
+                var fieldInfo = FormUtils.JsonDeserialize<FieldInfo>(FormUtils.ReadText(Path.Combine(directoryPath, fieldId + ".json")));
+                if (fieldInfo == null) continue;
+
+                if (string.IsNullOrEmpty(fieldInfo.Title)) continue;
+
+                if (FieldDao.IsTitleExists(formId, fieldInfo.Title)) continue;
+
+                fieldInfo.FormId = formId;
+
+                FieldDao.Insert(siteId, fieldInfo);
+            }
         }
     }
 }
