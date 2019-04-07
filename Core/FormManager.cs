@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using SiteServer.Plugin;
 using SS.Form.Core.Model;
@@ -22,31 +23,31 @@ namespace SS.Form.Core
                 return $"SS.Form.Core.FormManager.{siteId}";
             }
 
-            public static List<FormInfo> GetCacheFormInfoList(int siteId)
+            public static IList<FormInfo> GetCacheFormInfoList(int siteId)
             {
                 var cacheKey = GetCacheKey(siteId);
-                var retval = CacheUtils.Get<List<FormInfo>>(cacheKey);
-                if (retval != null) return retval;
+                var retVal = CacheUtils.Get<IList<FormInfo>>(cacheKey);
+                if (retVal != null) return retVal;
 
                 lock (LockObject)
                 {
-                    retval = CacheUtils.Get<List<FormInfo>>(cacheKey);
-                    if (retval == null)
+                    retVal = CacheUtils.Get<IList<FormInfo>>(cacheKey);
+                    if (retVal == null)
                     {
-                        retval = FormDao.GetFormInfoList(siteId);
+                        retVal = Repository.GetFormInfoList(siteId);
 
-                        CacheUtils.InsertHours(cacheKey, retval, 12);
+                        CacheUtils.InsertHours(cacheKey, retVal, 12);
                     }
                 }
 
-                return retval;
+                return retVal;
             }
 
             public static void Update(FormInfo formInfo)
             {
                 lock (LockObject)
                 {
-                    var formInfoList = GetCacheFormInfoList(formInfo.SiteId);
+                    var formInfoList = GetCacheFormInfoList(formInfo.SiteId).ToList();
                     var index = formInfoList.FindIndex(x => x.Id == formInfo.Id);
                     if (index != -1)
                     {
@@ -66,6 +67,8 @@ namespace SS.Form.Core
             }
         }
 
+        public static FormRepository Repository => new FormRepository();
+
         public static List<FormInfo> GetFormInfoList(int siteId, int channelId)
         {
             var formInfoList = FormManagerCache.GetCacheFormInfoList(siteId);
@@ -80,17 +83,17 @@ namespace SS.Form.Core
             return formInfoList.FirstOrDefault(x => x.Id == id);
         }
 
-        public static FormInfo GetFormInfoByGet(IRequest request)
+        public static FormInfo GetFormInfoByGet(HttpRequestMessage request)
         {
             return GetFormInfoByRequest(request, true);
         }
 
-        public static FormInfo GetFormInfoByPost(IRequest request)
+        public static FormInfo GetFormInfoByPost(HttpRequestMessage request)
         {
             return GetFormInfoByRequest(request, false);
         }
 
-        private static FormInfo GetFormInfoByRequest(IRequest request, bool get)
+        private static FormInfo GetFormInfoByRequest(HttpRequestMessage request, bool get)
         {
             var siteId = get ? request.GetQueryInt("siteId") : request.GetPostInt("siteId");
             var channelId = get ? request.GetQueryInt("channelId") : request.GetPostInt("channelId");
@@ -108,7 +111,7 @@ namespace SS.Form.Core
 
         private static FormInfo GetFormInfoOrCreateIfNotExists(int siteId, int channelId, int contentId)
         {
-            return GetFormInfoByContentId(siteId, channelId, contentId) ?? FormDao.CreateDefaultForm(siteId, channelId, contentId);
+            return GetFormInfoByContentId(siteId, channelId, contentId) ?? Repository.CreateDefaultForm(siteId, channelId, contentId);
         }
 
         public static FormInfo GetFormInfoByTitle(int siteId, string title)
@@ -142,10 +145,10 @@ namespace SS.Form.Core
 
             if (formInfo.TotalCount == 0)
             {
-                formInfo.TotalCount = LogDao.GetCount(formInfo.Id);
+                formInfo.TotalCount = LogManager.Repository.GetCount(formInfo.Id);
                 if (formInfo.TotalCount > 0)
                 {
-                    FormDao.Update(formInfo);
+                    Repository.Update(formInfo);
                 }
             }
 
@@ -199,13 +202,13 @@ namespace SS.Form.Core
 
         public static void Notify(FormInfo formInfo, LogInfo logInfo)
         {
-            if (formInfo.Additional.IsAdministratorSmsNotify && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyMobile))
+            if (formInfo.IsAdministratorSmsNotify && !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyTplId) && !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyKeys) && !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyMobile))
             {
                 var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>();
                 if (smsPlugin != null && smsPlugin.IsReady)
                 {
                     var parameters = new Dictionary<string, string>();
-                    var keys = formInfo.Additional.AdministratorSmsNotifyKeys.Split(',');
+                    var keys = formInfo.AdministratorSmsNotifyKeys.Split(',');
                     foreach (var key in keys)
                     {
                         if (key == nameof(LogInfo.Id))
@@ -218,14 +221,14 @@ namespace SS.Form.Core
                         }
                         else
                         {
-                            parameters.Add(key, logInfo.GetString(key));
+                            parameters.Add(key, logInfo.Get<string>(key));
                         }
                     }
-                    smsPlugin.Send(formInfo.Additional.AdministratorSmsNotifyMobile, formInfo.Additional.AdministratorSmsNotifyTplId, parameters, out _);
+                    smsPlugin.Send(formInfo.AdministratorSmsNotifyMobile, formInfo.AdministratorSmsNotifyTplId, parameters, out _);
                 }
             }
 
-            if (formInfo.Additional.IsAdministratorMailNotify && !string.IsNullOrEmpty(formInfo.Additional.AdministratorMailNotifyAddress))
+            if (formInfo.IsAdministratorMailNotify && !string.IsNullOrEmpty(formInfo.AdministratorMailNotifyAddress))
             {
                 var mailPlugin = Context.PluginApi.GetPlugin<MailPlugin>();
                 if (mailPlugin != null && mailPlugin.IsReady)
@@ -251,7 +254,7 @@ namespace SS.Form.Core
                         list.Append(listHtml.Replace("{{key}}", kv.Key).Replace("{{value}}", kv.Value));
                     }
 
-                    mailPlugin.Send(formInfo.Additional.AdministratorMailNotifyAddress, string.Empty, "[SiteServer CMS] 通知邮件", templateHtml.Replace("{{title}}", formInfo.Title).Replace("{{list}}", list.ToString()), out _);
+                    mailPlugin.Send(formInfo.AdministratorMailNotifyAddress, string.Empty, "[SiteServer CMS] 通知邮件", templateHtml.Replace("{{title}}", formInfo.Title).Replace("{{list}}", list.ToString()), out _);
                 }
             }
         }

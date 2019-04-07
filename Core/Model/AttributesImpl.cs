@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
+using Datory;
 using SiteServer.Plugin;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Core.Model
 {
     [Serializable]
-    public class AttributesImpl : IAttributes
+    public class AttributesImpl
     {
         private const string AttributeValues = nameof(LogInfo.AttributeValues);
         private const string OracleEmptyValue = "_EMPTY_";

@@ -3,7 +3,6 @@ using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -18,8 +17,9 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
@@ -30,7 +30,7 @@ namespace SS.Form.Controllers.Pages
                 administratorSmsAttributeNames.Remove(nameof(LogInfo.ReplyDate));
                 administratorSmsAttributeNames.Remove(nameof(LogInfo.ReplyContent));
                 var administratorSmsNotifyKeys =
-                    FormUtils.StringCollectionToStringList(formInfo.Additional.AdministratorSmsNotifyKeys);
+                    FormUtils.StringCollectionToStringList(formInfo.AdministratorSmsNotifyKeys);
 
                 //try
                 //{
@@ -64,59 +64,60 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByPost(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByPost(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var type = request.GetPostString("type");
-                if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsClosed)))
+                var type = Request.GetPostString("type");
+                if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsClosed)))
                 {
-                    formInfo.Additional.IsClosed = request.GetPostBool(nameof(FormSettings.IsClosed).ToCamelCase());
-                    FormDao.Update(formInfo);
+                    formInfo.IsClosed = Request.GetPostBool(nameof(FormInfo.IsClosed).ToCamelCase());
+                    FormManager.Repository.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.Title)))
                 {
-                    formInfo.Title = request.GetPostString(nameof(FormInfo.Title).ToCamelCase());
-                    FormDao.Update(formInfo);
+                    formInfo.Title = Request.GetPostString(nameof(FormInfo.Title).ToCamelCase());
+                    FormManager.Repository.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.Description)))
                 {
-                    formInfo.Description = request.GetPostString(nameof(FormInfo.Description).ToCamelCase());
-                    FormDao.Update(formInfo);
+                    formInfo.Description = Request.GetPostString(nameof(FormInfo.Description).ToCamelCase());
+                    FormManager.Repository.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsReply)))
                 {
-                    formInfo.IsReply = request.GetPostBool(nameof(FormInfo.IsReply).ToCamelCase());
-                    FormDao.Update(formInfo);
+                    formInfo.IsReply = Request.GetPostBool(nameof(FormInfo.IsReply).ToCamelCase());
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsTimeout)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsTimeout)))
                 {
-                    formInfo.Additional.IsTimeout = request.GetPostBool(nameof(FormSettings.IsTimeout).ToCamelCase());
-                    formInfo.Additional.TimeToStart = FormUtils.ToDateTime(request.GetPostString(nameof(FormSettings.TimeToStart).ToCamelCase()));
-                    formInfo.Additional.TimeToEnd = FormUtils.ToDateTime(request.GetPostString(nameof(FormSettings.TimeToEnd).ToCamelCase()));
-                    FormDao.Update(formInfo);
+                    formInfo.IsTimeout = Request.GetPostBool(nameof(FormInfo.IsTimeout).ToCamelCase());
+                    formInfo.TimeToStart = FormUtils.ToDateTime(Request.GetPostString(nameof(FormInfo.TimeToStart).ToCamelCase()));
+                    formInfo.TimeToEnd = FormUtils.ToDateTime(Request.GetPostString(nameof(FormInfo.TimeToEnd).ToCamelCase()));
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsCaptcha)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsCaptcha)))
                 {
-                    formInfo.Additional.IsCaptcha = request.GetPostBool(nameof(FormSettings.IsCaptcha).ToCamelCase());
-                    FormDao.Update(formInfo);
+                    formInfo.IsCaptcha = Request.GetPostBool(nameof(FormInfo.IsCaptcha).ToCamelCase());
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsAdministratorSmsNotify)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsAdministratorSmsNotify)))
                 {
-                    formInfo.Additional.IsAdministratorSmsNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorSmsNotify).ToCamelCase());
-                    formInfo.Additional.AdministratorSmsNotifyTplId = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyTplId).ToCamelCase());
-                    formInfo.Additional.AdministratorSmsNotifyKeys = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyKeys).ToCamelCase());
-                    formInfo.Additional.AdministratorSmsNotifyMobile = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyMobile).ToCamelCase());
+                    formInfo.IsAdministratorSmsNotify = Request.GetPostBool(nameof(FormInfo.IsAdministratorSmsNotify).ToCamelCase());
+                    formInfo.AdministratorSmsNotifyTplId = Request.GetPostString(nameof(FormInfo.AdministratorSmsNotifyTplId).ToCamelCase());
+                    formInfo.AdministratorSmsNotifyKeys = Request.GetPostString(nameof(FormInfo.AdministratorSmsNotifyKeys).ToCamelCase());
+                    formInfo.AdministratorSmsNotifyMobile = Request.GetPostString(nameof(FormInfo.AdministratorSmsNotifyMobile).ToCamelCase());
 
-                    FormDao.Update(formInfo);
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsAdministratorMailNotify)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsAdministratorMailNotify)))
                 {
-                    formInfo.Additional.IsAdministratorMailNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorMailNotify).ToCamelCase());
-                    formInfo.Additional.AdministratorMailNotifyAddress = request.GetPostString(nameof(FormSettings.AdministratorMailNotifyAddress).ToCamelCase());
+                    formInfo.IsAdministratorMailNotify = Request.GetPostBool(nameof(FormInfo.IsAdministratorMailNotify).ToCamelCase());
+                    formInfo.AdministratorMailNotifyAddress = Request.GetPostString(nameof(FormInfo.AdministratorMailNotifyAddress).ToCamelCase());
 
-                    FormDao.Update(formInfo);
+                    FormManager.Repository.Update(formInfo);
                 }
 
                 return Ok(new{});

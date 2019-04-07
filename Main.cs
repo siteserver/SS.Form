@@ -6,10 +6,15 @@ using Menu = SiteServer.Plugin.Menu;
 
 namespace SS.Form
 {
-    public class Main : PluginBase
+    public class Plugin : PluginBase
     {
         public override void Startup(IService service)
         {
+            var formRepository = new FormRepository();
+            var fieldRepository = new FieldRepository();
+            var fieldItemRepository = new FieldItemRepository();
+            var logRepository = new LogRepository();
+
             service
                 .AddSiteMenu(siteId =>
                 {
@@ -51,10 +56,10 @@ namespace SS.Form
                     
                     return menu;
                 })
-                .AddDatabaseTable(FormDao.TableName, FormDao.Columns)
-                .AddDatabaseTable(LogDao.TableName, LogDao.Columns)
-                .AddDatabaseTable(FieldDao.TableName, FieldDao.Columns)
-                .AddDatabaseTable(FieldItemDao.TableName, FieldItemDao.Columns)
+                .AddDatabaseTable(formRepository.TableName, formRepository.TableColumns)
+                .AddDatabaseTable(fieldRepository.TableName, fieldRepository.TableColumns)
+                .AddDatabaseTable(fieldItemRepository.TableName, fieldItemRepository.TableColumns)
+                .AddDatabaseTable(logRepository.TableName, logRepository.TableColumns)
                 .AddStlElementParser(StlForm.ElementName, StlForm.Parse)
                 ;
             
@@ -66,8 +71,9 @@ namespace SS.Form
             var formInfo = FormManager.GetFormInfoByContentId(e.SiteId, e.ChannelId, e.ContentId);
             if (formInfo != null)
             {
-                FormDao.Delete(e.SiteId, formInfo.Id);
-            }   
+                var formRepository = new FormRepository();
+                formRepository.Delete(e.SiteId, formInfo.Id);
+            }
         }
     }
 }

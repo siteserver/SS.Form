@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -20,20 +19,21 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
-                var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.Additional.ListAttributeNames);
+                var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.ListAttributeNames);
                 var allAttributeNames = FormManager.GetAllAttributeNames(formInfo, fieldInfoList);
 
                 var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
                 if (pages == 0) pages = 1;
-                var page = request.GetQueryInt("page", 1);
+                var page = Request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
-                var logInfoList = LogDao.GetLogInfoList(formInfo, false, page);
+                var logInfoList = LogManager.Repository.GetLogInfoList(formInfo, false, page);
 
                 var logs = new List<Dictionary<string, object>>();
                 foreach (var logInfo in logInfoList)
@@ -64,24 +64,25 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = request.GetQueryInt("logId");
-                var logInfo = LogDao.GetLogInfo(logId);
+                var logId = Request.GetQueryInt("logId");
+                var logInfo = LogManager.Repository.Get(logId);
                 if (logInfo == null) return NotFound();
 
-                LogDao.Delete(formInfo, logInfo);
+                LogManager.Repository.Delete(formInfo, logInfo);
 
                 var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
                 if (pages == 0) pages = 1;
-                var page = request.GetQueryInt("page", 1);
+                var page = Request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
-                var logInfoList = LogDao.GetLogInfoList(formInfo, false, page);
+                var logInfoList = LogManager.Repository.GetLogInfoList(formInfo, false, page);
 
-                var logs = new List<Dictionary<string, object>>();
+                var logs = new List<IDictionary<string, object>>();
                 foreach (var info in logInfoList)
                 {
                     logs.Add(info.ToDictionary());
@@ -106,13 +107,14 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByPost(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByPost(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
-                var logs = LogDao.GetLogInfoList(formInfo.Id, false, 0, formInfo.TotalCount);
+                var logs = LogManager.Repository.GetLogInfoList(formInfo.Id, false, 0, formInfo.TotalCount);
 
                 var head = new List<string> { "序号" };
                 foreach (var fieldInfo in fieldInfoList)
@@ -160,14 +162,15 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByPost(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByPost(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var attributeName = request.GetPostString("attributeName");
+                var attributeName = Request.GetPostString("attributeName");
 
-                var attributeNames = FormUtils.StringCollectionToStringList(formInfo.Additional.ListAttributeNames);
+                var attributeNames = FormUtils.StringCollectionToStringList(formInfo.ListAttributeNames);
                 if (attributeNames.Contains(attributeName))
                 {
                     attributeNames.Remove(attributeName);
@@ -177,8 +180,8 @@ namespace SS.Form.Controllers.Pages
                     attributeNames.Add(attributeName);
                 }
 
-                formInfo.Additional.ListAttributeNames = FormUtils.ObjectCollectionToString(attributeNames);
-                FormDao.Update(formInfo);
+                formInfo.ListAttributeNames = FormUtils.ObjectCollectionToString(attributeNames);
+                FormManager.Repository.Update(formInfo);
 
                 return Ok(new
                 {

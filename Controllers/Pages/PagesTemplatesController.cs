@@ -17,8 +17,9 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetQueryInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
 
                 return Ok(new
@@ -37,11 +38,12 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetQueryInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
 
-                var name = request.GetQueryString("name");
+                var name = Request.GetQueryString("name");
                 var templateInfo = TemplateManager.GetTemplateInfo(name);
                 var html = TemplateManager.GetTemplateHtml(templateInfo);
 
@@ -61,12 +63,13 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetQueryInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
 
-                var name = request.GetPostString("name");
-                var templateHtml = request.GetPostString("templateHtml");
+                var name = Request.GetPostString("name");
+                var templateHtml = Request.GetPostString("templateHtml");
                 var templateInfo = TemplateManager.GetTemplateInfo(name);
 
                 TemplateManager.SetTemplateHtml(templateInfo, templateHtml);
@@ -87,11 +90,12 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetQueryInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
 
-                var name = request.GetQueryString("name");
+                var name = Request.GetQueryString("name");
                 TemplateManager.DeleteTemplate(name);
 
                 return Ok(new

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -18,8 +17,9 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
@@ -52,13 +52,14 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = request.GetQueryInt("fieldId");
-                FieldDao.Delete(fieldId);
+                var fieldId = Request.GetQueryInt("fieldId");
+                FieldManager.Repository.Delete(fieldId);
 
                 var list = new List<object>();
                 foreach (var fieldInfo in FieldManager.GetFieldInfoList(formInfo.Id))

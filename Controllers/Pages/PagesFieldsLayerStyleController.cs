@@ -4,7 +4,6 @@ using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -19,13 +18,14 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = request.GetQueryInt("fieldId");
-                var fieldInfo = FieldManager.GetFieldInfo(fieldId) ?? new FieldInfo();
+                var fieldId = Request.GetQueryInt("fieldId");
+                var fieldInfo = FieldManager.GetFieldInfo(formInfo.Id, fieldId) ?? new FieldInfo();
 
                 var isRapid = true;
                 var rapidValues = string.Empty;
@@ -72,14 +72,15 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByPost(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByPost(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = request.GetPostInt("fieldId");
-                var isRapid = request.GetPostBool("isRapid");
-                var rapidValues = request.GetPostString("rapidValues");
+                var fieldId = Request.GetPostInt("fieldId");
+                var isRapid = Request.GetPostBool("isRapid");
+                var rapidValues = Request.GetPostString("rapidValues");
                 var rapidValueArray = rapidValues.Split('\n');
                 var rapidValueList = new List<string>();
                 foreach (var item in rapidValueArray)
@@ -90,10 +91,10 @@ namespace SS.Form.Controllers.Pages
                     }
                 }
 
-                var body = request.GetPostObject<FieldInfo>("fieldInfo");
+                var body = Request.GetPostObject<FieldInfo>("fieldInfo");
 
                 var fieldInfoDatabase =
-                    FieldManager.GetFieldInfo(fieldId) ??
+                    FieldManager.GetFieldInfo(formInfo.Id, fieldId) ??
                     new FieldInfo();
 
                 string errorMessage;
@@ -122,7 +123,7 @@ namespace SS.Form.Controllers.Pages
                 return false;
             }
 
-            if (FieldDao.IsTitleExists(formId, body.Title))
+            if (FieldManager.Repository.IsTitleExists(formId, body.Title))
             {
                 errorMessage = $@"显示样式添加失败：字段名""{body.Title}""已存在";
                 return false;
@@ -173,7 +174,7 @@ namespace SS.Form.Controllers.Pages
                 }
             }
 
-            FieldDao.Insert(siteId, fieldInfo);
+            FieldManager.Repository.Insert(siteId, fieldInfo);
 
             return true;
         }
@@ -224,7 +225,7 @@ namespace SS.Form.Controllers.Pages
                 }
             }
 
-            FieldDao.Update(fieldInfo, true);
+            FieldManager.Repository.Update(fieldInfo, true);
             
             return true;
         }
