@@ -4,7 +4,6 @@ using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers
@@ -18,12 +17,12 @@ namespace SS.Form.Controllers
             {
                 var formInfo = FormManager.GetFormInfo(siteId, formId);
                 if (formInfo == null) return NotFound();
-                if (formInfo.Additional.IsClosed)
+                if (formInfo.IsClosed)
                 {
                     return BadRequest("对不起，表单已被禁用");
                 }
 
-                if (formInfo.Additional.IsTimeout && (formInfo.Additional.TimeToStart > DateTime.Now || formInfo.Additional.TimeToEnd < DateTime.Now))
+                if (formInfo.IsTimeout && (formInfo.TimeToStart > DateTime.Now || formInfo.TimeToEnd < DateTime.Now))
                 {
                     return BadRequest("对不起，表单只允许在规定的时间内提交");
                 }
@@ -35,7 +34,7 @@ namespace SS.Form.Controllers
                     Value = fieldInfoList,
                     formInfo.Title,
                     formInfo.Description,
-                    formInfo.Additional.IsCaptcha
+                    formInfo.IsCaptcha
                 });
             }
             catch (Exception ex)
@@ -49,16 +48,14 @@ namespace SS.Form.Controllers
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-
                 var formInfo = FormManager.GetFormInfo(siteId, formId);
                 if (formInfo == null) return NotFound();
-                if (formInfo.Additional.IsClosed)
+                if (formInfo.IsClosed)
                 {
                     return BadRequest("对不起，表单已被禁用");
                 }
 
-                if (formInfo.Additional.IsTimeout && (formInfo.Additional.TimeToStart > DateTime.Now || formInfo.Additional.TimeToEnd < DateTime.Now))
+                if (formInfo.IsTimeout && (formInfo.TimeToStart > DateTime.Now || formInfo.TimeToEnd < DateTime.Now))
                 {
                     return BadRequest("对不起，表单只允许在规定的时间内提交");
                 }
@@ -72,14 +69,14 @@ namespace SS.Form.Controllers
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 foreach (var fieldInfo in fieldInfoList)
                 {
-                    var value = request.GetPostString(fieldInfo.Title);
+                    var value = Request.GetPostString(fieldInfo.Title);
                     logInfo.Set(fieldInfo.Title, value);
                     if (FieldManager.IsExtra(fieldInfo))
                     {
                         foreach (var item in fieldInfo.Items)
                         {
                             var extrasId = FieldManager.GetExtrasId(fieldInfo.Id, item.Id);
-                            var extras = request.GetPostString(extrasId);
+                            var extras = Request.GetPostString(extrasId);
                             if (!string.IsNullOrEmpty(extras))
                             {
                                 logInfo.Set(extrasId, extras);
@@ -88,7 +85,7 @@ namespace SS.Form.Controllers
                     }
                 }
 
-                logInfo.Id = LogDao.Insert(formInfo, logInfo);
+                logInfo.Id = LogManager.Repository.Insert(formInfo, logInfo);
                 NotifyManager.SendNotify(formInfo, fieldInfoList, logInfo);
 
                 return Ok(logInfo);
@@ -104,22 +101,22 @@ namespace SS.Form.Controllers
         {
             try
             {
-                var request = Context.GetCurrentRequest();
+                var request = Request.GetAuthenticatedRequest();
 
                 var formInfo = FormManager.GetFormInfo(siteId, formId);
                 if (formInfo == null) return NotFound();
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
-                var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.Additional.ListAttributeNames);
+                var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.ListAttributeNames);
                 var allAttributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
 
                 var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
                 if (pages == 0) pages = 1;
-                var page = request.GetQueryInt("page", 1);
+                var page = Request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
-                var logInfoList = LogDao.GetLogInfoList(formInfo, formInfo.IsReply, page);
+                var logInfoList = LogManager.Repository.GetLogInfoList(formInfo, formInfo.IsReply, page);
 
-                var logs = new List<Dictionary<string, object>>();
+                var logs = new List<IDictionary<string, object>>();
                 foreach (var logInfo in logInfoList)
                 {
                     logs.Add(logInfo.ToDictionary());

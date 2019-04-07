@@ -13,17 +13,17 @@ namespace SS.Form.Core
     {
         public static void SendNotify(FormInfo formInfo, List<FieldInfo> fieldInfoList, LogInfo logInfo)
         {
-            if (formInfo.Additional.IsAdministratorSmsNotify &&
-                !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyTplId) &&
-                !string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyMobile))
+            if (formInfo.IsAdministratorSmsNotify &&
+                !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyTplId) &&
+                !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyMobile))
             {
                 var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>();
                 if (smsPlugin != null && smsPlugin.IsReady)
                 {
                     var parameters = new Dictionary<string, string>();
-                    if (!string.IsNullOrEmpty(formInfo.Additional.AdministratorSmsNotifyKeys))
+                    if (!string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyKeys))
                     {
-                        var keys = formInfo.Additional.AdministratorSmsNotifyKeys.Split(',');
+                        var keys = formInfo.AdministratorSmsNotifyKeys.Split(',');
                         foreach (var key in keys)
                         {
                             if (FormUtils.EqualsIgnoreCase(key, nameof(LogInfo.Id)))
@@ -32,7 +32,10 @@ namespace SS.Form.Core
                             }
                             else if (FormUtils.EqualsIgnoreCase(key, nameof(LogInfo.AddDate)))
                             {
-                                parameters.Add(key, logInfo.AddDate.ToString("yyyy-MM-dd HH:mm"));
+                                if (logInfo.AddDate.HasValue)
+                                {
+                                    parameters.Add(key, logInfo.AddDate.Value.ToString("yyyy-MM-dd HH:mm"));
+                                }
                             }
                             else
                             {
@@ -49,13 +52,13 @@ namespace SS.Form.Core
                         }
                     }
 
-                    smsPlugin.Send(formInfo.Additional.AdministratorSmsNotifyMobile,
-                        formInfo.Additional.AdministratorSmsNotifyTplId, parameters, out _);
+                    smsPlugin.Send(formInfo.AdministratorSmsNotifyMobile,
+                        formInfo.AdministratorSmsNotifyTplId, parameters, out _);
                 }
             }
 
-            if (formInfo.Additional.IsAdministratorMailNotify &&
-                !string.IsNullOrEmpty(formInfo.Additional.AdministratorMailNotifyAddress))
+            if (formInfo.IsAdministratorMailNotify &&
+                !string.IsNullOrEmpty(formInfo.AdministratorMailNotifyAddress))
             {
                 var mailPlugin = Context.PluginApi.GetPlugin<MailPlugin>();
                 if (mailPlugin != null && mailPlugin.IsReady)
@@ -65,9 +68,12 @@ namespace SS.Form.Core
 
                     var keyValueList = new List<KeyValuePair<string, string>>
                     {
-                        new KeyValuePair<string, string>("编号", logInfo.Id.ToString()),
-                        new KeyValuePair<string, string>("提交时间", logInfo.AddDate.ToString("yyyy-MM-dd HH:mm"))
+                        new KeyValuePair<string, string>("编号", logInfo.Id.ToString())
                     };
+                    if (logInfo.AddDate.HasValue)
+                    {
+                        keyValueList.Add(new KeyValuePair<string, string>("提交时间", logInfo.AddDate.Value.ToString("yyyy-MM-dd HH:mm")));
+                    }
                     foreach (var fieldInfo in fieldInfoList)
                     {
                         keyValueList.Add(new KeyValuePair<string, string>(fieldInfo.Title,
@@ -82,23 +88,23 @@ namespace SS.Form.Core
 
                     var siteInfo = Context.SiteApi.GetSiteInfo(formInfo.SiteId);
 
-                    mailPlugin.Send(formInfo.Additional.AdministratorMailNotifyAddress, string.Empty,
+                    mailPlugin.Send(formInfo.AdministratorMailNotifyAddress, string.Empty,
                         "[SiteServer CMS] 通知邮件",
                         templateHtml.Replace("{{title}}", $"{formInfo.Title} - {siteInfo.SiteName}").Replace("{{list}}", list.ToString()), out _);
                 }
             }
 
-            if (formInfo.Additional.IsUserSmsNotify &&
-                !string.IsNullOrEmpty(formInfo.Additional.UserSmsNotifyTplId) &&
-                !string.IsNullOrEmpty(formInfo.Additional.UserSmsNotifyMobileName))
+            if (formInfo.IsUserSmsNotify &&
+                !string.IsNullOrEmpty(formInfo.UserSmsNotifyTplId) &&
+                !string.IsNullOrEmpty(formInfo.UserSmsNotifyMobileName))
             {
                 var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>();
                 if (smsPlugin != null && smsPlugin.IsReady)
                 {
                     var parameters = new Dictionary<string, string>();
-                    if (!string.IsNullOrEmpty(formInfo.Additional.UserSmsNotifyKeys))
+                    if (!string.IsNullOrEmpty(formInfo.UserSmsNotifyKeys))
                     {
-                        var keys = formInfo.Additional.UserSmsNotifyKeys.Split(',');
+                        var keys = formInfo.UserSmsNotifyKeys.Split(',');
                         foreach (var key in keys)
                         {
                             if (FormUtils.EqualsIgnoreCase(key, nameof(LogInfo.Id)))
@@ -107,7 +113,10 @@ namespace SS.Form.Core
                             }
                             else if (FormUtils.EqualsIgnoreCase(key, nameof(LogInfo.AddDate)))
                             {
-                                parameters.Add(key, logInfo.AddDate.ToString("yyyy-MM-dd HH:mm"));
+                                if (logInfo.AddDate.HasValue)
+                                {
+                                    parameters.Add(key, logInfo.AddDate.Value.ToString("yyyy-MM-dd HH:mm"));
+                                }
                             }
                             else
                             {
@@ -124,13 +133,13 @@ namespace SS.Form.Core
                         }
                     }
 
-                    var mobileFieldInfo = fieldInfoList.FirstOrDefault(x => FormUtils.EqualsIgnoreCase(formInfo.Additional.UserSmsNotifyMobileName, x.Title));
+                    var mobileFieldInfo = fieldInfoList.FirstOrDefault(x => FormUtils.EqualsIgnoreCase(formInfo.UserSmsNotifyMobileName, x.Title));
                     if (mobileFieldInfo != null)
                     {
                         var mobile = LogManager.GetValue(mobileFieldInfo, logInfo);
                         if (!string.IsNullOrEmpty(mobile))
                         {
-                            smsPlugin.Send(mobile, formInfo.Additional.UserSmsNotifyTplId, parameters, out _);
+                            smsPlugin.Send(mobile, formInfo.UserSmsNotifyTplId, parameters, out _);
                         }
                     }
                 }

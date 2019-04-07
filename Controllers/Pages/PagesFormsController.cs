@@ -3,7 +3,6 @@ using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -20,8 +19,9 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetQueryInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin ||
                     !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
                 {
@@ -46,17 +46,18 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetQueryInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin ||
                     !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
                 {
                     return Unauthorized();
                 }
 
-                var formId = request.GetQueryInt("formId");
+                var formId = Request.GetQueryInt("formId");
 
-                FormDao.Delete(siteId, formId);
+                FormManager.Repository.Delete(siteId, formId);
 
                 return Ok(new
                 {
@@ -74,8 +75,9 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetPostInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin ||
                     !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
                 {
@@ -86,11 +88,11 @@ namespace SS.Form.Controllers.Pages
                 {
                     SiteId = siteId,
                     AddDate = DateTime.Now,
-                    Title = request.GetPostString("title"),
-                    Description = request.GetPostString("description")
+                    Title = Request.GetPostString("title"),
+                    Description = Request.GetPostString("description")
                 };
 
-                FormDao.Insert(formInfo);
+                FormManager.Repository.Insert(formInfo);
 
                 return Ok(new
                 {
@@ -108,20 +110,21 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetPostInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin ||
                     !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
                 {
                     return Unauthorized();
                 }
                 
-                var formId = request.GetPostInt("formId");
+                var formId = Request.GetPostInt("formId");
                 var formInfo = FormManager.GetFormInfo(siteId, formId);
-                formInfo.Title = request.GetPostString("title");
-                formInfo.Description = request.GetPostString("description");
+                formInfo.Title = Request.GetPostString("title");
+                formInfo.Description = Request.GetPostString("description");
 
-                FormDao.Update(formInfo);
+                FormManager.Repository.Update(formInfo);
 
                 return Ok(new
                 {
@@ -139,17 +142,17 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetPostInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+                var siteId = Request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin ||
                     !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
                 {
                     return Unauthorized();
                 }
 
-                var formId = request.GetPostInt("formId");
+                var formId = Request.GetPostInt("formId");
 
-                FormDao.UpdateTaxisToUp(siteId, formId);
+                FormManager.Repository.UpdateTaxisToUp(siteId, formId);
 
                 return Ok(new
                 {
@@ -167,17 +170,18 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var siteId = request.GetPostInt("siteId");
+                var request = Request.GetAuthenticatedRequest();
+
+                var siteId = Request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin ||
                     !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
                 {
                     return Unauthorized();
                 }
 
-                var formId = request.GetPostInt("formId");
+                var formId = Request.GetPostInt("formId");
 
-                FormDao.UpdateTaxisToDown(siteId, formId);
+                FormManager.Repository.UpdateTaxisToDown(siteId, formId);
 
                 return Ok(new
                 {

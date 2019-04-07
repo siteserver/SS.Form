@@ -55,7 +55,7 @@ var methods = {
       type: this.pageType
     };
     if (this.pageType === 'isClosed') {
-      payload.isClosed = this.formInfo.additional.isClosed;
+      payload.isClosed = this.formInfo.isClosed;
     } else if (this.pageType === 'title') {
       payload.title = this.formInfo.title;
     } else if (this.pageType === 'description') {
@@ -63,24 +63,24 @@ var methods = {
     } else if (this.pageType === 'isReply') {
       payload.isReply = this.formInfo.isReply;
     } else if (this.pageType === 'isTimeout') {
-      payload.isTimeout = this.formInfo.additional.isTimeout;
-      payload.timeToStart = this.formInfo.additional.timeToStart;
-      payload.timeToEnd = this.formInfo.additional.timeToEnd;
+      payload.isTimeout = this.formInfo.isTimeout;
+      payload.timeToStart = this.formInfo.timeToStart;
+      payload.timeToEnd = this.formInfo.timeToEnd;
     } else if (this.pageType === 'isCaptcha') {
-      payload.isCaptcha = this.formInfo.additional.isCaptcha;
+      payload.isCaptcha = this.formInfo.isCaptcha;
     } else if (this.pageType === 'isAdministratorSmsNotify') {
-      payload.isAdministratorSmsNotify = this.formInfo.additional.isAdministratorSmsNotify;
-      payload.administratorSmsNotifyTplId = this.formInfo.additional.administratorSmsNotifyTplId;
+      payload.isAdministratorSmsNotify = this.formInfo.isAdministratorSmsNotify;
+      payload.administratorSmsNotifyTplId = this.formInfo.administratorSmsNotifyTplId;
       payload.administratorSmsNotifyKeys = this.administratorSmsNotifyKeys.join(',');
-      payload.administratorSmsNotifyMobile = this.formInfo.additional.administratorSmsNotifyMobile;
+      payload.administratorSmsNotifyMobile = this.formInfo.administratorSmsNotifyMobile;
     } else if (this.pageType === 'isAdministratorMailNotify') {
-      payload.isAdministratorMailNotify = this.formInfo.additional.isAdministratorMailNotify;
-      payload.administratorMailNotifyAddress = this.formInfo.additional.administratorMailNotifyAddress;
+      payload.isAdministratorMailNotify = this.formInfo.isAdministratorMailNotify;
+      payload.administratorMailNotifyAddress = this.formInfo.administratorMailNotifyAddress;
     } else if (this.pageType === 'isUserSmsNotify') {
-      payload.isUserSmsNotify = this.formInfo.additional.isUserSmsNotify;
-      payload.userSmsNotifyTplId = this.formInfo.additional.userSmsNotifyTplId;
+      payload.isUserSmsNotify = this.formInfo.isUserSmsNotify;
+      payload.userSmsNotifyTplId = this.formInfo.userSmsNotifyTplId;
       payload.userSmsNotifyKeys = this.userSmsNotifyKeys.join(',');
-      payload.userSmsNotifyMobileName = this.formInfo.additional.userSmsNotifyMobileName;
+      payload.userSmsNotifyMobileName = this.formInfo.userSmsNotifyMobileName;
     }
 
     utils.loading(true);

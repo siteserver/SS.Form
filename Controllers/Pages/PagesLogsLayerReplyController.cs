@@ -3,7 +3,6 @@ using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -18,14 +17,15 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = request.GetQueryInt("logId");
+                var logId = Request.GetQueryInt("logId");
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
-                var logInfo = LogDao.GetLogInfo(logId);
+                var logInfo = LogManager.Repository.Get(logId);
 
                 var attributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
                 if (!logInfo.IsReplied)
@@ -51,18 +51,19 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByPost(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByPost(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = request.GetPostInt("logId");
-                var logInfo = LogDao.GetLogInfo(logId);
+                var logId = Request.GetPostInt("logId");
+                var logInfo = LogManager.Repository.Get(logId);
                 if (logInfo == null) return NotFound();
 
-                logInfo.ReplyContent = request.GetPostString("replyContent");
+                logInfo.ReplyContent = Request.GetPostString("replyContent");
 
-                LogDao.Reply(formInfo, logInfo);
+                LogManager.Repository.Reply(formInfo, logInfo);
 
                 return Ok(new{});
             }

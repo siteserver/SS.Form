@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using SiteServer.Plugin;
 using SS.Form.Core.Model;
 using SS.Form.Core.Provider;
@@ -9,6 +10,8 @@ namespace SS.Form.Core
 {
     public static class FormManager
     {
+        public static FormRepository Repository => new FormRepository();
+
         private static class FormManagerCache
         {
             private static readonly object LockObject = new object();
@@ -18,18 +21,18 @@ namespace SS.Form.Core
                 return $"SS.Form.Core.FormManager.{siteId}";
             }
 
-            public static List<FormInfo> GetCacheFormInfoList(int siteId)
+            public static IList<FormInfo> GetCacheFormInfoList(int siteId)
             {
                 var cacheKey = GetCacheKey(siteId);
-                var retVal = CacheUtils.Get<List<FormInfo>>(cacheKey);
+                var retVal = CacheUtils.Get<IList<FormInfo>>(cacheKey);
                 if (retVal != null) return retVal;
 
                 lock (LockObject)
                 {
-                    retVal = CacheUtils.Get<List<FormInfo>>(cacheKey);
+                    retVal = CacheUtils.Get<IList<FormInfo>>(cacheKey);
                     if (retVal == null)
                     {
-                        retVal = FormDao.GetFormInfoList(siteId);
+                        retVal = Repository.GetFormInfoList(siteId);
 
                         CacheUtils.InsertHours(cacheKey, retVal, 12);
                     }
@@ -42,7 +45,7 @@ namespace SS.Form.Core
             {
                 lock (LockObject)
                 {
-                    var formInfoList = GetCacheFormInfoList(formInfo.SiteId);
+                    var formInfoList = GetCacheFormInfoList(formInfo.SiteId).ToList();
                     var index = formInfoList.FindIndex(x => x.Id == formInfo.Id);
                     if (index != -1)
                     {
@@ -66,7 +69,7 @@ namespace SS.Form.Core
         {
             var formInfoList = FormManagerCache.GetCacheFormInfoList(siteId);
 
-            return formInfoList.Where(formInfo => formInfo.ChannelId == channelId).OrderByDescending(formInfo => formInfo.Taxis == 0 ? int.MaxValue : formInfo.Taxis).ToList();
+            return formInfoList.Where(formInfo => formInfo.ChannelId == channelId).OrderBy(formInfo => formInfo.Taxis == 0 ? int.MaxValue : formInfo.Taxis).ToList();
         }
 
         public static FormInfo GetFormInfo(int siteId, int id)
@@ -76,17 +79,17 @@ namespace SS.Form.Core
             return formInfoList.FirstOrDefault(x => x.Id == id);
         }
 
-        public static FormInfo GetFormInfoByGet(IRequest request)
+        public static FormInfo GetFormInfoByGet(HttpRequestMessage request)
         {
             return GetFormInfoByRequest(request, true);
         }
 
-        public static FormInfo GetFormInfoByPost(IRequest request)
+        public static FormInfo GetFormInfoByPost(HttpRequestMessage request)
         {
             return GetFormInfoByRequest(request, false);
         }
 
-        private static FormInfo GetFormInfoByRequest(IRequest request, bool get)
+        private static FormInfo GetFormInfoByRequest(HttpRequestMessage request, bool get)
         {
             var siteId = get ? request.GetQueryInt("siteId") : request.GetPostInt("siteId");
             var channelId = get ? request.GetQueryInt("channelId") : request.GetPostInt("channelId");
@@ -104,7 +107,7 @@ namespace SS.Form.Core
 
         private static FormInfo GetFormInfoOrCreateIfNotExists(int siteId, int channelId, int contentId)
         {
-            return GetFormInfoByContentId(siteId, channelId, contentId) ?? FormDao.CreateDefaultForm(siteId, channelId, contentId);
+            return GetFormInfoByContentId(siteId, channelId, contentId) ?? Repository.CreateDefaultForm(siteId, channelId, contentId);
         }
 
         public static FormInfo GetFormInfoByTitle(int siteId, string title)
@@ -112,9 +115,6 @@ namespace SS.Form.Core
             var formInfoList = FormManagerCache.GetCacheFormInfoList(siteId);
             return formInfoList.FirstOrDefault(x => x.Title == title);
         }
-
-        public static readonly string DefaultListAttributeNames =
-            $"{nameof(LogInfo.Id)},{nameof(LogInfo.AddDate)}";
 
         public static List<string> GetAllAttributeNames(List<FieldInfo> fieldInfoList)
         {
@@ -138,10 +138,10 @@ namespace SS.Form.Core
 
             if (formInfo.TotalCount == 0)
             {
-                formInfo.TotalCount = LogDao.GetCount(formInfo.Id);
+                formInfo.TotalCount = LogManager.Repository.GetCount(formInfo.Id);
                 if (formInfo.TotalCount > 0)
                 {
-                    FormDao.Update(formInfo);
+                    Repository.Update(formInfo);
                 }
             }
 

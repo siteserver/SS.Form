@@ -4,7 +4,6 @@ using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -19,30 +18,31 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = request.GetQueryInt("logId");
+                var logId = Request.GetQueryInt("logId");
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
 
                 if (logId > 0)
                 {
-                    var logInfo = LogDao.GetLogInfo(logId);
+                    var logInfo = LogManager.Repository.Get(logId);
                     foreach (var fieldInfo in fieldInfoList)
                     {
                         if (fieldInfo.FieldType == InputType.CheckBox.Value || fieldInfo.FieldType == InputType.SelectMultiple.Value)
                         {
-                            fieldInfo.Value = FormUtils.JsonDeserialize<List<string>>(logInfo.GetString(fieldInfo.Title));
+                            fieldInfo.Value = FormUtils.JsonDeserialize<List<string>>(logInfo.Get<string>(fieldInfo.Title));
                         }
                         else if (fieldInfo.FieldType == InputType.Date.Value || fieldInfo.FieldType == InputType.DateTime.Value)
                         {
-                            fieldInfo.Value = logInfo.GetDateTime(fieldInfo.Title);
+                            fieldInfo.Value = logInfo.Get<DateTime>(fieldInfo.Title);
                         }
                         else
                         {
-                            fieldInfo.Value = logInfo.GetString(fieldInfo.Title);
+                            fieldInfo.Value = logInfo.Get<string>(fieldInfo.Title);
                         }
                     }
                 }
@@ -63,15 +63,16 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByPost(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByPost(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = request.GetPostInt("logId");
+                var logId = Request.GetPostInt("logId");
 
                 var logInfo = logId > 0
-                    ? LogDao.GetLogInfo(logId)
+                    ? LogManager.Repository.Get(logId)
                     : new LogInfo
                     {
                         FormId = formInfo.Id,
@@ -80,12 +81,12 @@ namespace SS.Form.Controllers.Pages
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 foreach (var fieldInfo in fieldInfoList)
                 {
-                    if (request.IsPostExists(fieldInfo.Title))
+                    if (Request.IsPostExists(fieldInfo.Title))
                     {
-                        var value = request.GetPostString(fieldInfo.Title);
+                        var value = Request.GetPostString(fieldInfo.Title);
                         if (fieldInfo.FieldType == InputType.Date.Value || fieldInfo.FieldType == InputType.DateTime.Value)
                         {
-                            var dt = FormUtils.ToDateTime(request.GetPostString(fieldInfo.Title));
+                            var dt = FormUtils.ToDateTime(Request.GetPostString(fieldInfo.Title));
                             logInfo.Set(fieldInfo.Title, dt.ToLocalTime());
                         }
 
@@ -99,12 +100,12 @@ namespace SS.Form.Controllers.Pages
 
                 if (logId == 0)
                 {
-                    logInfo.Id = LogDao.Insert(formInfo, logInfo);
+                    logInfo.Id = LogManager.Repository.Insert(formInfo, logInfo);
                     NotifyManager.SendNotify(formInfo, fieldInfoList, logInfo);
                 }
                 else
                 {
-                    LogDao.Update(logInfo);
+                    LogManager.Repository.Update(logInfo);
                 }
 
                 return Ok(new{});

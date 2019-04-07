@@ -3,7 +3,6 @@ using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -18,8 +17,9 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
@@ -30,9 +30,9 @@ namespace SS.Form.Controllers.Pages
                 attributeNames.Remove(nameof(LogInfo.ReplyDate));
                 attributeNames.Remove(nameof(LogInfo.ReplyContent));
                 var administratorSmsNotifyKeys =
-                    FormUtils.StringCollectionToStringList(formInfo.Additional.AdministratorSmsNotifyKeys);
+                    FormUtils.StringCollectionToStringList(formInfo.AdministratorSmsNotifyKeys);
                 var userSmsNotifyKeys =
-                    FormUtils.StringCollectionToStringList(formInfo.Additional.UserSmsNotifyKeys);
+                    FormUtils.StringCollectionToStringList(formInfo.UserSmsNotifyKeys);
 
                 return Ok(new
                 {
@@ -54,68 +54,69 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByPost(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByPost(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var type = request.GetPostString("type");
-                if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsClosed)))
+                var type = Request.GetPostString("type");
+                if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsClosed)))
                 {
-                    formInfo.Additional.IsClosed = request.GetPostBool(nameof(FormSettings.IsClosed));
-                    FormDao.Update(formInfo);
+                    formInfo.IsClosed = Request.GetPostBool(nameof(FormInfo.IsClosed));
+                    FormManager.Repository.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.Title)))
                 {
-                    formInfo.Title = request.GetPostString(nameof(FormInfo.Title));
-                    FormDao.Update(formInfo);
+                    formInfo.Title = Request.GetPostString(nameof(FormInfo.Title));
+                    FormManager.Repository.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.Description)))
                 {
-                    formInfo.Description = request.GetPostString(nameof(FormInfo.Description));
-                    FormDao.Update(formInfo);
+                    formInfo.Description = Request.GetPostString(nameof(FormInfo.Description));
+                    FormManager.Repository.Update(formInfo);
                 }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsReply)))
                 {
-                    formInfo.IsReply = request.GetPostBool(nameof(FormInfo.IsReply));
-                    FormDao.Update(formInfo);
+                    formInfo.IsReply = Request.GetPostBool(nameof(FormInfo.IsReply));
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsTimeout)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsTimeout)))
                 {
-                    formInfo.Additional.IsTimeout = request.GetPostBool(nameof(FormSettings.IsTimeout));
-                    formInfo.Additional.TimeToStart = FormUtils.ToDateTime(request.GetPostString(nameof(FormSettings.TimeToStart)));
-                    formInfo.Additional.TimeToEnd = FormUtils.ToDateTime(request.GetPostString(nameof(FormSettings.TimeToEnd)));
-                    FormDao.Update(formInfo);
+                    formInfo.IsTimeout = Request.GetPostBool(nameof(FormInfo.IsTimeout));
+                    formInfo.TimeToStart = FormUtils.ToDateTime(Request.GetPostString(nameof(FormInfo.TimeToStart)));
+                    formInfo.TimeToEnd = FormUtils.ToDateTime(Request.GetPostString(nameof(FormInfo.TimeToEnd)));
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsCaptcha)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsCaptcha)))
                 {
-                    formInfo.Additional.IsCaptcha = request.GetPostBool(nameof(FormSettings.IsCaptcha));
-                    FormDao.Update(formInfo);
+                    formInfo.IsCaptcha = Request.GetPostBool(nameof(FormInfo.IsCaptcha));
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsAdministratorSmsNotify)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsAdministratorSmsNotify)))
                 {
-                    formInfo.Additional.IsAdministratorSmsNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorSmsNotify));
-                    formInfo.Additional.AdministratorSmsNotifyTplId = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyTplId));
-                    formInfo.Additional.AdministratorSmsNotifyKeys = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyKeys));
-                    formInfo.Additional.AdministratorSmsNotifyMobile = request.GetPostString(nameof(FormSettings.AdministratorSmsNotifyMobile));
+                    formInfo.IsAdministratorSmsNotify = Request.GetPostBool(nameof(FormInfo.IsAdministratorSmsNotify));
+                    formInfo.AdministratorSmsNotifyTplId = Request.GetPostString(nameof(FormInfo.AdministratorSmsNotifyTplId));
+                    formInfo.AdministratorSmsNotifyKeys = Request.GetPostString(nameof(FormInfo.AdministratorSmsNotifyKeys));
+                    formInfo.AdministratorSmsNotifyMobile = Request.GetPostString(nameof(FormInfo.AdministratorSmsNotifyMobile));
 
-                    FormDao.Update(formInfo);
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsAdministratorMailNotify)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsAdministratorMailNotify)))
                 {
-                    formInfo.Additional.IsAdministratorMailNotify = request.GetPostBool(nameof(FormSettings.IsAdministratorMailNotify));
-                    formInfo.Additional.AdministratorMailNotifyAddress = request.GetPostString(nameof(FormSettings.AdministratorMailNotifyAddress));
+                    formInfo.IsAdministratorMailNotify = Request.GetPostBool(nameof(FormInfo.IsAdministratorMailNotify));
+                    formInfo.AdministratorMailNotifyAddress = Request.GetPostString(nameof(FormInfo.AdministratorMailNotifyAddress));
 
-                    FormDao.Update(formInfo);
+                    FormManager.Repository.Update(formInfo);
                 }
-                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormSettings.IsUserSmsNotify)))
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsUserSmsNotify)))
                 {
-                    formInfo.Additional.IsUserSmsNotify = request.GetPostBool(nameof(FormSettings.IsUserSmsNotify));
-                    formInfo.Additional.UserSmsNotifyTplId = request.GetPostString(nameof(FormSettings.UserSmsNotifyTplId));
-                    formInfo.Additional.UserSmsNotifyKeys = request.GetPostString(nameof(FormSettings.UserSmsNotifyKeys));
-                    formInfo.Additional.UserSmsNotifyMobileName = request.GetPostString(nameof(FormSettings.UserSmsNotifyMobileName));
+                    formInfo.IsUserSmsNotify = Request.GetPostBool(nameof(FormInfo.IsUserSmsNotify));
+                    formInfo.UserSmsNotifyTplId = Request.GetPostString(nameof(FormInfo.UserSmsNotifyTplId));
+                    formInfo.UserSmsNotifyKeys = Request.GetPostString(nameof(FormInfo.UserSmsNotifyKeys));
+                    formInfo.UserSmsNotifyMobileName = Request.GetPostString(nameof(FormInfo.UserSmsNotifyMobileName));
 
-                    FormDao.Update(formInfo);
+                    FormManager.Repository.Update(formInfo);
                 }
 
                 return Ok(new{});

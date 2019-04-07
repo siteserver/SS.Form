@@ -10,32 +10,42 @@ namespace SS.Form.Core
 {
     public static class FieldManager
     {
+        public static FieldRepository Repository => new FieldRepository();
+        public static FieldItemRepository ItemRepository => new FieldItemRepository();
+
         private static class FieldManagerCache
         {
             private static readonly object LockObject = new object();
-            private const string CacheKey = "SS.Form.Core.FieldManager";
 
-            public static IEnumerable<KeyValuePair<string, FieldInfo>> GetAllFieldInfoList()
+            private static string GetCacheKey(int formId)
             {
-                var retVal = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(CacheKey);
+                return $"SS.Form.Core.FieldManager.{formId}";
+            }
+
+            public static List<KeyValuePair<string, FieldInfo>> GetAllTableStyles(int formId)
+            {
+                var cacheKey = GetCacheKey(formId);
+                var retVal = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(cacheKey);
                 if (retVal != null) return retVal;
 
                 lock (LockObject)
                 {
-                    retVal = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(CacheKey);
-                    if (retVal != null) return retVal;
+                    retVal = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(cacheKey);
+                    if (retVal == null)
+                    {
+                        retVal = Repository.GetAllFieldInfoList(formId);
 
-                    retVal = FieldDao.GetAllFieldInfoList();
-
-                    CacheUtils.InsertHours(CacheKey, retVal, 12);
+                        CacheUtils.InsertHours(cacheKey, retVal, 12);
+                    }
                 }
 
                 return retVal;
             }
 
-            public static void Clear()
+            public static void Clear(int formId)
             {
-                CacheUtils.Remove(CacheKey);
+                var cacheKey = GetCacheKey(formId);
+                CacheUtils.Remove(cacheKey);
             }
         }
 
@@ -43,7 +53,7 @@ namespace SS.Form.Core
         {
             var fieldInfoList = new List<FieldInfo>();
 
-            var entries = FieldManagerCache.GetAllFieldInfoList();
+            var entries = FieldManagerCache.GetAllTableStyles(formId);
             var startKey = GetKeyPrefix(formId);
             var list = entries.Where(tuple => tuple.Key.StartsWith(startKey)).ToList();
             foreach (var pair in list)
@@ -56,17 +66,17 @@ namespace SS.Form.Core
             return fieldInfoList.OrderBy(fieldInfo => fieldInfo.Taxis == 0 ? int.MaxValue : fieldInfo.Taxis).ToList();
         }
 
-        public static FieldInfo GetFieldInfo(int id)
+        public static FieldInfo GetFieldInfo(int formId, int id)
         {
-            var entries = FieldManagerCache.GetAllFieldInfoList();
+            var entries = FieldManagerCache.GetAllTableStyles(formId);
 
             var entry = entries.FirstOrDefault(x => x.Value != null && x.Value.Id == id);
             return entry.IsDefault() ? null : entry.Value;
         }
 
-        public static void ClearCache()
+        public static void ClearCache(int formId)
         {
-            FieldManagerCache.Clear();
+            FieldManagerCache.Clear(formId);
         }
 
         private static string GetKeyPrefix(int formId)
@@ -140,11 +150,11 @@ namespace SS.Form.Core
 
                 if (string.IsNullOrEmpty(fieldInfo.Title)) continue;
 
-                if (FieldDao.IsTitleExists(formId, fieldInfo.Title)) continue;
+                if (Repository.IsTitleExists(formId, fieldInfo.Title)) continue;
 
                 fieldInfo.FormId = formId;
 
-                FieldDao.Insert(siteId, fieldInfo);
+                Repository.Insert(siteId, fieldInfo);
             }
         }
     }

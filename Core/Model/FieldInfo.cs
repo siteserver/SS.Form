@@ -1,35 +1,44 @@
 ﻿using System.Collections.Generic;
+using Datory;
 using SiteServer.Plugin;
 
 namespace SS.Form.Core.Model
 {
-	public class FieldInfo
-	{
-	    public FieldInfo()
+    [Table("ss_form_field")]
+    public class FieldInfo : Entity
+    {
+        public FieldInfo()
 	    {
 	        FieldType = InputType.Text.Value;
             Items = new List<FieldItemInfo>();
         }
 
-		public int Id { get; set; }
+        [TableColumn]
+        public int FormId { get; set; }
 
-	    public int FormId { get; set; }
-
+        [TableColumn]
         public int Taxis { get; set; }
 
+        [TableColumn]
         public string Title { get; set; }
 
+        [TableColumn(Length = 2000)]
         public string Description { get; set; }
 
+        [TableColumn]
         public string PlaceHolder { get; set; }
 
+        [TableColumn]
         public string FieldType { get; set; }
 
-	    public string Validate { get; set; }
+        [TableColumn]
+        public string Validate { get; set; }
 
-	    public int Columns { get; set; }
+        [TableColumn]
+        public int Columns { get; set; }
 
-	    public int Height { get; set; }
+        [TableColumn]
+        public int Height { get; set; }
 
         // not in database
 

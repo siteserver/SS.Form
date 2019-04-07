@@ -2,7 +2,6 @@
 using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
-using SS.Form.Core.Provider;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -17,13 +16,14 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByGet(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByGet(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = request.GetQueryInt("fieldId");
-                var fieldInfo = FieldManager.GetFieldInfo(fieldId);
+                var fieldId = Request.GetQueryInt("fieldId");
+                var fieldInfo = FieldManager.GetFieldInfo(formInfo.Id, fieldId);
 
                 var veeValidate = string.Empty;
                 if (fieldInfo != null)
@@ -47,18 +47,19 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Context.GetCurrentRequest();
-                var formInfo = FormManager.GetFormInfoByPost(request);
+                var request = Request.GetAuthenticatedRequest();
+
+                var formInfo = FormManager.GetFormInfoByPost(Request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = request.GetPostInt("fieldId");
-                var value = request.GetPostString("value");
+                var fieldId = Request.GetPostInt("fieldId");
+                var value = Request.GetPostString("value");
 
-                var fieldInfo = FieldManager.GetFieldInfo(fieldId);
+                var fieldInfo = FieldManager.GetFieldInfo(formInfo.Id, fieldId);
                 fieldInfo.Validate = value;
 
-                FieldDao.Update(fieldInfo, false);
+                FieldManager.Repository.Update(fieldInfo, false);
 
                 return Ok(new{});
             }
