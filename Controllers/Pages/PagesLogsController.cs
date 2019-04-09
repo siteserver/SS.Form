@@ -19,9 +19,9 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByGet(Request);
+                var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
@@ -31,7 +31,7 @@ namespace SS.Form.Controllers.Pages
 
                 var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
                 if (pages == 0) pages = 1;
-                var page = Request.GetQueryInt("page", 1);
+                var page = request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
                 var logInfoList = LogManager.Repository.GetLogInfoList(formInfo, false, page);
 
@@ -64,13 +64,13 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByGet(Request);
+                var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = Request.GetQueryInt("logId");
+                var logId = request.GetQueryInt("logId");
                 var logInfo = LogManager.Repository.Get(logId);
                 if (logInfo == null) return NotFound();
 
@@ -78,7 +78,7 @@ namespace SS.Form.Controllers.Pages
 
                 var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
                 if (pages == 0) pages = 1;
-                var page = Request.GetQueryInt("page", 1);
+                var page = request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
                 var logInfoList = LogManager.Repository.GetLogInfoList(formInfo, false, page);
 
@@ -107,9 +107,9 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByPost(Request);
+                var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
@@ -165,13 +165,13 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByPost(Request);
+                var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var attributeName = Request.GetPostString("attributeName");
+                var attributeName = request.GetPostString("attributeName");
 
                 var attributeNames = FormUtils.StringCollectionToStringList(formInfo.ListAttributeNames);
                 if (attributeNames.Contains(attributeName))

@@ -10,7 +10,7 @@ namespace SS.Form.Core.Provider
 {
     public class FieldRepository : Repository<FieldInfo>
     {
-        public FieldRepository() : base(Context.DatabaseType, Context.ConnectionString)
+        public FieldRepository() : base(Context.Environment.Database)
         {
 
         }

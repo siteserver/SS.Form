@@ -18,13 +18,13 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByGet(Request);
+                var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = Request.GetQueryInt("logId");
+                var logId = request.GetQueryInt("logId");
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
 
                 if (logId > 0)
@@ -63,13 +63,13 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByPost(Request);
+                var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = Request.GetPostInt("logId");
+                var logId = request.GetPostInt("logId");
 
                 var logInfo = logId > 0
                     ? LogManager.Repository.Get(logId)
@@ -81,12 +81,12 @@ namespace SS.Form.Controllers.Pages
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 foreach (var fieldInfo in fieldInfoList)
                 {
-                    if (Request.IsPostExists(fieldInfo.Title))
+                    if (request.IsPostExists(fieldInfo.Title))
                     {
-                        var value = Request.GetPostString(fieldInfo.Title);
+                        var value = request.GetPostString(fieldInfo.Title);
                         if (fieldInfo.FieldType == InputType.Date.Value || fieldInfo.FieldType == InputType.DateTime.Value)
                         {
-                            var dt = FormUtils.ToDateTime(Request.GetPostString(fieldInfo.Title));
+                            var dt = FormUtils.ToDateTime(request.GetPostString(fieldInfo.Title));
                             logInfo.Set(fieldInfo.Title, dt.ToLocalTime());
                         }
 

@@ -16,13 +16,13 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByGet(Request);
+                var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = Request.GetQueryInt("fieldId");
+                var fieldId = request.GetQueryInt("fieldId");
                 var fieldInfo = FieldManager.GetFieldInfo(formInfo.Id, fieldId);
 
                 var veeValidate = string.Empty;
@@ -47,14 +47,14 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByPost(Request);
+                var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = Request.GetPostInt("fieldId");
-                var value = Request.GetPostString("value");
+                var fieldId = request.GetPostInt("fieldId");
+                var value = request.GetPostString("value");
 
                 var fieldInfo = FieldManager.GetFieldInfo(formInfo.Id, fieldId);
                 fieldInfo.Validate = value;

@@ -18,13 +18,13 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByGet(Request);
+                var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = Request.GetQueryInt("fieldId");
+                var fieldId = request.GetQueryInt("fieldId");
                 var fieldInfo = FieldManager.GetFieldInfo(formInfo.Id, fieldId) ?? new FieldInfo();
 
                 var isRapid = true;
@@ -72,15 +72,15 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByPost(Request);
+                var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fieldId = Request.GetPostInt("fieldId");
-                var isRapid = Request.GetPostBool("isRapid");
-                var rapidValues = Request.GetPostString("rapidValues");
+                var fieldId = request.GetPostInt("fieldId");
+                var isRapid = request.GetPostBool("isRapid");
+                var rapidValues = request.GetPostString("rapidValues");
                 var rapidValueArray = rapidValues.Split('\n');
                 var rapidValueList = new List<string>();
                 foreach (var item in rapidValueArray)
@@ -91,7 +91,7 @@ namespace SS.Form.Controllers.Pages
                     }
                 }
 
-                var body = Request.GetPostObject<FieldInfo>("fieldInfo");
+                var body = request.GetPostObject<FieldInfo>("fieldInfo");
 
                 var fieldInfoDatabase =
                     FieldManager.GetFieldInfo(formInfo.Id, fieldId) ??

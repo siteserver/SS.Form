@@ -79,17 +79,17 @@ namespace SS.Form.Core
             return formInfoList.FirstOrDefault(x => x.Id == id);
         }
 
-        public static FormInfo GetFormInfoByGet(HttpRequestMessage request)
+        public static FormInfo GetFormInfoByGet(IAuthenticatedRequest request)
         {
             return GetFormInfoByRequest(request, true);
         }
 
-        public static FormInfo GetFormInfoByPost(HttpRequestMessage request)
+        public static FormInfo GetFormInfoByPost(IAuthenticatedRequest request)
         {
             return GetFormInfoByRequest(request, false);
         }
 
-        private static FormInfo GetFormInfoByRequest(HttpRequestMessage request, bool get)
+        private static FormInfo GetFormInfoByRequest(IAuthenticatedRequest request, bool get)
         {
             var siteId = get ? request.GetQueryInt("siteId") : request.GetPostInt("siteId");
             var channelId = get ? request.GetQueryInt("channelId") : request.GetPostInt("channelId");

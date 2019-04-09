@@ -17,7 +17,7 @@ namespace SS.Form.Core
                 !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyTplId) &&
                 !string.IsNullOrEmpty(formInfo.AdministratorSmsNotifyMobile))
             {
-                var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>();
+                var smsPlugin = Context.PluginApi.GetPlugin<SMS.Plugin>();
                 if (smsPlugin != null && smsPlugin.IsReady)
                 {
                     var parameters = new Dictionary<string, string>();
@@ -60,7 +60,7 @@ namespace SS.Form.Core
             if (formInfo.IsAdministratorMailNotify &&
                 !string.IsNullOrEmpty(formInfo.AdministratorMailNotifyAddress))
             {
-                var mailPlugin = Context.PluginApi.GetPlugin<MailPlugin>();
+                var mailPlugin = Context.PluginApi.GetPlugin<Mail.Plugin>();
                 if (mailPlugin != null && mailPlugin.IsReady)
                 {
                     var templateHtml = MailTemplateManager.GetTemplateHtml();
@@ -98,7 +98,7 @@ namespace SS.Form.Core
                 !string.IsNullOrEmpty(formInfo.UserSmsNotifyTplId) &&
                 !string.IsNullOrEmpty(formInfo.UserSmsNotifyMobileName))
             {
-                var smsPlugin = Context.PluginApi.GetPlugin<SmsPlugin>();
+                var smsPlugin = Context.PluginApi.GetPlugin<SMS.Plugin>();
                 if (smsPlugin != null && smsPlugin.IsReady)
                 {
                     var parameters = new Dictionary<string, string>();

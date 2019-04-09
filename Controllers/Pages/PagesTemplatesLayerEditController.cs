@@ -18,12 +18,12 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var siteId = Request.GetQueryInt("siteId");
+                var siteId = request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
 
-                var name = Request.GetQueryString("name");
+                var name = request.GetQueryString("name");
                 var templateInfoList = TemplateManager.GetTemplateInfoList();
                 var templateInfo =
                     templateInfoList.FirstOrDefault(x => FormUtils.EqualsIgnoreCase(name, x.Name));
@@ -44,14 +44,14 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var siteId = Request.GetQueryInt("siteId");
+                var siteId = request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
 
-                var nameToClone = Request.GetPostString("nameToClone");
-                var name = Request.GetPostString("name");
-                var description = Request.GetPostString("description");
+                var nameToClone = request.GetPostString("nameToClone");
+                var name = request.GetPostString("name");
+                var description = request.GetPostString("description");
 
                 var templateInfoList = TemplateManager.GetTemplateInfoList();
                 var templateInfoToClone = templateInfoList.FirstOrDefault(x => FormUtils.EqualsIgnoreCase(nameToClone, x.Name));
@@ -89,7 +89,7 @@ namespace SS.Form.Controllers.Pages
         //{
         //    try
         //    {
-        //        var request = Request.GetAuthenticatedRequest();
+        //        var request = Context.AuthenticatedRequest;
         //        var siteId = request.GetQueryInt("siteId");
         //        if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, ApplicationUtils.PluginId)) return Unauthorized();
 

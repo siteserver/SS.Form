@@ -9,7 +9,7 @@ namespace SS.Form.Core.Provider
 {
     public class LogRepository : Repository<LogInfo>
     {
-        public LogRepository() : base(Context.DatabaseType, Context.ConnectionString)
+        public LogRepository() : base(Context.Environment.Database)
         {
 
         }

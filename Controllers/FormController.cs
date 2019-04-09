@@ -48,6 +48,8 @@ namespace SS.Form.Controllers
         {
             try
             {
+                var request = Context.AuthenticatedRequest;
+
                 var formInfo = FormManager.GetFormInfo(siteId, formId);
                 if (formInfo == null) return NotFound();
                 if (formInfo.IsClosed)
@@ -69,14 +71,14 @@ namespace SS.Form.Controllers
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 foreach (var fieldInfo in fieldInfoList)
                 {
-                    var value = Request.GetPostString(fieldInfo.Title);
+                    var value = request.GetPostString(fieldInfo.Title);
                     logInfo.Set(fieldInfo.Title, value);
                     if (FieldManager.IsExtra(fieldInfo))
                     {
                         foreach (var item in fieldInfo.Items)
                         {
                             var extrasId = FieldManager.GetExtrasId(fieldInfo.Id, item.Id);
-                            var extras = Request.GetPostString(extrasId);
+                            var extras = request.GetPostString(extrasId);
                             if (!string.IsNullOrEmpty(extras))
                             {
                                 logInfo.Set(extrasId, extras);
@@ -101,7 +103,7 @@ namespace SS.Form.Controllers
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
                 var formInfo = FormManager.GetFormInfo(siteId, formId);
                 if (formInfo == null) return NotFound();
@@ -112,7 +114,7 @@ namespace SS.Form.Controllers
 
                 var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
                 if (pages == 0) pages = 1;
-                var page = Request.GetQueryInt("page", 1);
+                var page = request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
                 var logInfoList = LogManager.Repository.GetLogInfoList(formInfo, formInfo.IsReply, page);
 

@@ -17,13 +17,13 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByGet(Request);
+                var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = Request.GetQueryInt("logId");
+                var logId = request.GetQueryInt("logId");
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var logInfo = LogManager.Repository.Get(logId);
 
@@ -51,17 +51,17 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var formInfo = FormManager.GetFormInfoByPost(Request);
+                var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var logId = Request.GetPostInt("logId");
+                var logId = request.GetPostInt("logId");
                 var logInfo = LogManager.Repository.Get(logId);
                 if (logInfo == null) return NotFound();
 
-                logInfo.ReplyContent = Request.GetPostString("replyContent");
+                logInfo.ReplyContent = request.GetPostString("replyContent");
 
                 LogManager.Repository.Reply(formInfo, logInfo);
 

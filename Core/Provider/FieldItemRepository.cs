@@ -8,7 +8,7 @@ namespace SS.Form.Core.Provider
 {
     public class FieldItemRepository : Repository<FieldItemInfo>
     {
-        public FieldItemRepository() : base(Context.DatabaseType, Context.ConnectionString)
+        public FieldItemRepository() : base(Context.Environment.Database)
         {
 
         }

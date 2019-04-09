@@ -9,7 +9,7 @@ namespace SS.Form.Core.Provider
 {
     public class FormRepository : Repository<FormInfo>
     {
-        public FormRepository() : base(Context.DatabaseType, Context.ConnectionString)
+        public FormRepository() : base(Context.Environment.Database)
         {
 
         }

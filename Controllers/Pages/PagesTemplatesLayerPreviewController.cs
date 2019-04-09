@@ -17,14 +17,14 @@ namespace SS.Form.Controllers.Pages
         {
             try
             {
-                var request = Request.GetAuthenticatedRequest();
+                var request = Context.AuthenticatedRequest;
 
-                var siteId = Request.GetQueryInt("siteId");
+                var siteId = request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
 
                 var formInfoList = FormManager.GetFormInfoList(siteId, 0);
 
-                var name = Request.GetQueryString("name");
+                var name = request.GetQueryString("name");
                 var templateInfoList = TemplateManager.GetTemplateInfoList();
                 var templateInfo =
                     templateInfoList.FirstOrDefault(x => FormUtils.EqualsIgnoreCase(name, x.Name));
