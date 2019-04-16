@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net4.5.2</TargetFrameworks>
+    <TargetFrameworks>net452</TargetFrameworks>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>SS.Form</PackageId>
     <Version>1.0.0</Version>
@@ -23,9 +23,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
-    <PackageReference Include="SiteServer.Plugin" Version="2.3.0" />
-    <PackageReference Include="SS.Mail" Version="1.0.7" />
-    <PackageReference Include="SS.SMS" Version="1.1.35" />
+    <PackageReference Include="SiteServer.Plugin" Version="2.3.2" />
+    <PackageReference Include="SS.Mail" Version="1.0.8" />
+    <PackageReference Include="SS.SMS" Version="1.1.36" />
   </ItemGroup>
 
 </Project>
