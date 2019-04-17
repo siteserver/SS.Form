@@ -10,11 +10,11 @@
     <Authors>SiteServer CMS</Authors>
     <Company>SiteServer CMS</Company>
     <Product>Datory</Product>
-    <Description>iteServer CMS 自定义表单插件是简单高效的电子表单工具，实现轻松快捷的表单制作</Description>
-    <PackageLicenseUrl>https://github.com/siteserver/SS.Form/blob/master/LICENSE</PackageLicenseUrl>
+    <Description>SiteServer CMS 自定义表单插件是简单高效的电子表单工具，实现轻松快捷的表单制作</Description>
+    <PackageLicense>GPL-3.0</PackageLicense>
     <PackageProjectUrl>https://github.com/siteserver/SS.Form</PackageProjectUrl>
-    <PackageIconUrl>https://plugins.siteserver.cn/ss.form/logo.svg</PackageIconUrl>
-    <Copyright>Copyright © SiteServer CMS 2018</Copyright>
+    <PackageIconUrl>https://www.siteserver.cn/docs/SS.Form/logo.svg</PackageIconUrl>
+    <Copyright>Copyright © SiteServer CMS</Copyright>
     <PackageTags>SiteServer CMS Form Plugin</PackageTags>
     <RepositoryUrl>https://github.com/siteserver/SS.Form</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -22,10 +22,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="assets\**" />
+    <Content Include="pages\**" />
+    <Content Include="templates\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
-    <PackageReference Include="SiteServer.Plugin" Version="2.3.2" />
-    <PackageReference Include="SS.Mail" Version="1.0.8" />
-    <PackageReference Include="SS.SMS" Version="1.1.36" />
+    <PackageReference Include="SiteServer.Plugin" Version="2.3.4" />
+    <PackageReference Include="SS.Mail" Version="1.0.12" />
+    <PackageReference Include="SS.SMS" Version="1.2.0" />
   </ItemGroup>
 
 </Project>
