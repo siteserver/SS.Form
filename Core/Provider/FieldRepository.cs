@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Datory;
 using SiteServer.Plugin;
@@ -380,6 +379,9 @@ namespace SS.Form.Core.Provider
 
             foreach (var fieldInfo in fieldInfoList)
             {
+                fieldInfo.Validate = string.IsNullOrEmpty(fieldInfo.Validate) ? string.Empty : fieldInfo.Validate;
+                fieldInfo.Value = fieldInfo.Value ?? string.Empty;
+
                 allItemsDict.TryGetValue(fieldInfo.Id, out var items);
                 if (items == null)
                 {

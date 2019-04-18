@@ -4,8 +4,6 @@ using System.Text;
 using SiteServer.Plugin;
 using SS.Form.Core.Model;
 using SS.Form.Core.Utils;
-using SS.Mail;
-using SS.SMS;
 
 namespace SS.Form.Core
 {
