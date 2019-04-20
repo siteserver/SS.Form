@@ -2,7 +2,6 @@
 using SiteServer.Plugin;
 using SS.Form.Core;
 using SS.Form.Core.Provider;
-using Menu = SiteServer.Plugin.Menu;
 
 namespace SS.Form
 {

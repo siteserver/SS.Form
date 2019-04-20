@@ -48,7 +48,7 @@ namespace SS.Form.Core
             {
                 var elementId = $"iframe_{FormUtils.GetShortGuid(false)}";
                 var libUrl = Context.PluginApi.GetPluginUrl(FormUtils.PluginId, "assets/lib/iframe-resizer-3.6.3/iframeResizer.min.js");
-                var pageUrl = Context.PluginApi.GetPluginUrl(FormUtils.PluginId, $"templates/{type}/index.html?siteId={context.SiteId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(Context.UtilsApi.GetApiUrl())}");
+                var pageUrl = Context.PluginApi.GetPluginUrl(FormUtils.PluginId, $"templates/{type}/index.html?siteId={context.SiteId}&formId={formInfo.Id}&apiUrl={HttpUtility.UrlEncode(Context.Environment.ApiUrl)}");
 
                 return $@"
 <iframe id=""{elementId}"" frameborder=""0"" scrolling=""no"" src=""{pageUrl}"" style=""width: 1px;min-width: 100%;""></iframe>
@@ -60,7 +60,7 @@ namespace SS.Form.Core
             return $@"
 <script>
 var $config = {{
-    apiUrl: '{Context.UtilsApi.GetApiUrl()}',
+    apiUrl: '{Context.Environment.ApiUrl}',
     siteId: {context.SiteId},
     formId: {formInfo.Id}
 }};

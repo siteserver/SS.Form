@@ -9,7 +9,7 @@ namespace SS.Form.Core.Provider
 {
     public class FieldRepository : Repository<FieldInfo>
     {
-        public FieldRepository() : base(Context.Environment.Database)
+        public FieldRepository() : base(Context.Environment.DatabaseType, Context.Environment.ConnectionString)
         {
 
         }
@@ -222,7 +222,7 @@ namespace SS.Form.Core.Provider
 
         private int GetMaxTaxis(int formId)
         {
-            return Max(Q.Select("Taxis").Where("FormId", formId)) ?? 0;
+            return Max("Taxis", Q.Where("FormId", formId)) ?? 0;
         }
 
         //private static int GetMaxTaxis(int formId)
