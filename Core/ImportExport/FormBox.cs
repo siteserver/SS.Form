@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Runtime.Remoting.Contexts;
 using Atom.Core;
 using SS.Form.Core.Model;
 using SS.Form.Core.Utils;
@@ -112,6 +111,7 @@ namespace SS.Form.Core.ImportExport
                         }
 
                         logInfo.ReplyContent = AtomUtility.GetDcElementContent(entry.AdditionalElements, "Reply");
+                        logInfo.AddDate = FormUtils.ToDateTime(AtomUtility.GetDcElementContent(entry.AdditionalElements, "adddate"));
                     }
 
                     LogManager.Repository.Insert(formInfo, logInfo);

@@ -22,7 +22,7 @@ namespace SS.Form.Core
                 return $"SS.Form.Core.FieldManager.{formId}";
             }
 
-            public static List<KeyValuePair<string, FieldInfo>> GetAllTableStyles(int formId)
+            public static List<KeyValuePair<string, FieldInfo>> GetAllFieldInfoList(int formId)
             {
                 var cacheKey = GetCacheKey(formId);
                 var retVal = CacheUtils.Get<List<KeyValuePair<string, FieldInfo>>>(cacheKey);
@@ -53,14 +53,14 @@ namespace SS.Form.Core
         {
             var fieldInfoList = new List<FieldInfo>();
 
-            var entries = FieldManagerCache.GetAllTableStyles(formId);
+            var entries = FieldManagerCache.GetAllFieldInfoList(formId);
             var startKey = GetKeyPrefix(formId);
             var list = entries.Where(tuple => tuple.Key.StartsWith(startKey)).ToList();
             foreach (var pair in list)
             {
                 if (pair.IsDefault()) continue;
 
-                fieldInfoList.Add(pair.Value);
+                fieldInfoList.Add((FieldInfo)pair.Value.Clone());
             }
 
             return fieldInfoList.OrderBy(fieldInfo => fieldInfo.Taxis == 0 ? int.MaxValue : fieldInfo.Taxis).ToList();
@@ -68,10 +68,10 @@ namespace SS.Form.Core
 
         public static FieldInfo GetFieldInfo(int formId, int id)
         {
-            var entries = FieldManagerCache.GetAllTableStyles(formId);
+            var entries = FieldManagerCache.GetAllFieldInfoList(formId);
 
             var entry = entries.FirstOrDefault(x => x.Value != null && x.Value.Id == id);
-            return entry.IsDefault() ? null : entry.Value;
+            return entry.IsDefault() ? null : (FieldInfo)entry.Value.Clone();
         }
 
         public static void ClearCache(int formId)

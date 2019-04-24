@@ -46,9 +46,10 @@ var methods = {
   },
 
   btnEditClick: function (name) {
+    var url = 'templatesLayerEdit.html?siteId=' + this.siteId + '&type=' + this.type + '&name=' + name + '&apiUrl=' + encodeURIComponent(this.apiUrl);
     utils.openLayer({
       title: '模板设置',
-      url: utils.getPageUrl('templatesLayerEdit.html') + '&name=' + name
+      url: url
     });
   },
 
@@ -63,14 +64,6 @@ var methods = {
     utils.openLayer({
       title: '预览模板',
       url: 'templatesLayerPreview.html?siteId=' + $this.siteId + '&name=' + name + '&apiUrl=' + encodeURIComponent($this.apiUrl)
-    });
-  },
-
-  btnCloneClick: function (name) {
-    var $this = this;
-    utils.openLayer({
-      title: '克隆模板',
-      url: 'templatesLayerEdit.html?siteId=' + $this.siteId + '&type=clone&name=' + name + '&apiUrl=' + encodeURIComponent($this.apiUrl)
     });
   },
 

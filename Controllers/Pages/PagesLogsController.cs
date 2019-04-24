@@ -129,7 +129,7 @@ namespace SS.Form.Controllers.Pages
                 {
                     var row = new List<string>
                     {
-                        log.Id.ToString()
+                        log.Guid
                     };
                     foreach (var fieldInfo in fieldInfoList)
                     {
@@ -144,10 +144,9 @@ namespace SS.Form.Controllers.Pages
                     rows.Add(row);
                 }
 
-                const string relatedPath = "表单数据.csv";
-
-                CsvUtils.Export(Context.PluginApi.GetPluginPath(FormUtils.PluginId, relatedPath), head, rows);
-                var downloadUrl = Context.PluginApi.GetPluginUrl(FormUtils.PluginId, relatedPath);
+                var fileName = $"{formInfo.Title}.csv";
+                CsvUtils.Export(Context.PluginApi.GetPluginPath(FormUtils.PluginId, fileName), head, rows);
+                var downloadUrl = Context.PluginApi.GetPluginUrl(FormUtils.PluginId, fileName);
 
                 return Ok(new
                 {

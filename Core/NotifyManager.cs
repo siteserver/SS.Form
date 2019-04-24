@@ -66,7 +66,7 @@ namespace SS.Form.Core
 
                     var keyValueList = new List<KeyValuePair<string, string>>
                     {
-                        new KeyValuePair<string, string>("编号", logInfo.Id.ToString())
+                        new KeyValuePair<string, string>("编号", logInfo.Guid)
                     };
                     if (logInfo.AddDate.HasValue)
                     {

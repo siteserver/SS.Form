@@ -132,7 +132,7 @@ var methods = {
   },
 
   getAttributeText: function (attributeName) {
-    if (attributeName === 'Id') {
+    if (attributeName === 'Guid') {
       return '编号';
     } else if (attributeName === 'AddDate') {
       return '添加时间';

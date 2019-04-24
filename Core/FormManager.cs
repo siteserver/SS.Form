@@ -119,7 +119,7 @@ namespace SS.Form.Core
         {
             var allAttributeNames = new List<string>
             {
-                nameof(LogInfo.Id)
+                nameof(LogInfo.Guid)
             };
             foreach (var fieldInfo in fieldInfoList)
             {

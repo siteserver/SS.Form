@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Datory;
 using SiteServer.Plugin;
 
 namespace SS.Form.Core.Model
 {
     [Table("ss_form_field")]
-    public class FieldInfo : Entity
+    public class FieldInfo : Entity, ICloneable
     {
         public FieldInfo()
 	    {
@@ -45,5 +46,10 @@ namespace SS.Form.Core.Model
         public List<FieldItemInfo> Items { get; set; }
 
 	    public object Value { get; set; }
+
+        public object Clone()
+        {
+            return (FieldInfo)MemberwiseClone();
+        }
     }
 }

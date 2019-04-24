@@ -50,6 +50,7 @@ namespace SS.Form.Core
             var dict = new Dictionary<string, object>
             {
                 {nameof(LogInfo.Id), logInfo.Id},
+                {nameof(LogInfo.Guid), logInfo.Guid},
                 {nameof(LogInfo.IsReplied), logInfo.IsReplied},
                 {nameof(LogInfo.ReplyContent), logInfo.IsReplied ? logInfo.ReplyContent : string.Empty}
             };

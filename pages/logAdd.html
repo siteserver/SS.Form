@@ -45,7 +45,7 @@
         <form v-on:submit="btnSubmitClick">
           <div class="row">
             <div class="col-md-12">
-              <h4 v-if="config.logId" class="m-t-0 m-b-30 header-title">修改</h4>
+              <h4 v-if="$logId" class="m-t-0 m-b-30 header-title">修改</h4>
               <h4 v-else class="m-t-0 m-b-30 header-title">新增</h4>
               <div v-for="fieldInfo in fieldInfoList" class="form-group">
                 <label> {{ fieldInfo.title }} <span v-if="fieldInfo.validate.indexOf('required') !== -1" class="text-danger">*</span>

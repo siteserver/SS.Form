@@ -66,9 +66,11 @@ var methods = {
 
   btnSubmitClick: function () {
     if (this.isSystem) {
+      var url = 'templatesLayerEdit.html?siteId=' + this.siteId + '&apiUrl=' + encodeURIComponent(this.apiUrl) + '&type=' + this.type + '&name=' + this.name + '&isSystem=true';
+
       utils.openLayer({
         title: '克隆模板',
-        url: utils.getPageUrl('templatesLayerEdit.html') + '&name=' + this.name + '&isSystem=true'
+        url: url
       });
       return;
     }
@@ -89,7 +91,7 @@ var methods = {
         showConfirmButton: false,
         timer: 2000
       }).then(function () {
-        $this.btnNavClick('templates.html');
+        $this.btnNavClick($this.type);
       });
     }).catch(function (error) {
       $this.pageAlert = utils.getPageAlert(error);

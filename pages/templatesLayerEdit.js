@@ -1,10 +1,20 @@
-﻿var $url = '/pages/templatesLayerEdit';
+﻿var $api = axios.create({
+  baseURL:
+    utils.getQueryString("apiUrl") +
+    "/SS.Form/pages/templatesLayerEdit/",
+  params: {
+    siteId: utils.getQueryString('siteId'),
+    type: utils.getQueryString('type')
+  },
+  withCredentials: true
+});
 
 var data = {
-  siteId: utils.getQueryString('siteId'),
   apiUrl: utils.getQueryString('apiUrl'),
+  siteId: utils.getQueryString('siteId'),
   type: utils.getQueryString('type'),
   name: utils.getQueryString('name'),
+  isSystem: utils.getQueryString('isSystem'),
   pageLoad: false,
   pageAlert: null,
   templateInfo: null
@@ -13,11 +23,19 @@ var data = {
 var methods = {
   load: function () {
     var $this = this;
-    $api.get($url + '?siteId=' + this.siteId + '&name=' + this.name).then(function (response) {
+    $api.get('', {
+      params: {
+        name: this.name
+      }
+    }).then(function (response) {
       var res = response.data;
       $this.templateInfo = res.value;
-      if ($this.type == 'clone') {
-        $this.templateInfo.name = '';
+
+      if ($this.isSystem === 'true') {
+        $this.pageAlert = {
+          type: 'warning',
+          html: '提示：' + utils.getQueryString("name") + ' 为系统模板，编辑此模板需要克隆至指定文件夹'
+        };
       }
     }).catch(function (error) {
       $this.pageAlert = utils.getPageAlert(error);
@@ -26,43 +44,77 @@ var methods = {
     });
   },
 
+  getTemplateHtml: function() {
+    return parent.$vue.getEditorContent();
+  },
+
+  apiClone: function() {
+    var $this = this;
+
+    utils.loading(true);
+    $api.post('', {
+      originalName: $this.name,
+      name: $this.templateInfo.name,
+      description: $this.templateInfo.description,
+      templateHtml: $this.getTemplateHtml()
+    }).then(function (response) {
+      swal({
+        toast: true,
+        type: 'success',
+        title: "模板克隆成功！",
+        showConfirmButton: false,
+        timer: 2000
+      }).then(function () {
+        parent.location.href = $this.getTemplatesUrl()
+      });
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
+    });
+  },
+
+  apiEdit: function() {
+    var $this = this;
+
+    utils.loading(true);
+    $api.put('', {
+      originalName: $this.name,
+      name: $this.templateInfo.name,
+      description: $this.templateInfo.description
+    }).then(function (response) {
+      swal({
+        toast: true,
+        type: 'success',
+        title: "模板编辑成功！",
+        showConfirmButton: false,
+        timer: 2000
+      }).then(function () {
+        parent.location.href = $this.getTemplatesUrl()
+      });
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
+    });
+  },
+
   btnSubmitClick: function () {
     var $this = this;
     this.$validator.validate().then(function (result) {
       if (result) {
-        utils.loading(true);
-        if ($this.type == 'clone') {
-          $api.post($url, {
-            nameToClone: $this.name,
-            name: $this.templateInfo.name,
-            description: $this.templateInfo.description
-          }, {
-            params: {
-              siteId: $this.siteId,
-              type: $this.type
-            }
-          }).then(function (response) {
-            parent.location.reload(true);
-          }).catch(function (error) {
-            $this.pageAlert = utils.getPageAlert(error);
-          }).then(function () {
-            utils.loading(false);
-          });
+        
+        if ($this.isSystem === 'true') {
+          $this.apiClone();
         } else {
-          $api.put($url + '/' + $this.departmenteId + '?siteId=' + $this.siteId, {
-            departmentName: $this.departmentInfo.departmentName,
-            userNames: $this.userNames.join(','),
-            taxis: $this.departmentInfo.taxis
-          }).then(function (response) {
-            parent.location.reload(true);
-          }).catch(function (error) {
-            $this.pageAlert = utils.getPageAlert(error);
-          }).then(function () {
-            utils.loading(false);
-          });
+          $this.apiEdit();
         }
       }
     });
+  },
+
+  getTemplatesUrl: function() {
+    return 'templates.html?siteId=' + this.siteId + '&apiUrl=' + encodeURIComponent(this.apiUrl) + '&formId=' + this.formId + '&type=' + this.type;
   }
 };
 

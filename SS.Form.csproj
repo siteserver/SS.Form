@@ -18,7 +18,7 @@
     <PackageTags>SiteServer CMS Form Plugin</PackageTags>
     <RepositoryUrl>https://github.com/siteserver/SS.Form</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>完善菜单显示，修正勾选后需提交信息无效等问题</PackageReleaseNotes>
+    <PackageReleaseNotes>老版本导入文件支持</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
