@@ -6,14 +6,20 @@ using SS.Form.Core.Model;
 
 namespace SS.Form.Core.Provider
 {
-    public class FormRepository : Repository<FormInfo>
+    public class FormRepository
     {
-        public FormRepository() : base(Context.Environment.DatabaseType, Context.Environment.ConnectionString)
-        {
+        private readonly Repository<FormInfo> _repository;
 
+        public string TableName => _repository.TableName;
+
+        public List<TableColumn> TableColumns => _repository.TableColumns;
+
+        public FormRepository()
+        {
+            _repository = new Repository<FormInfo>(Context.Environment.DatabaseType, Context.Environment.ConnectionString);
         }
 
-        public override int Insert(FormInfo formInfo)
+        public int Insert(FormInfo formInfo)
         {
             if (formInfo.SiteId == 0) return 0;
             if (formInfo.ChannelId == 0 && formInfo.ContentId == 0 && string.IsNullOrEmpty(formInfo.Title)) return 0;
@@ -23,16 +29,16 @@ namespace SS.Form.Core.Provider
                 formInfo.Taxis = GetMaxTaxis(formInfo.SiteId) + 1;
             }
 
-            formInfo.Id = base.Insert(formInfo);
+            formInfo.Id = _repository.Insert(formInfo);
 
             FormManager.ClearCache(formInfo.SiteId);
 
             return formInfo.Id;
         }
 
-        public override bool Update(FormInfo formInfo)
+        public bool Update(FormInfo formInfo)
         {
-            var updated = base.Update(formInfo);
+            var updated = _repository.Update(formInfo);
 
             FormManager.UpdateCache(formInfo);
 
@@ -43,7 +49,7 @@ namespace SS.Form.Core.Provider
         {
             if (formId <= 0) return;
 
-            base.Delete(formId);
+            _repository.Delete(formId);
 
             var fieldRepository = new FieldRepository();
 
@@ -111,9 +117,9 @@ namespace SS.Form.Core.Provider
 
         public void UpdateTaxisToDown(int siteId, int formId)
         {
-            var taxis = Get<int>(Q.Where("Id", formId));
+            var taxis = _repository.Get<int>(Q.Where("Id", formId));
 
-            var dataInfo = Get(Q
+            var dataInfo = _repository.Get(Q
                 .Where("SiteId", siteId)
                 .Where("Taxis", ">", taxis)
                 .OrderBy("Taxis")
@@ -130,9 +136,9 @@ namespace SS.Form.Core.Provider
 
         public void UpdateTaxisToUp(int siteId, int formId)
         {
-            var taxis = Get<int>(Q.Where("Id", formId));
+            var taxis = _repository.Get<int>(Q.Where("Id", formId));
 
-            var dataInfo = Get(Q
+            var dataInfo = _repository.Get(Q
                 .Where("SiteId", siteId)
                 .Where("Taxis", "<", taxis)
                 .OrderByDesc("Taxis")
@@ -149,19 +155,52 @@ namespace SS.Form.Core.Provider
 
         private int GetMaxTaxis(int siteId)
         {
-            return Max("Taxis", Q.Where("SiteId", siteId)) ?? 0;
+            return _repository.Max("Taxis", Q.Where("SiteId", siteId)) ?? 0;
         }
 
         private void SetTaxis(int siteId, int formId, int taxis)
         {
-            Update(Q.Set("Taxis", taxis).Where("Id", formId));
+            _repository.Update(Q.Set("Taxis", taxis).Where("Id", formId));
 
             FormManager.ClearCache(siteId);
         }
 
         public IList<FormInfo> GetFormInfoList(int siteId)
         {
-            return GetAll(Q.Where("SiteId", siteId).OrderByDesc("Taxis", "Id"));
+            return _repository.GetAll(Q.Where("SiteId", siteId).OrderByDesc("Taxis", "Id"));
+        }
+
+        public string GetImportTitle(int siteId, string title)
+        {
+            string importTitle;
+            if (title.IndexOf("_", StringComparison.Ordinal) != -1)
+            {
+                var inputNameCount = 0;
+                var lastInputName = title.Substring(title.LastIndexOf("_", StringComparison.Ordinal) + 1);
+                var firstInputName = title.Substring(0, title.Length - lastInputName.Length);
+                try
+                {
+                    inputNameCount = int.Parse(lastInputName);
+                }
+                catch
+                {
+                    // ignored
+                }
+                inputNameCount++;
+                importTitle = firstInputName + inputNameCount;
+            }
+            else
+            {
+                importTitle = title + "_1";
+            }
+
+            var inputInfo = FormManager.GetFormInfoByTitle(siteId, title);
+            if (inputInfo != null)
+            {
+                importTitle = GetImportTitle(siteId, importTitle);
+            }
+
+            return importTitle;
         }
     }
 }

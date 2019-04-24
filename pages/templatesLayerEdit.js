@@ -32,10 +32,15 @@ var methods = {
       if (result) {
         utils.loading(true);
         if ($this.type == 'clone') {
-          $api.post($url + '?siteId=' + $this.siteId, {
+          $api.post($url, {
             nameToClone: $this.name,
             name: $this.templateInfo.name,
             description: $this.templateInfo.description
+          }, {
+            params: {
+              siteId: $this.siteId,
+              type: $this.type
+            }
           }).then(function (response) {
             parent.location.reload(true);
           }).catch(function (error) {

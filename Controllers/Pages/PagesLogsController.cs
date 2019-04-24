@@ -71,7 +71,7 @@ namespace SS.Form.Controllers.Pages
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
                 var logId = request.GetQueryInt("logId");
-                var logInfo = LogManager.Repository.Get(logId);
+                var logInfo = LogManager.Repository.GetLogInfo(logId);
                 if (logInfo == null) return NotFound();
 
                 LogManager.Repository.Delete(formInfo, logInfo);

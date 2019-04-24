@@ -7,21 +7,38 @@ using SS.Form.Core.Utils;
 
 namespace SS.Form.Core.Provider
 {
-    public class LogRepository : Repository<LogInfo>
+    public class LogRepository
     {
-        public LogRepository() : base(Context.Environment.DatabaseType, Context.Environment.ConnectionString)
-        {
+        private readonly Repository<LogInfo> _repository;
 
+        public string TableName => _repository.TableName;
+
+        public List<TableColumn> TableColumns => _repository.TableColumns;
+
+        public LogRepository()
+        {
+            _repository = new Repository<LogInfo>(Context.Environment.DatabaseType, Context.Environment.ConnectionString);
         }
 
         public int Insert(FormInfo formInfo, LogInfo logInfo)
         {
-            logInfo.Id = base.Insert(logInfo);
+            logInfo.FormId = formInfo.Id;
+            logInfo.Id = _repository.Insert(logInfo);
 
             formInfo.TotalCount += 1;
             FormManager.Repository.Update(formInfo);
 
             return logInfo.Id;
+        }
+
+        public void Update(LogInfo logInfo)
+        {
+            _repository.Update(logInfo);
+        }
+
+        public LogInfo GetLogInfo(int logId)
+        {
+            return _repository.Get(logId);
         }
 
         //        public static int Insert(FormInfo formInfo, LogInfo logInfo)
@@ -78,7 +95,7 @@ namespace SS.Form.Core.Provider
 
         public void Reply(FormInfo formInfo, LogInfo logInfo)
         {
-            Update(Q
+            _repository.Update(Q
                 .Set(nameof(LogInfo.IsReplied), true)
                 .Set(nameof(LogInfo.ReplyDate), DateTime.Now)
                 .Set(nameof(LogInfo.ReplyContent), logInfo.ReplyContent)
@@ -121,7 +138,7 @@ namespace SS.Form.Core.Provider
         {
             if (formId <= 0) return;
 
-            Delete(Q.Where("FormId", formId));
+            _repository.Delete(Q.Where("FormId", formId));
         }
 
         //public static void DeleteByFormId(int formId)
@@ -134,7 +151,7 @@ namespace SS.Form.Core.Provider
 
         public void Delete(FormInfo formInfo, LogInfo logInfo)
         {
-            Delete(logInfo.Id);
+            _repository.Delete(logInfo.Id);
 
             if (logInfo.IsReplied)
             {
@@ -160,7 +177,7 @@ namespace SS.Form.Core.Provider
 
         public int GetCount(int formId)
         {
-            return Count(Q.Where("FormId", formId));
+            return _repository.Count(Q.Where("FormId", formId));
         }
 
         //public static int GetCount(int formId)
@@ -214,16 +231,24 @@ namespace SS.Form.Core.Provider
         {
             var q = Q
                 .Where("FormId", formId)
-                .Offset(offset)
-                .Limit(limit)
                 .OrderByDesc(nameof(LogInfo.IsReplied), "Id");
+
+            if (offset > 0)
+            {
+                q.Offset(offset);
+            }
+
+            if (limit > 0)
+            {
+                q.Limit(limit);
+            }
 
             if (isRepliedOnly)
             {
                 q.Where(nameof(LogInfo.IsReplied), true);
             }
 
-            return GetAll(q);
+            return _repository.GetAll(q);
         }
 
     //    public static List<LogInfo> GetLogInfoList(int formId, bool isRepliedOnly, int offset, int limit)

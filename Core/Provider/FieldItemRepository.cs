@@ -5,12 +5,20 @@ using SS.Form.Core.Model;
 
 namespace SS.Form.Core.Provider
 {
-    public class FieldItemRepository : Repository<FieldItemInfo>
+    public class FieldItemRepository
     {
-        public FieldItemRepository() : base(Context.Environment.DatabaseType, Context.Environment.ConnectionString)
-        {
+        private readonly Repository<FieldItemInfo> _repository;
 
+        public string TableName => _repository.TableName;
+
+        public List<TableColumn> TableColumns => _repository.TableColumns;
+
+        public FieldItemRepository()
+        {
+            _repository = new Repository<FieldItemInfo>(Context.Environment.DatabaseType, Context.Environment.ConnectionString);
         }
+
+        
 
         //        public static void Insert(IDbTransaction trans, FieldItemInfo itemInfo)
         //        {
@@ -48,7 +56,7 @@ namespace SS.Form.Core.Provider
             {
                 itemInfo.FormId = formId;
                 itemInfo.FieldId = fieldId;
-                base.Insert(itemInfo);
+                _repository.Insert(itemInfo);
             }
         }
 
@@ -85,7 +93,7 @@ namespace SS.Form.Core.Provider
         {
             if (formId == 0) return;
 
-            base.Delete(Q.Where("FormId", formId));
+            _repository.Delete(Q.Where("FormId", formId));
         }
 
         //     public static void DeleteByFormId(int formId)
@@ -106,7 +114,7 @@ namespace SS.Form.Core.Provider
         {
             if (fieldId == 0) return;
 
-            base.Delete(Q.Where("FieldId", fieldId));
+            _repository.Delete(Q.Where("FieldId", fieldId));
         }
 
         //public static void DeleteByFieldId(int fieldId)
@@ -125,7 +133,7 @@ namespace SS.Form.Core.Provider
 
         public IList<FieldItemInfo> GetItemInfoList(int fieldId)
         {
-            return GetAll(Q.Where("FieldId", fieldId).OrderBy("Id"));
+            return _repository.GetAll(Q.Where("FieldId", fieldId).OrderBy("Id"));
         }
 
         //     public static List<FieldItemInfo> GetItemInfoList(int fieldId)
@@ -156,7 +164,7 @@ namespace SS.Form.Core.Provider
         {
             var allDict = new Dictionary<int, List<FieldItemInfo>>();
 
-            var fieldItemInfoList = GetAll(Q.Where("FormId", formId));
+            var fieldItemInfoList = _repository.GetAll(Q.Where("FormId", formId));
 
             foreach (var fieldItemInfo in fieldItemInfoList)
             {

@@ -33,7 +33,7 @@ namespace SS.Form.Core
                     {
                         retVal = Repository.GetFormInfoList(siteId);
 
-                        CacheUtils.InsertHours(cacheKey, retVal, 12);
+                        CacheUtils.Insert(cacheKey, retVal, 12);
                     }
                 }
 

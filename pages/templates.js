@@ -1,13 +1,16 @@
 var $url = '/pages/templates';
-var $urlHtml = '/pages/templates/html';
 
 var data = {
   siteId: utils.getQueryString('siteId'),
   formId: utils.getQueryString('formId'),
   apiUrl: utils.getQueryString('apiUrl'),
+  type: utils.getQueryString('type'),
+  pageLoad: false,
   pageConfig: null,
-  pageAlert: null,
-  pageType: 'loading',
+  pageAlert: {
+    type: 'primary',
+    html: '表单标签：<mark>&lt;stl:form type="模板文件夹"&gt;&lt;/stl:form&gt;</mark>，如果希望自定义模板样式，可以点击克隆按钮然后修改模板代码。'
+  },
   templateInfoList: null,
   name: null,
   templateHtml: null,
@@ -25,17 +28,34 @@ var methods = {
       utils.loading(true);
     }
 
-    $api.get($url + '?siteId=' + this.siteId).then(function (response) {
+    $api.get($url, {
+      params: {
+        siteId: this.siteId,
+        type: this.type
+      }
+    }).then(function (response) {
       var res = response.data;
 
       $this.templateInfoList = res.value;
-      $this.pageType = 'list';
     }).catch(function (error) {
       $this.pageAlert = utils.getPageAlert(error);
     }).then(function () {
       utils.loading(false);
       $this.pageLoad = true;
     });
+  },
+
+  btnEditClick: function (name) {
+    utils.openLayer({
+      title: '模板设置',
+      url: utils.getPageUrl('templatesLayerEdit.html') + '&name=' + name
+    });
+  },
+
+  btnHtmlClick: function (templateInfo) {
+    utils.loading(true);
+    var url = 'templateHtml.html?siteId=' + this.siteId + '&apiUrl=' + encodeURIComponent(this.apiUrl) + '&formId=' + this.formId + '&type=' + this.type + '&name=' + templateInfo.name;
+    location.href = url;
   },
 
   btnPreviewClick: function (name) {
@@ -61,42 +81,22 @@ var methods = {
       text: '此操作将删除模板' + template.name + '，确认吗？',
       callback: function () {
         utils.loading(true);
-        $api.delete($url + '?siteId=' + this.siteId, {
+        $api.delete($url, {
           params: {
+            siteId: $this.siteId,
+            type: $this.type,
             name: template.name
           }
         }).then(function (response) {
           var res = response.data;
 
           $this.templateInfoList = res.value;
-          $this.pageType = 'list';
         }).catch(function (error) {
           $this.pageAlert = utils.getPageAlert(error);
         }).then(function () {
           utils.loading(false);
         });
       }
-    });
-  },
-
-  btnHtmlClick: function (template) {
-    var $this = this;
-    this.name = template.name;
-    utils.loading(true);
-    $api.get($urlHtml + '?siteId=' + this.siteId + '&name=' + this.name).then(function (response) {
-      var res = response.data;
-
-      $this.templateHtml = res.value;
-      $this.pageType = 'edit';
-      setTimeout(function () {
-        $('.js-copytextarea').css({
-          height: $(document).height() - 180
-        });
-      }, 100);
-    }).catch(function (error) {
-      $this.pageAlert = utils.getPageAlert(error);
-    }).then(function () {
-      utils.loading(false);
     });
   },
 
@@ -123,6 +123,12 @@ var methods = {
     }).then(function () {
       utils.loading(false);
     });
+  },
+
+  btnNavClick: function(type) {
+    utils.loading(true);
+    var url = 'templates.html?siteId=' + this.siteId + '&apiUrl=' + encodeURIComponent(this.apiUrl) + '&formId=' + this.formId + '&type=' + type;
+    location.href = url;
   }
 };
 

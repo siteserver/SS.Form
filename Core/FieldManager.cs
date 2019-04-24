@@ -35,7 +35,7 @@ namespace SS.Form.Core
                     {
                         retVal = Repository.GetAllFieldInfoList(formId);
 
-                        CacheUtils.InsertHours(cacheKey, retVal, 12);
+                        CacheUtils.Insert(cacheKey, retVal, 12);
                     }
                 }
 

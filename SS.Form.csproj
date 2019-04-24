@@ -32,6 +32,7 @@
     <PackageReference Include="SiteServer.Plugin" Version="2.3.6" />
     <PackageReference Include="SS.Mail" Version="1.0.13" />
     <PackageReference Include="SS.SMS" Version="1.2.1" />
+    <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
   </ItemGroup>
 
 </Project>

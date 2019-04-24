@@ -29,7 +29,7 @@ namespace SS.Form.Controllers.Pages
 
                 if (logId > 0)
                 {
-                    var logInfo = LogManager.Repository.Get(logId);
+                    var logInfo = LogManager.Repository.GetLogInfo(logId);
                     foreach (var fieldInfo in fieldInfoList)
                     {
                         if (fieldInfo.FieldType == InputType.CheckBox.Value || fieldInfo.FieldType == InputType.SelectMultiple.Value)
@@ -72,7 +72,7 @@ namespace SS.Form.Controllers.Pages
                 var logId = request.GetPostInt("logId");
 
                 var logInfo = logId > 0
-                    ? LogManager.Repository.Get(logId)
+                    ? LogManager.Repository.GetLogInfo(logId)
                     : new LogInfo
                     {
                         FormId = formInfo.Id,

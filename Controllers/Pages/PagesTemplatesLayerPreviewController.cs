@@ -24,8 +24,9 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfoList = FormManager.GetFormInfoList(siteId, 0);
 
+                var type = request.GetQueryString("type");
                 var name = request.GetQueryString("name");
-                var templateInfoList = TemplateManager.GetTemplateInfoList();
+                var templateInfoList = TemplateManager.GetTemplateInfoList(type);
                 var templateInfo =
                     templateInfoList.FirstOrDefault(x => FormUtils.EqualsIgnoreCase(name, x.Name));
 

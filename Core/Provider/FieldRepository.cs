@@ -7,18 +7,24 @@ using SS.Form.Core.Utils;
 
 namespace SS.Form.Core.Provider
 {
-    public class FieldRepository : Repository<FieldInfo>
+    public class FieldRepository
     {
-        public FieldRepository() : base(Context.Environment.DatabaseType, Context.Environment.ConnectionString)
-        {
+        private readonly Repository<FieldInfo> _repository;
 
+        public string TableName => _repository.TableName;
+
+        public List<TableColumn> TableColumns => _repository.TableColumns;
+
+        public FieldRepository()
+        {
+            _repository = new Repository<FieldInfo>(Context.Environment.DatabaseType, Context.Environment.ConnectionString);
         }
 
         public int Insert(int siteId, FieldInfo fieldInfo)
         {
             fieldInfo.Taxis = GetMaxTaxis(fieldInfo.FormId) + 1;
 
-            fieldInfo.Id = base.Insert(fieldInfo);
+            fieldInfo.Id = _repository.Insert(fieldInfo);
 
             FieldManager.ItemRepository.InsertItems(fieldInfo.FormId, fieldInfo.Id, fieldInfo.Items);
 
@@ -87,7 +93,7 @@ namespace SS.Form.Core.Provider
 
         public void Update(FieldInfo info, bool updateItems)
         {
-            base.Update(info);
+            _repository.Update(info);
 
             if (updateItems)
             {
@@ -139,13 +145,25 @@ namespace SS.Form.Core.Provider
 
         public bool Delete(int formId, int fieldId)
         {
-            var deleted = base.Delete(fieldId);
+            if (fieldId == 0) return false;
+
+            var deleted = _repository.Delete(fieldId);
 
             FieldManager.ItemRepository.DeleteByFieldId(fieldId);
 
             FieldManager.ClearCache(formId);
 
             return deleted;
+        }
+
+        public bool Delete(int formId, string title)
+        {
+            var fieldId = _repository.Get<int>(Q
+                .Select(nameof(FieldInfo.Id))
+                .Where(nameof(FieldInfo.FormId), formId)
+                .Where(nameof(FieldInfo.Title), title)
+            );
+            return Delete(formId, fieldId);
         }
 
         //public static void Delete(int fieldId)
@@ -166,7 +184,7 @@ namespace SS.Form.Core.Provider
 
         public void DeleteByFormId(int formId)
         {
-            base.Delete(Q.Where("FormId", formId));
+            _repository.Delete(Q.Where("FormId", formId));
 
             FieldManager.ItemRepository.DeleteByFormId(formId);
 
@@ -191,7 +209,7 @@ namespace SS.Form.Core.Provider
 
         public bool IsTitleExists(int formId, string title)
         {
-            return Exists(Q.Where("FormId", formId).Where("Title", title));
+            return _repository.Exists(Q.Where("FormId", formId).Where("Title", title));
         }
 
         //     public static bool IsTitleExists(int formId, string title)
@@ -222,7 +240,7 @@ namespace SS.Form.Core.Provider
 
         private int GetMaxTaxis(int formId)
         {
-            return Max("Taxis", Q.Where("FormId", formId)) ?? 0;
+            return _repository.Max("Taxis", Q.Where("FormId", formId)) ?? 0;
         }
 
         //private static int GetMaxTaxis(int formId)
@@ -327,7 +345,7 @@ namespace SS.Form.Core.Provider
             var fieldInfo = FieldManager.GetFieldInfo(formId, id);
             if (fieldInfo == null) return;
 
-            var dataInfo = Get(Q
+            var dataInfo = _repository.Get(Q
                 .Where("FormId", fieldInfo.FormId)
                 .Where("Taxis", ">", fieldInfo.Taxis)
                 .OrderBy("Taxis")
@@ -347,7 +365,7 @@ namespace SS.Form.Core.Provider
             var fieldInfo = FieldManager.GetFieldInfo(formId, id);
             if (fieldInfo == null) return;
 
-            var dataInfo = Get(Q
+            var dataInfo = _repository.Get(Q
                 .Where("FormId", fieldInfo.FormId)
                 .Where("Taxis", "<", fieldInfo.Taxis)
                 .OrderByDesc("Taxis")
@@ -364,7 +382,7 @@ namespace SS.Form.Core.Provider
 
         private void SetTaxis(int formId, int id, int taxis)
         {
-            Update(Q.Set("Taxis", taxis).Where("Id", id));
+            _repository.Update(Q.Set("Taxis", taxis).Where("Id", id));
 
             FieldManager.ClearCache(formId);
         }
@@ -375,7 +393,7 @@ namespace SS.Form.Core.Provider
 
             var allItemsDict = FieldManager.ItemRepository.GetAllItems(formId);
 
-            var fieldInfoList = GetAll(Q.Where("FormId", formId).OrderByDesc("Taxis", "Id"));
+            var fieldInfoList = _repository.GetAll(Q.Where("FormId", formId).OrderByDesc("Taxis", "Id"));
 
             foreach (var fieldInfo in fieldInfoList)
             {

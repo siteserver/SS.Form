@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>SiteServer CMS</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      href="../assets/css/font-awesome-4.7.0.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="../assets/css/bootstrap.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="../assets/css/siteserver.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <style>
+      .nav .nav-link {
+        font-weight: normal;
+        border-radius: 1.25rem;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+<body>
+
+  <div id="main" class="m-2">
+    <template v-if="pageLoad">
+      <div class="card-box">
+        <div class="mb-3">
+          <ul class="nav nav-pills nav-justified">
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                :class="{active: !type}"
+                href="javascript:;"
+                @click="{btnNavClick('')}"
+              >
+                表单提交模板
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                :class="{active: type === 'list'}"
+                href="javascript:;"
+                @click="{btnNavClick('list')}"
+              >
+                数据显示模板
+              </a>
+            </li>
+          </ul>
+        </div>
+      
+          <hr />
+          
+          <div v-if="pageAlert" class="alert" v-bind:class="{ 'alert-primary': pageAlert.type === 'primary', 'alert-warning': pageAlert.type === 'warning', 'alert-success': pageAlert.type === 'success', 'alert-danger': pageAlert.type === 'danger' }">
+            <button @click="pageAlert = null" class="close" data-dismiss="alert">×</button>
+            <span v-html="pageAlert.html"></span>
+          </div>
+          
+          <div id="container" style="width:100%px;border:1px solid grey"></div>
+
+          <hr />
+          <div class="text-center">
+            <button class="btn btn-primary m-r-5" @click="btnSubmitClick">确 定</button>
+            <button class="btn m-r-5" @click="{btnNavClick(type)}">返 回</button>
+          </div>
+      </div>
+    </template>
+    <template v-else>
+      <div class="text-center" style="margin-top: 100px;margin-bottom: 100px">
+        <img class="mt-3" src="../assets/images/loading.gif" />
+        <p class="lead mt-3 text-nowrap">载入中，请稍后...</p>
+      </div>
+    </template>
+  </div>
+
+</body>
+
+</html>
+
+<script src="../assets/lib/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="../assets/lib/lodash-4.17.10.min.js"></script>
+<script src="../assets/lib/layer-3.1.1/layer.js"></script>
+<script src="../assets/lib/sweetalert2-7.28.4.all.min.js"></script>
+<script src="../assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
+<script src="../assets/lib/vee-validate-2.1.0.js"></script>
+<script src="../assets/lib/vee-validate-locale-zh_CN-2.1.0.js"></script>
+<script src="../assets/lib/js.cookie-2.2.0.js"></script>
+<script src="../assets/lib/es6-promise.auto.min.js"></script>
+<script src="../assets/lib/axios-0.18.0.min.js"></script>
+<script src="../assets/js/utils.js" type="text/javascript"></script>
+<script src="../assets/lib/vue-multiselect-2.1.0/script.min.js"></script>
+<script src="../assets/lib/monaco-editor/min/vs/loader.js"></script>
+<script src="templateHtml.js" type="text/javascript"></script>

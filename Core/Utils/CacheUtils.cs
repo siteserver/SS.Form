@@ -1,46 +1,33 @@
 ﻿using System;
-using System.Web;
-using System.Web.Caching;
+using System.Runtime.Caching;
 
 namespace SS.Form.Core.Utils
 {
     public static class CacheUtils
     {
-        private static readonly Cache Cache;
-
-        static CacheUtils()
-        {
-            var context = HttpContext.Current;
-            Cache = context != null ? context.Cache : HttpRuntime.Cache;
-        }
-
         public static void Remove(string key)
         {
-            Cache.Remove(key);
+            ObjectCache cache = MemoryCache.Default;
+            cache.Remove(key);
         }
 
-        public static void InsertMinutes(string key, object obj, int minutes)
-        {
-            InnerInsert(key, obj, null, TimeSpan.FromMinutes(minutes));
-        }
-
-        public static void InsertHours(string key, object obj, int hours)
-        {
-            InnerInsert(key, obj, null, TimeSpan.FromHours(hours));
-        }
-
-        private static void InnerInsert(string key, object obj, string filePath, TimeSpan timeSpan)
+        public static void Insert(string key, object obj, int hours)
         {
             if (!string.IsNullOrEmpty(key) && obj != null)
             {
-                Cache.Insert(key, obj, string.IsNullOrEmpty(filePath) ? null : new CacheDependency(filePath), Cache.NoAbsoluteExpiration, timeSpan, CacheItemPriority.Normal, null);
+                ObjectCache cache = MemoryCache.Default;
+                var policy = new CacheItemPolicy
+                {
+                    SlidingExpiration = new TimeSpan(0, hours, 0, 0)
+                };
+                cache.Set(key, obj, policy);
             }
         }
 
         public static T Get<T>(string key) where T : class
         {
-            return Cache.Get(key) as T;
+            ObjectCache cache = MemoryCache.Default;
+            return cache[key] as T;
         }
-        
     }
 }

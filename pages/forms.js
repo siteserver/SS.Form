@@ -1,6 +1,8 @@
 ﻿var $url = '/pages/forms';
 var $urlActionsUp = '/pages/forms/actions/up';
 var $urlActionsDown = '/pages/forms/actions/down';
+var $urlExport = '/pages/forms/actions/export';
+var $urlImport = '/pages/forms/actions/import';
 $apiUrl = utils.getQueryString('apiUrl');
 $siteId = utils.getQueryString('siteId');
 
@@ -9,7 +11,9 @@ var data = {
   pageAlert: null,
   pageType: 'list',
   formInfoList: null,
-  formInfo: null
+  formInfo: null,
+  uploadUrl: null,
+  files: []
 };
 
 var methods = {
@@ -20,6 +24,7 @@ var methods = {
       var res = response.data;
 
       $this.formInfoList = res.value;
+      $this.uploadUrl = $api.defaults.baseURL + $urlImport + '?adminToken=' + res.adminToken + '&siteId=' + $siteId;
     }).catch(function (error) {
       $this.pageAlert = utils.getPageAlert(error);
     }).then(function () {
@@ -178,12 +183,70 @@ var methods = {
         utils.loading(false);
       });
     }
+  },
+
+  inputFile(newFile, oldFile) {
+    if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
+      if (!this.$refs.import.active) {
+        this.$refs.import.active = true
+      }
+    }
+
+    if (newFile && oldFile && newFile.xhr && newFile.success !== oldFile.success) {
+      swal2({
+        title: '表单导入成功',
+        type: 'success',
+        confirmButtonText: '确 定',
+        confirmButtonClass: 'btn btn-primary',
+      }).then(function (result) {
+        if (result.value) {
+          location.reload(true);
+        }
+      });
+
+    }
+  },
+
+  inputFilter: function (newFile, oldFile, prevent) {
+    if (newFile && !oldFile) {
+      if (!/\.(zip)$/i.test(newFile.name)) {
+        swal2({
+          title: '上传格式错误！',
+          text: '请上传zip压缩包',
+          type: 'error',
+          confirmButtonText: '确 定',
+          confirmButtonClass: 'btn btn-primary',
+        });
+        return prevent()
+      }
+    }
+  },
+
+  btnExportClick: function (formInfo) {
+    var $this = this;
+
+    utils.loading(true);
+    $api.post($urlExport, {
+      siteId: $siteId,
+      formId: formInfo.id
+    }).then(function (response) {
+      var res = response.data;
+
+      window.open(res.value);
+    }).catch(function (error) {
+      $this.pageAlert = utils.getPageAlert(error);
+    }).then(function () {
+      utils.loading(false);
+    });
   }
 };
 
 new Vue({
   el: '#main',
   data: data,
+  components: {
+    FileUpload: VueUploadComponent
+  },
   methods: methods,
   created: function () {
     this.getList();

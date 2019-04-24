@@ -7,8 +7,11 @@ namespace SS.Form
 {
     public class Plugin : PluginBase
     {
+        public static string PluginVersion;
         public override void Startup(IService service)
         {
+            PluginVersion = Version;
+
             var formRepository = new FormRepository();
             var fieldRepository = new FieldRepository();
             var fieldItemRepository = new FieldItemRepository();

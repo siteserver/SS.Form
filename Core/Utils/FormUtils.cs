@@ -22,10 +22,6 @@ namespace SS.Form.Core.Utils
 
         public static string GetFieldTypeText(string fieldType)
         {
-            if (fieldType == InputType.Text.Value)
-            {
-                return "文本框(单行)";
-            }
             if (fieldType == InputType.TextArea.Value)
             {
                 return "文本框(多行)";
@@ -59,7 +55,7 @@ namespace SS.Form.Core.Utils
                 return "隐藏";
             }
 
-            throw new Exception();
+            return "文本框(单行)";
         }
 
         public static bool IsSelectFieldType(string fieldType)
@@ -349,23 +345,12 @@ namespace SS.Form.Core.Utils
 
         public static string ReadText(string filePath)
         {
-            var sr = new StreamReader(filePath, Encoding.UTF8);
-            var text = sr.ReadToEnd();
-            sr.Close();
-            return text;
+            return File.ReadAllText(filePath, Encoding.UTF8);
         }
 
         public static void WriteText(string filePath, string content)
         {
-            var file = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
-            using (var writer = new StreamWriter(file, Encoding.UTF8))
-            {
-                writer.Write(content);
-                writer.Flush();
-                writer.Close();
-
-                file.Close();
-            }
+            File.WriteAllText(filePath, content, Encoding.UTF8);
         }
 
         public static string GetShortGuid(bool isUppercase)

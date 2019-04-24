@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
+using SS.Form.Core.ImportExport;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -66,7 +67,7 @@ namespace SS.Form.Controllers.Pages
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
                 var fieldId = request.GetQueryInt("fieldId");
-                FieldManager.Repository.Delete(fieldId);
+                FieldManager.Repository.Delete(formInfo.Id, fieldId);
                 FieldManager.ClearCache(formInfo.Id);
 
                 var list = new List<object>();
@@ -104,7 +105,19 @@ namespace SS.Form.Controllers.Pages
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
-                var fileName = FieldManager.Export(formInfo.Id);
+                //var fileName = FieldManager.Export(formInfo.Id);\
+
+                var fileName = "表单字段.zip";
+                var filePath = Context.UtilsApi.GetTemporaryFilesPath(fileName);
+                var directoryPath = Context.UtilsApi.GetTemporaryFilesPath("FormFields");
+
+                FormUtils.DeleteDirectoryIfExists(directoryPath);
+                FormUtils.CreateDirectoryIfNotExists(directoryPath);
+
+                FormBox.ExportFields(formInfo.Id, directoryPath);
+
+                Context.UtilsApi.CreateZip(filePath, directoryPath);
+
                 var url = Context.UtilsApi.GetRootUrl($"SiteFiles/TemporaryFiles/{fileName}");
 
                 return Ok(new
@@ -138,7 +151,7 @@ namespace SS.Form.Controllers.Pages
                         return BadRequest("Could not read zip from body");
                     }
                     
-                    var filePath = Context.UtilsApi.GetTemporaryFilesPath("表单字段.zip");
+                    var filePath = Context.UtilsApi.GetTemporaryFilesPath("form.zip");
                     FormUtils.DeleteFileIfExists(filePath);
 
                     if (!FormUtils.EqualsIgnoreCase(Path.GetExtension(postFile.FileName), ".zip"))
@@ -148,7 +161,14 @@ namespace SS.Form.Controllers.Pages
 
                     postFile.SaveAs(filePath);
 
-                    FieldManager.Import(formInfo.SiteId, formInfo.Id, filePath);
+                    var directoryPath = Context.UtilsApi.GetTemporaryFilesPath("form");
+                    FormUtils.DeleteDirectoryIfExists(directoryPath);
+                    Context.UtilsApi.ExtractZip(filePath, directoryPath);
+
+                    var isHistoric = FormBox.IsHistoric(directoryPath);
+                    FormBox.ImportFields(formInfo.SiteId, formInfo.Id, directoryPath, isHistoric);
+
+                    //FieldManager.Import(formInfo.SiteId, formInfo.Id, filePath);
                 }
 
                 return Ok(new

@@ -19,7 +19,7 @@ namespace SS.Form.Core
 
             html = FormUtils.ReadText(htmlPath);
 
-            CacheUtils.InsertHours(htmlPath, html, 24);
+            CacheUtils.Insert(htmlPath, html, 24);
             return html;
         }
 
@@ -32,7 +32,7 @@ namespace SS.Form.Core
 
             html = FormUtils.ReadText(htmlPath);
 
-            CacheUtils.InsertHours(htmlPath, html, 24);
+            CacheUtils.Insert(htmlPath, html, 24);
             return html;
         }
     }
