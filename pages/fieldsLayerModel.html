@@ -20,7 +20,7 @@
           <label class="col-form-label"> 字段名称 <small v-show="errors.has('title')" class="text-danger">{{
               errors.first('title') }}</small>
           </label>
-          <input :disabled="(config.fieldId && config.fieldId.length > 0 ? true : false)" v-model="styleInfo.title"
+          <input :disabled="(config.fieldId && config.fieldId.length > 0 ? true : false)" v-model="fieldInfo.title"
             name="title" data-vv-as="字段名称" v-validate="'required'" :class="{'is-invalid':
 errors.has('title') }" type="text"
             class="form-control">
@@ -29,13 +29,13 @@ errors.has('title') }" type="text"
           <label class="col-form-label"> 排序（0代表不设置） <small v-show="errors.has('taxis')" class="text-danger">{{
               errors.first('taxis') }}</small>
           </label>
-          <input v-model="styleInfo.taxis" name="taxis" data-vv-as="排序" v-validate="'required|numeric'" :class="{'is-invalid':
+          <input v-model="fieldInfo.taxis" name="taxis" data-vv-as="排序" v-validate="'required|numeric'" :class="{'is-invalid':
 errors.has('taxis') }"
             type="text" class="form-control">
         </div>
         <div class="form-group col-md-4">
           <label class="col-form-label">表单提交类型</label>
-          <select v-model="styleInfo.fieldType" class="form-control">
+          <select v-model="fieldInfo.fieldType" class="form-control">
             <option value="Text">文本框(单行)</option>
             <option value="TextArea">文本框(多行)</option>
             <option value="CheckBox">复选框</option>
@@ -48,19 +48,19 @@ errors.has('taxis') }"
           </select>
         </div>
       </div>
-      <template v-if="styleInfo.fieldType === 'TextArea'">
+      <template v-if="fieldInfo.fieldType === 'TextArea'">
         <div class="form-row">
           <div class="form-group col-md-12">
             <label class="col-form-label"> 文本框高度（0代表默认高度） <small v-show="errors.has('height')" class="text-danger">{{
                 errors.first('height') }}</small>
             </label>
-            <input v-model="styleInfo.height" name="height" data-vv-as="文本框高度" v-validate="'required|numeric'" :class="{'is-invalid':
+            <input v-model="fieldInfo.height" name="height" data-vv-as="文本框高度" v-validate="'required|numeric'" :class="{'is-invalid':
           errors.has('height') }"
               type="text" class="form-control">
           </div>
         </div>
       </template>
-      <template v-else-if="styleInfo.fieldType === 'CheckBox' || styleInfo.fieldType === 'Radio' || styleInfo.fieldType === 'SelectOne' || styleInfo.fieldType === 'SelectMultiple'">
+      <template v-else-if="fieldInfo.fieldType === 'CheckBox' || fieldInfo.fieldType === 'Radio' || fieldInfo.fieldType === 'SelectOne' || fieldInfo.fieldType === 'SelectMultiple'">
         <div class="form-row">
           <div class="form-group col-md-6">
             <label class="col-form-label"> 设置选项 </label>
@@ -69,10 +69,10 @@ errors.has('taxis') }"
               <option :value="false">详细设置</option>
             </select>
           </div>
-          <template v-if="styleInfo.fieldType==='CheckBox' || styleInfo.fieldType==='Radio'">
+          <template v-if="fieldInfo.fieldType==='CheckBox' || fieldInfo.fieldType==='Radio'">
             <div class="form-group col-md-6">
               <label class="col-form-label"> 选项排列方式 </label>
-              <select v-model="styleInfo.columns" class="form-control">
+              <select v-model="fieldInfo.columns" class="form-control">
                 <option :value="0">水平方向排列</option>
                 <option :value="1">垂直方向排列</option>
               </select>
@@ -86,7 +86,7 @@ errors.has('taxis') }"
           <textarea style="height: 180px" v-model="rapidValues" name="rapidValues" data-vv-as="选项可选值" v-validate="'required'"
             :class="{'is-invalid':errors.has('rapidValues') }" type="text" class="form-control"></textarea>
         </div>
-        <div v-if="!isRapid" v-for="(styleItem, index) in styleInfo.items" class="form-row">
+        <div v-if="!isRapid" v-for="(itemInfo, index) in fieldInfo.items" class="form-row">
           <div class="form-group col-md-3">
             <label class="col-form-label">&nbsp;</label>
             <div class="text-right form-text">第 {{ index + 1 }} 项</div>
@@ -95,24 +95,24 @@ errors.has('taxis') }"
             <label class="col-form-label"> 选项 <small v-show="errors.has('value_' + index)" class="text-danger">{{
                 errors.first('value_' + index) }}</small>
             </label>
-            <input type="text" v-model="styleItem.value" :name="'value_' + index" data-vv-as="选项标题" v-validate="'required'"
+            <input type="text" v-model="itemInfo.value" :name="'value_' + index" data-vv-as="选项标题" v-validate="'required'"
               :class="{'is-invalid':errors.has('value_' + index) }" class="form-control">
           </div>
           <div class="form-group col-md-3">
             <label class="col-form-label">&nbsp;</label>
             <div>
-              <span v-show="styleInfo.fieldType==='CheckBox' || styleInfo.fieldType==='SelectMultiple'" class="checkbox checkbox-primary mt-2">
-                <input type="checkbox" v-model="styleItem.isSelected">
-                <label v-on:click="styleItem.isSelected = !styleItem.isSelected">默认选择</label>
+              <span v-show="fieldInfo.fieldType==='CheckBox' || fieldInfo.fieldType==='SelectMultiple'" class="checkbox checkbox-primary mt-2">
+                <input type="checkbox" v-model="itemInfo.isSelected">
+                <label v-on:click="itemInfo.isSelected = !itemInfo.isSelected">默认选择</label>
               </span>
-              <span v-show="styleInfo.fieldType==='Radio' || styleInfo.fieldType==='SelectOne'" class="radio radio-primary mt-2">
-                <input type="radio" :value="true" v-model="styleItem.isSelected">
+              <span v-show="fieldInfo.fieldType==='Radio' || fieldInfo.fieldType==='SelectOne'" class="radio radio-primary mt-2">
+                <input type="radio" :value="true" v-model="itemInfo.isSelected">
                 <label v-on:click="btnRadioClick(index)">默认选择</label>
               </span>
-              <button type="button" class="btn btn-sm btn-default m-l-5" v-on:click="btnStyleItemRemoveClick(index)">删
+              <button type="button" class="btn btn-sm btn-default m-l-5" v-on:click="btnItemInfoRemoveClick(index)">删
                 除</button>
-              <button v-if="index + 1 === styleInfo.items.length" type="button" class="btn btn-sm btn-primary m-l-5"
-                v-on:click="btnStyleItemAddClick">新 增</button>
+              <button v-if="index + 1 === fieldInfo.items.length" type="button" class="btn btn-sm btn-primary m-l-5"
+                v-on:click="btnItemInfoAddClick">新 增</button>
             </div>
           </div>
         </div>
@@ -144,4 +144,4 @@ errors.has('taxis') }"
 <script src="../assets/lib/es6-promise.auto.min.js"></script>
 <script src="../assets/lib/axios-0.18.0.min.js"></script>
 <script src="../assets/js/utils.js" type="text/javascript"></script>
-<script src="fieldsLayerStyle.js" type="text/javascript"></script>
+<script src="fieldsLayerModel.js" type="text/javascript"></script>

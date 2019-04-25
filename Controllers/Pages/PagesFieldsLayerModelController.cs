@@ -8,8 +8,8 @@ using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
 {
-    [RoutePrefix("pages/fieldsLayerStyle")]
-    public class PagesFieldsLayerStyleController : ApiController
+    [RoutePrefix("pages/fieldsLayerModel")]
+    public class PagesFieldsLayerModelController : ApiController
     {
         private const string Route = "";
 
@@ -91,14 +91,16 @@ namespace SS.Form.Controllers.Pages
                     }
                 }
 
-                var body = request.GetPostObject<FieldInfo>("fieldInfo");
+                var fieldInfo = request.GetPostObject<FieldInfo>("fieldInfo");
+                var itemInfoList = request.GetPostObject<List<FieldItemInfo>>("items");
+                fieldInfo.Items = itemInfoList;
 
                 var fieldInfoDatabase =
                     FieldManager.GetFieldInfo(formInfo.Id, fieldId) ??
                     new FieldInfo();
 
                 string errorMessage;
-                var isSuccess = fieldInfoDatabase.Id == 0 ? InsertFieldInfo(formInfo.SiteId, formInfo.Id, body, isRapid, rapidValueList, out errorMessage) : UpdateFieldInfo(fieldInfoDatabase, body, isRapid, rapidValueList, out errorMessage);
+                var isSuccess = fieldInfoDatabase.Id == 0 ? InsertFieldInfo(formInfo.SiteId, formInfo.Id, fieldInfo, isRapid, rapidValueList, out errorMessage) : UpdateFieldInfo(fieldInfoDatabase, fieldInfo, isRapid, rapidValueList, out errorMessage);
 
                 if (!isSuccess)
                 {

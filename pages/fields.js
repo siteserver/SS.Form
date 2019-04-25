@@ -104,7 +104,7 @@ var methods = {
   btnEditClick: function (fieldId) {
     utils.openLayer({
       title: '编辑字段',
-      url: 'fieldsLayerStyle.html?siteId=' + $siteId + '&formId=' + $formId + '&fieldId=' + fieldId + '&apiUrl=' + encodeURIComponent($apiUrl)
+      url: 'fieldsLayerModel.html?siteId=' + $siteId + '&formId=' + $formId + '&fieldId=' + fieldId + '&apiUrl=' + encodeURIComponent($apiUrl)
     });
   },
 
@@ -118,7 +118,7 @@ var methods = {
   btnAddClick: function () {
     utils.openLayer({
       title: '新增字段',
-      url: 'fieldsLayerStyle.html?siteId=' + $siteId + '&channelId=' + $channelId + '&contentId=' + $contentId + '&formId=' + $formId + '&apiUrl=' + encodeURIComponent($apiUrl)
+      url: 'fieldsLayerModel.html?siteId=' + $siteId + '&channelId=' + $channelId + '&contentId=' + $contentId + '&formId=' + $formId + '&apiUrl=' + encodeURIComponent($apiUrl)
     });
   },
 

@@ -1,4 +1,4 @@
-﻿var $url = '/pages/fieldsLayerStyle'
+﻿var $url = '/pages/fieldsLayerModel'
 var $siteId = utils.getQueryString('siteId');
 var $channelId = utils.getQueryString('channelId');
 var $contentId = utils.getQueryString('contentId');
@@ -8,7 +8,7 @@ var $fieldId = utils.getQueryString('fieldId');
 var data = {
   pageLoad: false,
   pageAlert: null,
-  styleInfo: null,
+  fieldInfo: null,
   isRapid: null,
   rapidValues: null
 };
@@ -28,7 +28,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
-      $this.styleInfo = res.value;
+      $this.fieldInfo = res.value;
       $this.isRapid = res.isRapid;
       $this.rapidValues = res.rapidValues;
     }).catch(function (error) {
@@ -49,7 +49,8 @@ var methods = {
           contentId: $contentId,
           formId: $formId,
           fieldId: $fieldId,
-          fieldInfo: $this.styleInfo,
+          fieldInfo: $this.fieldInfo,
+          items: $this.fieldInfo.items,
           isRapid: $this.isRapid,
           rapidValues: $this.rapidValues
         }).then(function (response) {
@@ -66,27 +67,26 @@ var methods = {
     });
   },
 
-  btnStyleItemRemoveClick: function (index) {
-    this.styleInfo.items.splice(index, 1);
-    if (this.styleInfo.items.length === 0) {
-      this.btnStyleItemAddClick();
+  btnItemInfoRemoveClick: function (index) {
+    this.fieldInfo.items.splice(index, 1);
+    if (this.fieldInfo.items.length === 0) {
+      this.btnItemInfoAddClick();
     }
   },
 
-  btnStyleItemAddClick: function () {
-    this.styleInfo.items.push({
-      itemTitle: '',
-      itemValue: '',
+  btnItemInfoAddClick: function () {
+    this.fieldInfo.items.push({
+      value: '',
       isSelected: false
     })
   },
 
   btnRadioClick: function (index) {
-    for (var i = 0; i < this.styleInfo.items.length; i++) {
-      var element = this.styleInfo.items[i];
+    for (var i = 0; i < this.fieldInfo.items.length; i++) {
+      var element = this.fieldInfo.items[i];
       element.isSelected = false;
     }
-    this.styleInfo.items[index].isSelected = true;
+    this.fieldInfo.items[index].isSelected = true;
   }
 };
 
