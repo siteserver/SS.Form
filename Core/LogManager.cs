@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SiteServer.Plugin;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
+using SS.Form.Core.Repositories;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Core
@@ -18,7 +18,11 @@ namespace SS.Form.Core
             {
                 if (fieldInfo.FieldType == InputType.CheckBox.Value || fieldInfo.FieldType == InputType.SelectMultiple.Value)
                 {
-                    value = string.Join(",", FormUtils.JsonDeserialize<List<string>>(logInfo.Get<string>(fieldInfo.Title)));
+                    var list = FormUtils.JsonDeserialize<List<string>>(logInfo.Get<string>(fieldInfo.Title));
+                    if (list != null)
+                    {
+                        value = string.Join(",", list);
+                    }
                 }
                 else if (fieldInfo.FieldType == InputType.Date.Value)
                 {

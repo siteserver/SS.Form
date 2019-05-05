@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using SiteServer.Plugin;
 using SS.Form.Core;
-using SS.Form.Core.Provider;
+using SS.Form.Core.Repositories;
 
 namespace SS.Form
 {

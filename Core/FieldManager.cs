@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using SiteServer.Plugin;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
+using SS.Form.Core.Repositories;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Core
@@ -96,7 +95,7 @@ namespace SS.Form.Core
 
         public static bool IsExtra(FieldInfo fieldInfo)
         {
-            if (!FormUtils.IsSelectFieldType(fieldInfo.FieldType) || fieldInfo.Items == null || fieldInfo.Items.Count == 0) return false;
+            if (!IsSelectFieldType(fieldInfo.FieldType) || fieldInfo.Items == null || fieldInfo.Items.Count == 0) return false;
             foreach (var item in fieldInfo.Items)
             {
                 if (item.IsExtras)
@@ -107,55 +106,50 @@ namespace SS.Form.Core
             return false;
         }
 
-        public static string Export(int formId)
+        public static string GetFieldTypeText(string fieldType)
         {
-            var filePath = Context.UtilsApi.GetTemporaryFilesPath("表单字段.zip");
-            var directoryPath = Context.UtilsApi.GetTemporaryFilesPath("FormFields");
-
-            FormUtils.DeleteDirectoryIfExists(directoryPath);
-            FormUtils.CreateDirectoryIfNotExists(directoryPath);
-
-            var fieldInfoList = GetFieldInfoList(formId);
-
-            var fieldIdList = fieldInfoList.Select(x => x.Id).ToList();
-            FormUtils.WriteText(Path.Combine(directoryPath, "fieldIdList.json"), FormUtils.JsonSerialize(fieldIdList));
-
-            foreach (var fieldInfo in fieldInfoList)
+            if (fieldType == InputType.TextArea.Value)
             {
-                FormUtils.WriteText(Path.Combine(directoryPath, fieldInfo.Id + ".json"), FormUtils.JsonSerialize(fieldInfo));
+                return "文本框(多行)";
+            }
+            if (fieldType == InputType.CheckBox.Value)
+            {
+                return "复选框";
+            }
+            if (fieldType == InputType.Radio.Value)
+            {
+                return "单选框";
+            }
+            if (fieldType == InputType.SelectOne.Value)
+            {
+                return "下拉列表(单选)";
+            }
+            if (fieldType == InputType.SelectMultiple.Value)
+            {
+                return "下拉列表(多选)";
+            }
+            if (fieldType == InputType.Date.Value)
+            {
+                return "日期选择框";
+            }
+            if (fieldType == InputType.DateTime.Value)
+            {
+                return "日期时间选择框";
+            }
+            if (fieldType == InputType.Hidden.Value)
+            {
+                return "隐藏";
             }
 
-            Context.UtilsApi.CreateZip(filePath, directoryPath);
-
-            return "表单字段.zip";
+            return "文本框(单行)";
         }
 
-        public static void Import(int siteId, int formId, string filePath)
+        private static bool IsSelectFieldType(string fieldType)
         {
-            var directoryPath = Context.UtilsApi.GetTemporaryFilesPath("FormFields");
-
-            FormUtils.DeleteDirectoryIfExists(directoryPath);
-            FormUtils.CreateDirectoryIfNotExists(directoryPath);
-
-            Context.UtilsApi.ExtractZip(filePath, directoryPath);
-
-            var fieldIdList =
-                FormUtils.JsonDeserialize<List<int>>(
-                    FormUtils.ReadText(Path.Combine(directoryPath, "fieldIdList.json")));
-
-            foreach (var fieldId in fieldIdList)
-            {
-                var fieldInfo = FormUtils.JsonDeserialize<FieldInfo>(FormUtils.ReadText(Path.Combine(directoryPath, fieldId + ".json")));
-                if (fieldInfo == null) continue;
-
-                if (string.IsNullOrEmpty(fieldInfo.Title)) continue;
-
-                if (Repository.IsTitleExists(formId, fieldInfo.Title)) continue;
-
-                fieldInfo.FormId = formId;
-
-                Repository.Insert(siteId, fieldInfo);
-            }
+            return FormUtils.EqualsIgnoreCase(fieldType, InputType.CheckBox.Value) ||
+                   FormUtils.EqualsIgnoreCase(fieldType, InputType.Radio.Value) ||
+                   FormUtils.EqualsIgnoreCase(fieldType, InputType.SelectMultiple.Value) ||
+                   FormUtils.EqualsIgnoreCase(fieldType, InputType.SelectOne.Value);
         }
     }
 }

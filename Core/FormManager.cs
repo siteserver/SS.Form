@@ -2,7 +2,7 @@
 using System.Linq;
 using SiteServer.Plugin;
 using SS.Form.Core.Model;
-using SS.Form.Core.Provider;
+using SS.Form.Core.Repositories;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Core

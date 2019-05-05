@@ -9,7 +9,7 @@ var data = {
   pageConfig: null,
   pageAlert: {
     type: 'primary',
-    html: '表单标签：<mark>&lt;stl:form type="模板文件夹"&gt;&lt;/stl:form&gt;</mark>，如果希望自定义模板样式，可以点击克隆按钮然后修改模板代码。'
+    html: '表单标签：<mark>&lt;stl:form name="表单名称" type="模板文件夹"&gt;&lt;/stl:form&gt;</mark>，如果希望自定义模板样式，可以点击代码编辑按钮然后修改模板代码。'
   },
   templateInfoList: null,
   name: null,

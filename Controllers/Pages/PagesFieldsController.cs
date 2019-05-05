@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Form.Core;
-using SS.Form.Core.ImportExport;
+using SS.Form.Core.Box;
 using SS.Form.Core.Utils;
 
 namespace SS.Form.Controllers.Pages
@@ -37,7 +37,7 @@ namespace SS.Form.Controllers.Pages
                     {
                         fieldInfo.Id,
                         fieldInfo.Title,
-                        InputType = FormUtils.GetFieldTypeText(fieldInfo.FieldType),
+                        InputType = FieldManager.GetFieldTypeText(fieldInfo.FieldType),
                         fieldInfo.Validate,
                         fieldInfo.Taxis
                     });
@@ -77,7 +77,7 @@ namespace SS.Form.Controllers.Pages
                     {
                         fieldInfo.Id,
                         fieldInfo.Title,
-                        InputType = FormUtils.GetFieldTypeText(fieldInfo.FieldType),
+                        InputType = FieldManager.GetFieldTypeText(fieldInfo.FieldType),
                         fieldInfo.Validate,
                         fieldInfo.Taxis
                     });

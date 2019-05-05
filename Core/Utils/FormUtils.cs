@@ -20,52 +20,6 @@ namespace SS.Form.Core.Utils
         private const char UrlSeparatorChar = '/';
         private const char PathSeparatorChar = '\\';
 
-        public static string GetFieldTypeText(string fieldType)
-        {
-            if (fieldType == InputType.TextArea.Value)
-            {
-                return "文本框(多行)";
-            }
-            if (fieldType == InputType.CheckBox.Value)
-            {
-                return "复选框";
-            }
-            if (fieldType == InputType.Radio.Value)
-            {
-                return "单选框";
-            }
-            if (fieldType == InputType.SelectOne.Value)
-            {
-                return "下拉列表(单选)";
-            }
-            if (fieldType == InputType.SelectMultiple.Value)
-            {
-                return "下拉列表(多选)";
-            }
-            if (fieldType == InputType.Date.Value)
-            {
-                return "日期选择框";
-            }
-            if (fieldType == InputType.DateTime.Value)
-            {
-                return "日期时间选择框";
-            }
-            if (fieldType == InputType.Hidden.Value)
-            {
-                return "隐藏";
-            }
-
-            return "文本框(单行)";
-        }
-
-        public static bool IsSelectFieldType(string fieldType)
-        {
-            return EqualsIgnoreCase(fieldType, InputType.CheckBox.Value) ||
-                   EqualsIgnoreCase(fieldType, InputType.Radio.Value) ||
-                   EqualsIgnoreCase(fieldType, InputType.SelectMultiple.Value) ||
-                   EqualsIgnoreCase(fieldType, InputType.SelectOne.Value);
-        }
-
         public static bool EqualsIgnoreCase(string a, string b)
         {
             if (a == b) return true;
