@@ -3,6 +3,7 @@
 var data = {
   siteId: utils.getQueryString('siteId'),
   apiUrl: utils.getQueryString('apiUrl'),
+  type: utils.getQueryString('type'),
   name: utils.getQueryString('name'),
   pageLoad: false,
   pageAlert: null,
@@ -13,7 +14,13 @@ var data = {
 var methods = {
   load: function () {
     var $this = this;
-    $api.get($url + '?siteId=' + this.siteId + '&name=' + this.name).then(function (response) {
+    $api.get($url, {
+      params: {
+        siteId: this.siteId,
+        type: this.type,
+        name: this.name
+      }
+    }).then(function (response) {
       var res = response.data;
       $this.templateInfo = res.value;
       $this.formInfoList = res.formInfoList;

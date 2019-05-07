@@ -62,7 +62,7 @@
           <table class="table tablesaw table-hover m-0">
             <thead>
               <tr>
-                <th v-for="attributeName in allAttributeNames" v-if="listAttributeNames.indexOf(attributeName) !== -1">
+                <th v-for="attributeName in allAttributeNames" :key="attributeName" v-if="listAttributeNames.indexOf(attributeName) !== -1">
                   {{ getAttributeText(attributeName) }}</th>
                 <th v-if="isReply">是否回复</th>
                 <th v-if="isReply">回复时间</th>

@@ -46,6 +46,12 @@ var $vue = new Vue({
       return attributeName;
     },
 
+    getAttributeType: function(attributeName) {
+      var fieldInfo = _.find(this.fieldInfoList, function(o) {return o.title === attributeName});
+      if (fieldInfo && fieldInfo.fieldType) return fieldInfo.fieldType;
+      return 'Text';
+    },
+
     getAttributeValue: function (item, attributeName) {
       if (attributeName === 'IsReplied') {
         return item.isReplied ? '<strong class="text-primary">已回复</strong>' : '<strong class="text-danger">未回复</strong>';
@@ -56,6 +62,14 @@ var $vue = new Vue({
       }
 
       return item[_.camelCase(attributeName)];
+    },
+
+    largeImage: function(item, attributeName) {
+      var imageUrl = this.getAttributeValue(item, attributeName);
+      Swal.fire({
+        imageUrl: imageUrl,
+        showConfirmButton: false,
+      })
     },
 
     loadFirstPage: function () {

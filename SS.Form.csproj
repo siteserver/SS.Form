@@ -18,7 +18,7 @@
     <PackageTags>SiteServer CMS Form Plugin</PackageTags>
     <RepositoryUrl>https://github.com/siteserver/SS.Form</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>老版本导入文件支持</PackageReleaseNotes>
+    <PackageReleaseNotes>新增图片字段上传功能</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

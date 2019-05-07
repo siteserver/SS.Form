@@ -111,6 +111,10 @@ namespace SS.Form.Core.Box
                         }
 
                         logInfo.ReplyContent = GetDcElementContent(entry.AdditionalElements, "Reply");
+                        if (!string.IsNullOrEmpty(logInfo.ReplyContent))
+                        {
+                            logInfo.IsReplied = true;
+                        }
                         logInfo.AddDate = FormUtils.ToDateTime(GetDcElementContent(entry.AdditionalElements, "adddate"));
                     }
 

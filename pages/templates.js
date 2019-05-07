@@ -63,7 +63,7 @@ var methods = {
     var $this = this;
     utils.openLayer({
       title: '预览模板',
-      url: 'templatesLayerPreview.html?siteId=' + $this.siteId + '&name=' + name + '&apiUrl=' + encodeURIComponent($this.apiUrl)
+      url: 'templatesLayerPreview.html?siteId=' + $this.siteId + '&type=' + this.type + '&name=' + name + '&apiUrl=' + encodeURIComponent($this.apiUrl)
     });
   },
 
