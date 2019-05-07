@@ -140,8 +140,22 @@ var methods = {
     return attributeName;
   },
 
+  getAttributeType: function(attributeName) {
+    var fieldInfo = _.find(this.fieldInfoList, function(o) {return o.title === attributeName});
+    if (fieldInfo && fieldInfo.fieldType) return fieldInfo.fieldType;
+    return 'Text';
+  },
+
   getAttributeValue: function (item, attributeName) {
     return item[_.lowerFirst(attributeName)];
+  },
+
+  largeImage: function(item, attributeName) {
+    var imageUrl = this.getAttributeValue(item, attributeName);
+    swal2.fire({
+      imageUrl: imageUrl,
+      showConfirmButton: false,
+    })
   },
 
   loadFirstPage: function () {

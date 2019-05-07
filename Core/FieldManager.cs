@@ -128,6 +128,10 @@ namespace SS.Form.Core
             {
                 return "下拉列表(多选)";
             }
+            if (fieldType == InputType.Image.Value)
+            {
+                return "上传图片";
+            }
             if (fieldType == InputType.Date.Value)
             {
                 return "日期选择框";

@@ -79,7 +79,15 @@ namespace SS.Form.Core.Box
                     titleAttributeNameDict = ImportFields(siteId, formInfo.Id, fieldDirectoryPath, isHistoric);
                 }
 
+                var entryList = new List<AtomEntry>();
                 foreach (AtomEntry entry in feed.Entries)
+                {
+                    entryList.Add(entry);
+                }
+
+                entryList.Reverse();
+
+                foreach (var entry in entryList)
                 {
                     var logInfo = new LogInfo();
 

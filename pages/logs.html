@@ -71,9 +71,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in items">
-                <td v-for="attributeName in allAttributeNames" v-if="listAttributeNames.indexOf(attributeName) !== -1">
-                  {{ getAttributeValue(item, attributeName) }} </td>
+              <tr v-for="item in items" :key="item.id">
+                <td v-for="attributeName in allAttributeNames" :key="attributeName" v-if="listAttributeNames.indexOf(attributeName) !== -1">
+                  <img v-if="getAttributeType(attributeName) === 'Image'" :src="getAttributeValue(item, attributeName)" style="max-height: 100px; max-width: 100px; cursor: pointer;" v-on:click="largeImage(item, attributeName)">
+                  <div v-else>
+                      {{ getAttributeValue(item, attributeName) }}
+                  </div>
+                </td>
                 <td v-if="isReply">
                   <strong v-if="item.isReplied" class="text-primary">已回复</strong>
                   <strong v-else class="text-danger">未回复</strong>
@@ -91,7 +95,7 @@
         </div>
         <hr />
         <div class="row">
-          <div class="col-9">
+          <div class="col-10">
             <ul class="pagination pagination-sm float-left">
               <li class="page-item" :class="{disabled : page === 1}">
                 <a class="page-link" @click="loadFirstPage" :class="{'bg-light' : page === 1}" href="javascript:;">首 页</a>
@@ -108,12 +112,9 @@
               </li>
             </ul>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <multiselect @select="onPageSelect" v-model="page" placeholder="Select one" :options="pageOptions"
-              :searchable="false" :show-labels="false">
-              <template slot="singleLabel" slot-scope="{ option }">第 {{ option }} 页（共 {{ pages }} 页）</template>
-              <template slot="option" slot-scope="props"> 第 {{ props.option }} 页 </template>
-            </multiselect>
+              :searchable="false" :show-labels="false"></multiselect>
           </div>
         </div>
       </div>

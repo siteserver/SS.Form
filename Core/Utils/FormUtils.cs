@@ -313,5 +313,21 @@ namespace SS.Form.Core.Utils
             var retVal = $"{i - DateTime.Now.Ticks:x}";
             return isUppercase ? retVal.ToUpper() : retVal.ToLower();
         }
+
+        public static bool IsImage(string fileExtName)
+        {
+            var retVal = false;
+            if (string.IsNullOrEmpty(fileExtName)) return false;
+            fileExtName = fileExtName.ToLower().Trim();
+            if (!fileExtName.StartsWith("."))
+            {
+                fileExtName = "." + fileExtName;
+            }
+            if (fileExtName == ".bmp" || fileExtName == ".gif" || fileExtName == ".jpg" || fileExtName == ".jpeg" || fileExtName == ".png" || fileExtName == ".pneg" || fileExtName == ".webp")
+            {
+                retVal = true;
+            }
+            return retVal;
+        }
     }
 }

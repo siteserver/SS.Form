@@ -12,10 +12,28 @@ var data = {
   pageLoad: false,
   pageAlert: null,
   pageType: '',
-  fieldInfoList: []
+  fieldInfoList: [],
+  uploadUrl: null,
+  files: []
 };
 
 var methods = {
+  getUploadUrl: function(fieldInfo) {
+    return this.uploadUrl + '&fieldId=' + fieldInfo.id;
+  },
+
+  imageUploaded: function(error, file) {
+    if (!error) {
+      var res = JSON.parse(file.serverId);
+      var fieldInfo = _.find(this.fieldInfoList, function(o) { return o.id === res.fieldId; });
+      fieldInfo.value = res.value;
+    }
+  },
+
+  imageRemoved: function(fieldInfo) {
+    fieldInfo.value = [];
+  },
+
   load: function () {
     var $this = this;
 
@@ -31,6 +49,7 @@ var methods = {
       var res = response.data;
 
       $this.fieldInfoList = res.value;
+      $this.uploadUrl = $api.defaults.baseURL + 'pages/logAdd/actions/upload?adminToken=' + res.adminToken + '&siteId=' + $siteId;
     }).catch(function (error) {
       $this.pageAlert = utils.getPageAlert(error);
     }).then(function () {
@@ -117,8 +136,19 @@ Vue.component("date-picker", window.DatePicker.default);
 var $vue = new Vue({
   el: "#main",
   data: data,
+  components: {
+    FilePond: vueFilePond.default(FilePondPluginFileValidateType, FilePondPluginImagePreview)
+  },
   methods: methods,
   created: function () {
     this.load();
+
+    FilePond.setOptions({
+      server: {
+        process: {
+          withCredentials: true
+        }
+      }
+    });
   }
 });

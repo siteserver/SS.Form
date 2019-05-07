@@ -54,9 +54,30 @@ if (window.DatePicker) {
       captcha: '',
       captchaUrl: null,
       captchaInValid: false,
-      errorMessage: ''
+      errorMessage: '',
+      uploadUrl: null,
+      files: []
+    },
+    components: {
+      FilePond: vueFilePond.default(FilePondPluginFileValidateType, FilePondPluginImagePreview)
     },
     methods: {
+      getUploadUrl: function(fieldInfo) {
+        return this.uploadUrl + '&fieldId=' + fieldInfo.id;
+      },
+    
+      imageUploaded: function(error, file) {
+        if (!error) {
+          var res = JSON.parse(file.serverId);
+          var fieldInfo = _.find(this.fieldInfoList, function(o) { return o.id === res.fieldId; });
+          fieldInfo.value = res.value;
+        }
+      },
+    
+      imageRemoved: function(fieldInfo) {
+        fieldInfo.value = [];
+      },
+
       loadCaptcha: function () {
         this.captchaUrl = this.apiUrl + '/v1/captcha/FORM-CAPTCHA' + '?r=' + new Date().getTime();
       },
@@ -125,6 +146,7 @@ if (window.DatePicker) {
           $this.title = res.data.title;
           $this.description = res.data.description;
           $this.isCaptcha = res.data.isCaptcha;
+          $this.uploadUrl = $this.apiUrl + '/ss.form/' + $this.siteId + '/' + $this.formId + '/actions/upload?uploadToken=' + res.data.uploadToken;
           $this.loadCaptcha();
           $this.pageType = 'form';
         })
@@ -132,6 +154,14 @@ if (window.DatePicker) {
           $this.pageType = 'error';
           $this.errorMessage = error.response.data.message;
         });
+
+      FilePond.setOptions({
+        server: {
+          process: {
+            withCredentials: true
+          }
+        }
+      });
     }
   });
 })();

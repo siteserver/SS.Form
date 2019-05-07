@@ -79,6 +79,27 @@
                     <option v-for="item in fieldInfo.items" :value="item.value">{{ item.value }}</option>
                   </select>
                 </template>
+                <template v-else-if="fieldInfo.fieldType === 'Image'">
+                  <file-pond
+                    :allow-multiple="false"
+                    :server="getUploadUrl(fieldInfo)"
+                    :files="files"
+                    accepted-file-types="image/jpeg, image/png, image/webp"
+                    label-idle="点击上传或将图片拖动至此区域..."
+                    label-file-processing="上传中..."
+                    label-file-processing-complete="上传成功"
+                    v-on:processfile="imageUploaded"
+                    v-on:removefile="imageRemoved(fieldInfo)"
+                  ></file-pond>
+        
+                  <input
+                    v-model="fieldInfo.value"
+                    type="hidden"
+                    :name="fieldInfo.title"
+                    v-validate="fieldInfo.validate"
+                    :class="{'is-invalid': errors.has(fieldInfo.title)}"
+                  />
+                </template>
                 <template v-else-if="fieldInfo.fieldType === 'Date'">
                   <date-picker style="width: 100%" :name="fieldInfo.title" v-model="fieldInfo.value" type="date" format="YYYY年MM月DD日"
                     :minute-step="1" :clearable="false" :editable="false" v-validate="fieldInfo.validate"></date-picker>
@@ -143,10 +164,21 @@ errors.has('captcha') || captchaInValid}">
 </body>
 
 </html>
+<script src="../../assets/lib/lodash-4.17.10.min.js"></script>
 <script src="../../assets/lib/vue-2.5.16.min.js" type="text/javascript"></script>
 <script src="../../assets/lib/vee-validate-2.1.0.js"></script>
 <script src="../../assets/lib/vee-validate-locale-zh_CN-2.1.0.js"></script>
 <script src="../../assets/lib/es6-promise.auto.min.js" type="text/javascript"></script>
 <script src="../../assets/lib/axios-0.18.0.min.js"></script>
 <script src="../../assets/lib/vue2-datepicker-2.4.3.min.js"></script>
+
+<link href="../../assets/lib/filepond/filepond-4.4.2.min.css" rel="stylesheet" type="text/css"/>
+<link href="../../assets/lib/filepond/filepond-plugin-image-preview-4.1.0.min.css" rel="stylesheet" type="text/css"/>
+<script src="../../assets/lib/filepond/babel-polyfill-7.4.4.min.js"></script>
+<script src="../../assets/lib/filepond/filepond-polyfill-1.0.4.min.js"></script>
+<script src="../../assets/lib/filepond/filepond-plugin-file-validate-type-1.2.4.min.js"></script>
+<script src="../../assets/lib/filepond/filepond-plugin-image-preview-4.1.0.js"></script>
+<script src="../../assets/lib/filepond/filepond-4.4.2.min.js"></script>
+<script src="../../assets/lib/filepond/vue-filepond-5.1.0.min.js"></script>
+
 <script src="../../assets/js/submit.js" type="text/javascript"></script>
