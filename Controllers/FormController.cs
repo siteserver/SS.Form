@@ -217,8 +217,9 @@ namespace SS.Form.Controllers
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.ListAttributeNames);
                 var allAttributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
+                var pageSize = FormUtils.GetPageSize(formInfo);
 
-                var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
+                var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / pageSize));
                 if (pages == 0) pages = 1;
                 var page = request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;

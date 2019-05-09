@@ -84,6 +84,12 @@
                 </td>
               </tr>
               <tr>
+                <td>表单每页显示数目(条)</td>
+                <td>
+                  <a href="javascript:;" v-on:click="pageType = 'pageSize'" class="editable"> 每页显示 {{ formInfo.pageSize }} 条 </a>
+                </td>
+              </tr>
+              <tr>
                 <td>提交时间限制</td>
                 <td>
                   <a href="javascript:;" v-on:click="pageType = 'isTimeout'" class="editable"> {{
@@ -152,6 +158,18 @@
               <option :value="true">启用表单回复功能</option>
               <option :value="false">禁用表单回复功能</option>
             </select>
+          </div>
+        </template>
+        <template v-else-if="pageType === 'pageSize'">
+          <div class="form-group">
+            <label>
+              表单每页显示数目(条)
+              <small v-if="errors.has('pageSize')" class="text-danger">{{
+                errors.first('pageSize') }}</small>
+            </label>
+            <input v-model="formInfo.pageSize" name="pageSize"
+              data-vv-as="表单每页显示数目" v-validate="'required|numeric|min:1'" :class="{'is-invalid': errors.has('pageSize') }"
+              type="text" class="form-control" />
           </div>
         </template>
         <template v-else-if="pageType === 'isTimeout'">

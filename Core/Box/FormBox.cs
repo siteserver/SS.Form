@@ -202,7 +202,7 @@ namespace SS.Form.Core.Box
             var styleDirectoryPath = FormUtils.PathCombine(directoryPath, formInfo.Id.ToString());
             ExportFields(formInfo.Id, styleDirectoryPath);
 
-            var logInfoList = LogManager.Repository.GetLogInfoList(formInfo.Id, false, 0, 0);
+            var logInfoList = LogManager.Repository.GetAllLogInfoList(formInfo);
             foreach (var logInfo in logInfoList)
             {
                 var entry = GetAtomEntry(logInfo);

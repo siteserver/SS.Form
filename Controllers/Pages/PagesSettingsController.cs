@@ -81,6 +81,11 @@ namespace SS.Form.Controllers.Pages
                     formInfo.IsReply = request.GetPostBool(nameof(FormInfo.IsReply));
                     FormManager.Repository.Update(formInfo);
                 }
+                else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.PageSize)))
+                {
+                    formInfo.PageSize = request.GetPostInt(nameof(FormInfo.PageSize));
+                    FormManager.Repository.Update(formInfo);
+                }
                 else if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsTimeout)))
                 {
                     formInfo.IsTimeout = request.GetPostBool(nameof(FormInfo.IsTimeout));

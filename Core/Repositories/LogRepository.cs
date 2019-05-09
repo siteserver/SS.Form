@@ -95,37 +95,35 @@ namespace SS.Form.Core.Repositories
                 return new List<LogInfo>();
             }
 
-            if (formInfo.TotalCount <= FormUtils.PageSize)
-            {
-                return GetLogInfoList(formInfo.Id, isRepliedOnly, 0, formInfo.TotalCount);
-            }
+            var pageSize = FormUtils.GetPageSize(formInfo);
 
             if (page == 0) page = 1;
-            var offset = (page - 1) * FormUtils.PageSize;
-            var limit = formInfo.TotalCount - offset > FormUtils.PageSize ? FormUtils.PageSize : formInfo.TotalCount - offset;
-            return GetLogInfoList(formInfo.Id, isRepliedOnly, offset, limit);
-        }
 
-        public IList<LogInfo> GetLogInfoList(int formId, bool isRepliedOnly, int offset, int limit)
-        {
             var q = Q
-                .Where(Attr.FormId, formId)
-                .OrderByDesc(nameof(LogInfo.IsReplied), Attr.Id);
-
-            if (offset > 0)
-            {
-                q.Offset(offset);
-            }
-
-            if (limit > 0)
-            {
-                q.Limit(limit);
-            }
+                .Where(Attr.FormId, formInfo.Id)
+                .OrderBy(nameof(LogInfo.IsReplied))
+                .OrderByDesc(Attr.Id)
+                .ForPage(page, pageSize);
 
             if (isRepliedOnly)
             {
                 q.Where(nameof(LogInfo.IsReplied), true);
             }
+
+            return _repository.GetAll(q);
+        }
+
+        public IList<LogInfo> GetAllLogInfoList(FormInfo formInfo)
+        {
+            if (formInfo.TotalCount == 0)
+            {
+                return new List<LogInfo>();
+            }
+
+            var q = Q
+                .Where(Attr.FormId, formInfo.Id)
+                .OrderBy(nameof(LogInfo.IsReplied))
+                .OrderByDesc(Attr.Id);
 
             return _repository.GetAll(q);
         }

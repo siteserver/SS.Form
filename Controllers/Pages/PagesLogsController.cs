@@ -28,8 +28,9 @@ namespace SS.Form.Controllers.Pages
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.ListAttributeNames);
                 var allAttributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
+                var pageSize = FormUtils.GetPageSize(formInfo);
 
-                var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
+                var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / pageSize));
                 if (pages == 0) pages = 1;
                 var page = request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
@@ -76,7 +77,8 @@ namespace SS.Form.Controllers.Pages
 
                 LogManager.Repository.Delete(formInfo, logInfo);
 
-                var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / FormUtils.PageSize));
+                var pageSize = FormUtils.GetPageSize(formInfo);
+                var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / pageSize));
                 if (pages == 0) pages = 1;
                 var page = request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
@@ -114,7 +116,7 @@ namespace SS.Form.Controllers.Pages
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
-                var logs = LogManager.Repository.GetLogInfoList(formInfo.Id, false, 0, formInfo.TotalCount);
+                var logs = LogManager.Repository.GetAllLogInfoList(formInfo);
 
                 var head = new List<string> { "编号" };
                 foreach (var fieldInfo in fieldInfoList)

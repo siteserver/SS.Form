@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using SiteServer.Plugin;
+using SS.Form.Core.Model;
 
 namespace SS.Form.Core.Utils
 {
@@ -15,10 +16,14 @@ namespace SS.Form.Core.Utils
     {
         public const string PluginId = "SS.Form";
 
-        public const int PageSize = 30;
-
         private const char UrlSeparatorChar = '/';
         private const char PathSeparatorChar = '\\';
+
+        public static int GetPageSize(FormInfo formInfo)
+        {
+            if (formInfo == null || formInfo.PageSize <= 0) return 30;
+            return formInfo.PageSize;
+        }
 
         public static bool EqualsIgnoreCase(string a, string b)
         {

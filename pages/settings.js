@@ -33,6 +33,9 @@ var methods = {
       var res = response.data;
 
       $this.formInfo = res.value;
+      if ($this.formInfo.pageSize === 0) {
+        $this.formInfo.pageSize = 30;
+      }
       $this.fieldInfoList = res.fieldInfoList;
       $this.attributeNames = res.attributeNames;
       $this.administratorSmsNotifyKeys = res.administratorSmsNotifyKeys;
@@ -62,6 +65,8 @@ var methods = {
       payload.description = this.formInfo.description;
     } else if (this.pageType === 'isReply') {
       payload.isReply = this.formInfo.isReply;
+    } else if (this.pageType === 'pageSize') {
+      payload.pageSize = this.formInfo.pageSize;
     } else if (this.pageType === 'isTimeout') {
       payload.isTimeout = this.formInfo.isTimeout;
       payload.timeToStart = this.formInfo.timeToStart;

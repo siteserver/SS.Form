@@ -45,6 +45,8 @@ namespace SS.Form.Core.Model
 
         public bool IsCaptcha { get; set; }
 
+        public int PageSize { get; set; }
+
         public bool IsTimeout { get; set; }
 
         public DateTime TimeToStart { get; set; }
