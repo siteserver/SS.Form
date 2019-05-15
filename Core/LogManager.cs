@@ -16,9 +16,11 @@ namespace SS.Form.Core
             var value = string.Empty;
             if (logInfo.ContainsKey(fieldInfo.Title))
             {
+                var fieldValue = logInfo.Get<string>(fieldInfo.Title);
+
                 if (fieldInfo.FieldType == InputType.CheckBox.Value || fieldInfo.FieldType == InputType.SelectMultiple.Value)
                 {
-                    var list = FormUtils.JsonDeserialize<List<string>>(logInfo.Get<string>(fieldInfo.Title));
+                    var list = FormUtils.JsonDeserialize<List<string>>(fieldValue);
                     if (list != null)
                     {
                         value = string.Join(",", list);
@@ -26,23 +28,29 @@ namespace SS.Form.Core
                 }
                 else if (fieldInfo.FieldType == InputType.Date.Value)
                 {
-                    var date = logInfo.Get<DateTime?>(fieldInfo.Title);
-                    if (date.HasValue)
+                    if (!string.IsNullOrEmpty(fieldValue))
                     {
-                        value = date.Value.ToString("yyyy-MM-dd");
+                        var date = FormUtils.ToDateTime(fieldValue, DateTime.MinValue);
+                        if (date != DateTime.MinValue)
+                        {
+                            value = date.ToString("yyyy-MM-dd");
+                        }
                     }
                 }
                 else if (fieldInfo.FieldType == InputType.DateTime.Value)
                 {
-                    var datetime = logInfo.Get<DateTime?>(fieldInfo.Title);
-                    if (datetime.HasValue)
+                    if (!string.IsNullOrEmpty(fieldValue))
                     {
-                        value = datetime.Value.ToString("yyyy-MM-dd HH:mm");
+                        var date = FormUtils.ToDateTime(fieldValue, DateTime.MinValue);
+                        if (date != DateTime.MinValue)
+                        {
+                            value = date.ToString("yyyy-MM-dd HH:mm");
+                        }
                     }
                 }
                 else
                 {
-                    value = logInfo.Get<string>(fieldInfo.Title);
+                    value = fieldValue;
                 }
             }
 
