@@ -13,7 +13,7 @@
     <Description>SiteServer CMS 自定义表单插件是简单高效的电子表单工具，实现轻松快捷的表单制作</Description>
     <PackageLicense>GPL-3.0</PackageLicense>
     <PackageProjectUrl>https://github.com/siteserver/SS.Form</PackageProjectUrl>
-    <PackageIconUrl>https://www.siteserver.cn/docs/SS.Form/logo.svg</PackageIconUrl>
+    <PackageIconUrl>https://www.siteserver.cn/docs/ss/form/logo.svg</PackageIconUrl>
     <Copyright>Copyright © SiteServer CMS</Copyright>
     <PackageTags>SiteServer CMS Form Plugin</PackageTags>
     <RepositoryUrl>https://github.com/siteserver/SS.Form</RepositoryUrl>
@@ -29,9 +29,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
-    <PackageReference Include="SiteServer.Plugin" Version="2.3.6" />
-    <PackageReference Include="SS.Mail" Version="1.0.13" />
-    <PackageReference Include="SS.SMS" Version="1.2.1" />
+    <PackageReference Include="SiteServer.Plugin" Version="2.3.11" />
+    <PackageReference Include="SS.Mail" Version="1.0.14" />
+    <PackageReference Include="SS.SMS" Version="1.2.2" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
   </ItemGroup>
 
