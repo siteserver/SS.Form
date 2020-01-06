@@ -21,7 +21,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var logId = request.GetQueryInt("logId");
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
@@ -55,7 +55,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var logId = request.GetPostInt("logId");
                 var logInfo = LogManager.Repository.GetLogInfo(logId);

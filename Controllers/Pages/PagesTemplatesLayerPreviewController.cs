@@ -20,7 +20,7 @@ namespace SS.Form.Controllers.Pages
                 var request = Context.AuthenticatedRequest;
 
                 var siteId = request.GetQueryInt("siteId");
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuTemplatesPermission)) return Unauthorized();
 
                 var formInfoList = FormManager.GetFormInfoList(siteId, 0);
 

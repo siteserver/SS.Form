@@ -28,7 +28,7 @@ namespace SS.Form.Controllers.Pages
 
                 var siteId = request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin ||
-                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
+                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuFormsPermission))
                 {
                     return Unauthorized();
                 }
@@ -57,7 +57,7 @@ namespace SS.Form.Controllers.Pages
 
                 var siteId = request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin ||
-                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
+                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuFormsPermission))
                 {
                     return Unauthorized();
                 }
@@ -86,7 +86,7 @@ namespace SS.Form.Controllers.Pages
 
                 var siteId = request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin ||
-                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
+                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuFormsPermission))
                 {
                     return Unauthorized();
                 }
@@ -121,7 +121,7 @@ namespace SS.Form.Controllers.Pages
 
                 var siteId = request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin ||
-                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
+                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuFormsPermission))
                 {
                     return Unauthorized();
                 }
@@ -153,7 +153,7 @@ namespace SS.Form.Controllers.Pages
 
                 var siteId = request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin ||
-                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
+                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuFormsPermission))
                 {
                     return Unauthorized();
                 }
@@ -182,7 +182,7 @@ namespace SS.Form.Controllers.Pages
 
                 var siteId = request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin ||
-                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId))
+                    !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuFormsPermission))
                 {
                     return Unauthorized();
                 }
@@ -211,7 +211,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var fileName = $"{formInfo.Title}.zip";
                 var directoryPath = Context.UtilsApi.GetTemporaryFilesPath("form");
@@ -242,7 +242,7 @@ namespace SS.Form.Controllers.Pages
                 var request = Context.AuthenticatedRequest;
                 var siteId = request.GetQueryInt("siteId");
 
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 foreach (string name in HttpContext.Current.Request.Files)
                 {

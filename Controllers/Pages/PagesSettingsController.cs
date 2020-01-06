@@ -21,7 +21,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
 
@@ -58,7 +58,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var type = request.GetPostString("type");
                 if (FormUtils.EqualsIgnoreCase(type, nameof(FormInfo.IsClosed)))

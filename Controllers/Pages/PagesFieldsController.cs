@@ -26,7 +26,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var adminToken = Context.AdminApi.GetAccessToken(request.AdminId, request.AdminName, TimeSpan.FromDays(1));
 
@@ -64,7 +64,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var fieldId = request.GetQueryInt("fieldId");
                 FieldManager.Repository.Delete(formInfo.Id, fieldId);
@@ -103,7 +103,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 //var fileName = FieldManager.Export(formInfo.Id);\
 
@@ -140,7 +140,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 foreach (string name in HttpContext.Current.Request.Files)
                 {

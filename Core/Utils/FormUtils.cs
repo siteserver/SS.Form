@@ -7,7 +7,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using SiteServer.Plugin;
 using SS.Form.Core.Model;
 
 namespace SS.Form.Core.Utils
@@ -15,6 +14,8 @@ namespace SS.Form.Core.Utils
     public static class FormUtils
     {
         public const string PluginId = "SS.Form";
+        public const string MenuFormsPermission = "SS.Form:表单:表单管理";
+        public const string MenuTemplatesPermission = "SS.Form:表单:表单模板";
 
         private const char UrlSeparatorChar = '/';
         private const char PathSeparatorChar = '\\';

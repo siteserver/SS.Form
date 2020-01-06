@@ -23,7 +23,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var listAttributeNames = FormUtils.StringCollectionToStringList(formInfo.ListAttributeNames);
@@ -69,7 +69,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var logId = request.GetQueryInt("logId");
                 var logInfo = LogManager.Repository.GetLogInfo(logId);
@@ -113,7 +113,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var fieldInfoList = FieldManager.GetFieldInfoList(formInfo.Id);
                 var logs = LogManager.Repository.GetAllLogInfoList(formInfo);
@@ -147,8 +147,8 @@ namespace SS.Form.Controllers.Pages
                 }
 
                 var fileName = $"{formInfo.Title}.csv";
-                CsvUtils.Export(Context.PluginApi.GetPluginPath(FormUtils.PluginId, fileName), head, rows);
-                var downloadUrl = Context.PluginApi.GetPluginUrl(FormUtils.PluginId, fileName);
+                CsvUtils.Export(Context.PluginApi.GetPluginPath(FormUtils.MenuFormsPermission, fileName), head, rows);
+                var downloadUrl = Context.PluginApi.GetPluginUrl(FormUtils.MenuFormsPermission, fileName);
 
                 return Ok(new
                 {
@@ -170,7 +170,7 @@ namespace SS.Form.Controllers.Pages
 
                 var formInfo = FormManager.GetFormInfoByPost(request);
                 if (formInfo == null) return NotFound();
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
                 var attributeName = request.GetPostString("attributeName");
 

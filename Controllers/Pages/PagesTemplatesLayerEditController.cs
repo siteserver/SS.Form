@@ -21,7 +21,7 @@ namespace SS.Form.Controllers.Pages
                 var request = Context.AuthenticatedRequest;
 
                 var siteId = request.GetQueryInt("siteId");
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuTemplatesPermission)) return Unauthorized();
 
                 var name = request.GetQueryString("name");
                 var templateInfo = TemplateManager.GetTemplateInfo(name);
@@ -50,7 +50,7 @@ namespace SS.Form.Controllers.Pages
                 var request = Context.AuthenticatedRequest;
 
                 var siteId = request.GetQueryInt("siteId");
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuTemplatesPermission)) return Unauthorized();
 
                 var type = request.GetQueryString("type");
                 var originalName = request.GetPostString("originalName");
@@ -97,7 +97,7 @@ namespace SS.Form.Controllers.Pages
                 var request = Context.AuthenticatedRequest;
 
                 var siteId = request.GetQueryInt("siteId");
-                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.PluginId)) return Unauthorized();
+                if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, FormUtils.MenuTemplatesPermission)) return Unauthorized();
 
                 var type = request.GetQueryString("type");
                 var originalName = request.GetPostString("originalName");
