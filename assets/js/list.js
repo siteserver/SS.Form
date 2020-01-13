@@ -101,7 +101,7 @@ var $vue = new Vue({
 
       this.pageType = 'loading';
       $api.get(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId, {
-        page: page
+        params: {page: page}
       }).then(function (res) {
         $this.fieldInfoList = res.data.fieldInfoList;
         $this.allAttributeNames = res.data.allAttributeNames;
