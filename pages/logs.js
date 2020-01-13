@@ -150,8 +150,8 @@ var methods = {
     return item[_.lowerFirst(attributeName)];
   },
 
-  largeImage: function(item, attributeName) {
-    var imageUrl = this.getAttributeValue(item, attributeName);
+  largeImage: function(imageUrl) {
+    //var imageUrl = this.getAttributeValue(item, attributeName);
     swal2.fire({
       imageUrl: imageUrl,
       showConfirmButton: false,

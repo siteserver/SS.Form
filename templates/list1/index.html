@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -23,20 +23,22 @@
     <template v-else>
       <div class="card-box">
         <div class="table-responsive mt-3">
+		
           <table class="table tablesaw table-hover m-0">
             <thead>
               <tr>
-                <th v-for="attributeName in allAttributeNames" v-if="listAttributeNames.indexOf(attributeName) !== -1">
+                <th v-for="attributeName in allAttributeNames" v-if="listAttributeNames.indexOf(attributeName) !== -1 && getAttributeType(attributeName) !== 'Hidden'">
                   {{ getAttributeText(attributeName) }}
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in items">
-                <td v-for="attributeName in allAttributeNames" :key="attributeName" v-if="listAttributeNames.indexOf(attributeName) !== -1">
-                  
-                    <img v-if="getAttributeType(attributeName) === 'Image'" :src="getAttributeValue(item, attributeName)" style="max-height: 100px; max-width: 100px; cursor: pointer;" v-on:click="largeImage(item, attributeName)">
-                    <div v-else>
+                <td v-for="attributeName in allAttributeNames" :key="attributeName" v-if="listAttributeNames.indexOf(attributeName) !== -1 && getAttributeType(attributeName) !== 'Hidden'">
+                    <div v-if="getAttributeType(attributeName) === 'Image'">
+						<img v-for="imageUrl in getAttributeValue(item, attributeName).split(',')" :src="imageUrl" style="max-height: 100px; max-width: 100px; cursor: pointer;" v-on:click="largeImage(imageUrl)">
+                    </div>
+					<div v-else>
                         {{ getAttributeValue(item, attributeName) }}
                     </div>
 

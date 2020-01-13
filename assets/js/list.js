@@ -64,8 +64,8 @@ var $vue = new Vue({
       return item[_.camelCase(attributeName)];
     },
 
-    largeImage: function(item, attributeName) {
-      var imageUrl = this.getAttributeValue(item, attributeName);
+    largeImage: function(imageUrl) {
+      //var imageUrl = this.getAttributeValue(item, attributeName);
       Swal.fire({
         imageUrl: imageUrl,
         showConfirmButton: false,

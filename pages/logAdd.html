@@ -246,7 +246,7 @@
 
                   <template v-else-if="fieldInfo.fieldType === 'Image'">
                     <file-pond
-                      :allow-multiple="false"
+                      :allow-multiple="true"
                       :server="getUploadUrl(fieldInfo)"
                       :files="files"
                       accepted-file-types="image/jpeg, image/png, image/webp"
@@ -254,8 +254,7 @@
                       label-file-processing="上传中..."
                       label-file-processing-complete="上传成功"
                       v-on:processfile="imageUploaded"
-                      v-on:removefile="imageRemoved(fieldInfo)"
-                    ></file-pond>
+                      v-on:removefile="imageRemoved(fieldInfo)"/>
 
                     <input
                       v-model="fieldInfo.value"
