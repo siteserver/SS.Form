@@ -78,6 +78,7 @@ var methods = {
   },
 
   btnExportClick: function () {
+    var $this = this;
     utils.loading(true);
 
     $api.post($urlActionsExport, {

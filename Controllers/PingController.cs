@@ -2,6 +2,9 @@
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
+using Datory;
+using SiteServer.Plugin;
+using SS.Form.Core.Repositories;
 
 namespace SS.Form.Controllers
 {
@@ -15,7 +18,7 @@ namespace SS.Form.Controllers
         {
             var response = Request.CreateResponse(HttpStatusCode.OK);
 
-            response.Content = new StringContent("pong", Encoding.UTF8);
+            response.Content = new StringContent("pong2", Encoding.UTF8);
 
             return response;
         }

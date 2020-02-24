@@ -147,8 +147,8 @@ namespace SS.Form.Controllers.Pages
                 }
 
                 var fileName = $"{formInfo.Title}.csv";
-                CsvUtils.Export(Context.PluginApi.GetPluginPath(FormUtils.MenuFormsPermission, fileName), head, rows);
-                var downloadUrl = Context.PluginApi.GetPluginUrl(FormUtils.MenuFormsPermission, fileName);
+                CsvUtils.Export(Context.PluginApi.GetPluginPath(FormUtils.PluginId, fileName), head, rows);
+                var downloadUrl = Context.PluginApi.GetPluginUrl(FormUtils.PluginId, fileName);
 
                 return Ok(new
                 {
