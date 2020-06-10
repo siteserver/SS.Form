@@ -88,11 +88,11 @@ namespace SS.Form.Core.Repositories
             return _repository.Count(Q.Where(Attr.FormId, formId));
         }
 
-        public IList<LogInfo> GetLogInfoList(FormInfo formInfo, bool isRepliedOnly, int page)
+        public (int Total, IList<LogInfo>) GetLogs(FormInfo formInfo, bool isRepliedOnly, string word, int page)
         {
             if (formInfo.TotalCount == 0)
             {
-                return new List<LogInfo>();
+                return (0, new List<LogInfo>());
             }
 
             var pageSize = FormUtils.GetPageSize(formInfo);
@@ -110,7 +110,15 @@ namespace SS.Form.Core.Repositories
                 q.Where(nameof(LogInfo.IsReplied), true);
             }
 
-            return _repository.GetAll(q);
+            if (!string.IsNullOrEmpty(word))
+            {
+                q.Where(query => query
+                    .WhereLike(nameof(LogInfo.AttributeValues), $"%{word}%")
+                    .OrWhereLike(nameof(LogInfo.ReplyContent), $"%{word}%")
+                );
+            }
+
+            return (_repository.Count(q), _repository.GetAll(q));
         }
 
         public IList<LogInfo> GetAllLogInfoList(FormInfo formInfo)

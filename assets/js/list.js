@@ -20,6 +20,7 @@ var $vue = new Vue({
     apiUrl: $getParameter('apiUrl'),
     siteId: $getParameter('siteId'),
     formId: $getParameter('formId'),
+    word: $getParameter('word'),
     pageType: 'loading',
     fieldInfoList: null,
     allAttributeNames: [],
@@ -101,7 +102,8 @@ var $vue = new Vue({
 
       this.pageType = 'loading';
       $api.get(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId, {
-        page: page
+        page: page,
+        word: this.word
       }).then(function (res) {
         $this.fieldInfoList = res.data.fieldInfoList;
         $this.allAttributeNames = res.data.allAttributeNames;

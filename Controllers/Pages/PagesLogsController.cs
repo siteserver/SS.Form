@@ -11,8 +11,8 @@ namespace SS.Form.Controllers.Pages
     public class PagesLogsController : ApiController
     {
         private const string Route = "";
-        private const string RouteActionsExport = "actions/export";
-        private const string RouteActionsVisible = "actions/visible";
+        private const string ActionsExport = "actions/export";
+        private const string ActionsVisible = "actions/visible";
 
         [HttpGet, Route(Route)]
         public IHttpActionResult Get()
@@ -20,6 +20,7 @@ namespace SS.Form.Controllers.Pages
             try
             {
                 var request = Context.AuthenticatedRequest;
+                var page = request.GetQueryInt("page", 1);
 
                 var formInfo = FormManager.GetFormInfoByGet(request);
                 if (formInfo == null) return NotFound();
@@ -30,11 +31,10 @@ namespace SS.Form.Controllers.Pages
                 var allAttributeNames = FormManager.GetAllAttributeNames(fieldInfoList);
                 var pageSize = FormUtils.GetPageSize(formInfo);
 
-                var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / pageSize));
+                var (total, logInfoList) = LogManager.Repository.GetLogs(formInfo, false, null, page);
+                var pages = Convert.ToInt32(Math.Ceiling((double)total / pageSize));
                 if (pages == 0) pages = 1;
-                var page = request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
-                var logInfoList = LogManager.Repository.GetLogInfoList(formInfo, false, page);
 
                 var logs = new List<Dictionary<string, object>>();
                 foreach (var logInfo in logInfoList)
@@ -45,7 +45,7 @@ namespace SS.Form.Controllers.Pages
                 return Ok(new
                 {
                     Value = logs,
-                    Count = formInfo.TotalCount,
+                    Count = total,
                     Pages = pages,
                     Page = page,
                     FieldInfoList = fieldInfoList,
@@ -71,6 +71,7 @@ namespace SS.Form.Controllers.Pages
                 if (formInfo == null) return NotFound();
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(formInfo.SiteId, FormUtils.MenuFormsPermission)) return Unauthorized();
 
+                var page = request.GetQueryInt("page", 1);
                 var logId = request.GetQueryInt("logId");
                 var logInfo = LogManager.Repository.GetLogInfo(logId);
                 if (logInfo == null) return NotFound();
@@ -78,11 +79,11 @@ namespace SS.Form.Controllers.Pages
                 LogManager.Repository.Delete(formInfo, logInfo);
 
                 var pageSize = FormUtils.GetPageSize(formInfo);
-                var pages = Convert.ToInt32(Math.Ceiling((double)formInfo.TotalCount / pageSize));
+
+                var (total, logInfoList) = LogManager.Repository.GetLogs(formInfo, false, null, page);
+                var pages = Convert.ToInt32(Math.Ceiling((double)total / pageSize));
                 if (pages == 0) pages = 1;
-                var page = request.GetQueryInt("page", 1);
                 if (page > pages) page = pages;
-                var logInfoList = LogManager.Repository.GetLogInfoList(formInfo, false, page);
 
                 var logs = new List<IDictionary<string, object>>();
                 foreach (var info in logInfoList)
@@ -93,7 +94,7 @@ namespace SS.Form.Controllers.Pages
                 return Ok(new
                 {
                     Value = logs,
-                    Count = formInfo.TotalCount,
+                    Count = total,
                     Pages = pages,
                     Page = page
                 });
@@ -104,7 +105,7 @@ namespace SS.Form.Controllers.Pages
             }
         }
 
-        [HttpPost, Route(RouteActionsExport)]
+        [HttpPost, Route(ActionsExport)]
         public IHttpActionResult Export()
         {
             try
@@ -161,7 +162,7 @@ namespace SS.Form.Controllers.Pages
             }
         }
 
-        [HttpPost, Route(RouteActionsVisible)]
+        [HttpPost, Route(ActionsVisible)]
         public IHttpActionResult Visible()
         {
             try
