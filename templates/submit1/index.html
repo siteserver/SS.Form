@@ -8,12 +8,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <script type="text/javascript" src="../../assets/lib/iframe-resizer-3.6.3/iframeResizer.contentWindow.min.js"></script>
   <link href="../../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    .filepond--item {
+    width: calc(33% - .5em);
+    }
+  </style>
 </head>
 
 <body class="p-3">
   <div id="form_submit">
     <template v-if="pageType === 'form'">
-      <div v-for="fieldInfo in fieldInfoList" class="form-group">
+      <div v-for="fieldInfo in fieldInfoList" v-if="fieldInfo.fieldType !== 'Hidden'" class="form-group">
         <label> {{ fieldInfo.title }} <span v-if="fieldInfo.validate.indexOf('required') !== -1" class="text-danger">*</span>
           <small v-show="errors.has(fieldInfo.title)" class="text-danger">{{ errors.first(fieldInfo.title) }}</small>
         </label>
@@ -71,7 +76,8 @@
         </template>
         <template v-else-if="fieldInfo.fieldType === 'Image'">
           <file-pond
-            :allow-multiple="false"
+            allow-multiple="true"
+			max-files="3"
             :server="getUploadUrl(fieldInfo)"
             :files="files"
             accepted-file-types="image/jpeg, image/png, image/webp"
@@ -79,8 +85,7 @@
             label-file-processing="上传中..."
             label-file-processing-complete="上传成功"
             v-on:processfile="imageUploaded"
-            v-on:removefile="imageRemoved(fieldInfo)"
-          ></file-pond>
+            v-on:removefile="imageRemoved(fieldInfo)"/>
 
           <input
             v-model="fieldInfo.value"
@@ -116,8 +121,8 @@ errors.has('captcha') || captchaInValid}">
         </div>
       </div>
       <hr />
-      <div class="text-center">
-        <button type="button" @click="btnSubmitClick" class="btn btn-primary w-md mr-2">提 交</button>
+      <div style="text-align: right;">
+        <button type="button" @click="btnSubmitClick" style="background-color: #CC0000; border-color: #CC0000;" class="btn btn-primary w-md mr-2">提 交</button>
       </div>
     </template>
     <template v-else-if="pageType === 'error'">

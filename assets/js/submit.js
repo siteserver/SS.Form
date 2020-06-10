@@ -70,7 +70,12 @@ if (window.DatePicker) {
         if (!error) {
           var res = JSON.parse(file.serverId);
           var fieldInfo = _.find(this.fieldInfoList, function(o) { return o.id === res.fieldId; });
-          fieldInfo.value = res.value;
+          if (fieldInfo.value){
+			  fieldInfo.value += ',' + res.value;
+		  }
+		  else{
+			  fieldInfo.value = res.value;
+		  }
         }
       },
     

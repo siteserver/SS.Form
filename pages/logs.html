@@ -73,10 +73,12 @@
             <tbody>
               <tr v-for="item in items" :key="item.id">
                 <td v-for="attributeName in allAttributeNames" :key="attributeName" v-if="listAttributeNames.indexOf(attributeName) !== -1">
-                  <img v-if="getAttributeType(attributeName) === 'Image'" :src="getAttributeValue(item, attributeName)" style="max-height: 100px; max-width: 100px; cursor: pointer;" v-on:click="largeImage(item, attributeName)">
-                  <div v-else>
-                      {{ getAttributeValue(item, attributeName) }}
-                  </div>
+					<div v-if="getAttributeType(attributeName) === 'Image'">
+						<img v-for="imageUrl in getAttributeValue(item, attributeName).split(',')" :src="imageUrl" style="max-height: 100px; max-width: 100px; cursor: pointer;" v-on:click="largeImage(imageUrl)">
+					</div>
+					<div v-else>
+						{{ getAttributeValue(item, attributeName) }}
+					</div>
                 </td>
                 <td v-if="isReply">
                   <strong v-if="item.isReplied" class="text-primary">已回复</strong>

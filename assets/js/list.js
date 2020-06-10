@@ -64,8 +64,8 @@ var $vue = new Vue({
       return item[_.camelCase(attributeName)];
     },
 
-    largeImage: function(item, attributeName) {
-      var imageUrl = this.getAttributeValue(item, attributeName);
+    largeImage: function(imageUrl) {
+      //var imageUrl = this.getAttributeValue(item, attributeName);
       Swal.fire({
         imageUrl: imageUrl,
         showConfirmButton: false,
@@ -101,7 +101,7 @@ var $vue = new Vue({
 
       this.pageType = 'loading';
       $api.get(this.apiUrl + '/ss.form/' + this.siteId + '/' + this.formId, {
-        page: page
+        params: {page: page}
       }).then(function (res) {
         $this.fieldInfoList = res.data.fieldInfoList;
         $this.allAttributeNames = res.data.allAttributeNames;
